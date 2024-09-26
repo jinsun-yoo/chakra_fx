@@ -84,10 +84,10 @@ class ResNetProfiler(ModelProfiler):
         ):
         self.name = "Resnet18"
 
-        model = models.resnet18() 
+        model = models.resnet18().cuda(dist.get_rank()) 
         model = torch.nn.parallel.DistributedDataParallel(model)
-        sample_input = torch.randn(1, 3, 224, 224, device="cuda")
-        
+        sample_input = torch.randn(1, 3, 224, 224, device=f"cuda:{dist.get_rank()}")
+
         super().__init__(
                 fxgraph_handler,
                 use_pytorch,

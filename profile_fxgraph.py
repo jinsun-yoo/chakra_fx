@@ -40,6 +40,16 @@ def get_aten_histogram(gm: torch.fx.GraphModule, profiler: ModelProfiler):
         w = csv.writer(f)
         for op, count in ops_map.items():
             w.writerow([op, count["count"], count["op"]])
+
+from torch.utils.flop_counter import FlopCounterMode
+def get_operation_count(gm:torch.fx.GraphModule):
+    for node in gm.graph.nodes:
+        success, args, kwargs = torch._inductor.fx_utils.get_fake_args_kwargs(node)
+        if success:
+            with FlopCounterMode() as flop_counter_mode:
+                node.target(*args, **kwargs)
+                counted_flops = flop_counter_mode.get_total_flops()
+                print(f'Counted flops for {node.target.__name__} is {counted_flops}')
         
 "Simple function to check if backend has been called"
 def just_hello(gm: torch.fx.GraphModule):
