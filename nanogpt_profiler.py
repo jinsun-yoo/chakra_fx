@@ -19,7 +19,7 @@ from typing import Callable
 # Usage: torchrun --nproc-per-node=<number of processes> transformer.py
 
 num_iters = 10
-batch_size = 16 
+batch_size = 1 
 sequence_length = 256
 #batch_size = 64
 #sequence_length = 2048
@@ -27,6 +27,7 @@ dtype = torch.bfloat16
 world_size = int(os.environ["WORLD_SIZE"])
 device_mesh = init_device_mesh(device_type="cuda", mesh_shape=(world_size,))
 rank = device_mesh.get_rank()
+num_transformer_layers = 1 
 
 
 class NanoGptProfiler(ModelProfiler):
@@ -34,21 +35,17 @@ class NanoGptProfiler(ModelProfiler):
                  fxgraph_handler: Callable[[torch.fx.GraphModule],None],
                  use_pytorch: bool
                 ):
-        self.name = "nanoGPT"
+        self.name = f"nanoGPT_nightly_{num_transformer_layers}_layers"
 
-        config = GPTConfig()
-        tp_model = Block(config).to(dtype).to("cuda")
-        tp_model = torch.compile(tp_model)
-
+        config = GPTConfig(n_transformer_layers=num_transformer_layers)
+        tp_model = Block(config).to(dtype).cuda(dist.get_rank())
 
         # Parallelization plan. Tensor parallel
         tp_model = parallelize_module(
             module=tp_model,
             device_mesh=device_mesh,
             parallelize_plan={
-                "attn.c_attn_key": ColwiseParallel(),
-                "attn.c_attn_query": ColwiseParallel(),
-                "attn.c_attn_value": ColwiseParallel(),
+                "attn.c_attn": ColwiseParallel(),
                 "attn.c_proj": RowwiseParallel(),
                 "mlp.c_fc": ColwiseParallel(),
                 "mlp.c_proj": RowwiseParallel(),
@@ -69,10 +66,8 @@ class NanoGptProfiler(ModelProfiler):
     def run_training_session(self):
         super().compile_model()
         output = self.model(self.sample_input)
-        output.sum().backward()
-
-        output = self.model(self.sample_input)
         torch.cuda.synchronize()
 
         output.sum().backward()
+        torch.cuda.synchronize()
 
