@@ -33,7 +33,8 @@ num_transformer_layers = 1
 class NanoGptProfiler(ModelProfiler):
     def __init__(self, 
                  fxgraph_handler: Callable[[torch.fx.GraphModule],None],
-                 use_pytorch: bool
+                 use_pytorch_ir: bool,
+                 run_custom_backend_all_rank: bool
                 ):
         self.name = f"nanoGPT_nightly_{num_transformer_layers}_layers"
 
@@ -58,9 +59,10 @@ class NanoGptProfiler(ModelProfiler):
 
         super().__init__(
                 fxgraph_handler,
-                use_pytorch,
+                use_pytorch_ir,
                 tp_model,
-                sample_input
+                sample_input,
+                run_custom_backend_all_rank
                 )
 
     def run_training_session(self):

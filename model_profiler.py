@@ -6,18 +6,22 @@ from typing import List
 from torch._dynamo.backends.common import aot_autograd
 
 class ModelProfiler():
-    def __init__(self, fxgraph_handler, use_pytorch, model, sample_input):
+    def __init__(self, fxgraph_handler, use_pytorch_ir, model, sample_input, run_custom_backend_all_rank = False):
         self.rank = int(os.environ.get("RANK", 0))
         self.size = int(os.environ.get("WORLD_SIZE", 1))
         
         "If true, work on PyTorch FX Graph, if false, work on aten FX Graph"
-        self.use_pytorch = use_pytorch
-        "Index of subgraph at each graph break"
+        self.use_pytorch_ir = use_pytorch_ir
+        "Index of subgraph at each graph break. Increments with each subgraph"
         self.subgraph_idx = 0
         "This name will be used at, e.g. start of generated filenames"
         if not hasattr(self, 'name'):
             print("Name not provided. Use default name.")
             self.name = "modelProfiler"
+        "Unless otherwise noted, do not run custom backends, apart from rank 0."
+        self.run_custom_backend = False
+        if run_custom_backend_all_rank or self.rank == 0:
+            self.run_custom_backend = True
 
         torch.cuda.set_device(int(self.rank))
         self.fxgraph_handler = fxgraph_handler
@@ -25,6 +29,13 @@ class ModelProfiler():
         self.sample_input = sample_input
 
         return
+    
+    def convert_to_chakra(self, gm: torch.fx.GraphModule):
+        from chakra_converter import ChakraConverter
+        # TODO: We create one ChakraConverter per subgraph, but might have to change this due to DDP. 
+        # (Depends. There is a possibility no graph break is needed for DDP.)
+        self.chakra_converter = ChakraConverter(self.name, self.subgraph_idx)
+        self.chakra_converter.convert_to_chakra(gm)
 
     """Runs a training session, implemented by each profiler"""
     def run_training_session(self):
@@ -47,8 +58,8 @@ class ModelProfiler():
         return make_boxed_func(gm.forward)
 
     def compile_model(self):
-        if self.rank == 0:
-            if self.use_pytorch:
+        if self.run_custom_backend:
+            if self.use_pytorch_ir:
                 model = torch.compile(self.model, backend=self.__custom_pytorch_compiler)
             else:
                 model = torch.compile(self.model, backend=aot_autograd(fw_compiler=self.__custom_aten_compiler))

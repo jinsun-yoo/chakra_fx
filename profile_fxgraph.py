@@ -4,7 +4,6 @@ import torch
 import csv 
 from torch.fx.passes.graph_drawer import FxGraphDrawer
 
-
 from resnet18_profiler import ResNetProfiler
 from nanogpt_profiler import NanoGptProfiler
 from model_profiler import ModelProfiler
@@ -14,14 +13,14 @@ def print_tabular_graph(gm: torch.fx.GraphModule):
     print(gm.graph.print_tabular())
 
 "Generates a dot file for this subgraph"
-def print_dotfile(gm: torch.fx.GraphModule):
+def print_dotfile(gm: torch.fx.GraphModule, profiler: ModelProfiler):
     g = FxGraphDrawer(gm, "graph")
-    g.get_dot_graph().write_dot(f"{profiler.name}_PyTorch_{profiler.use_pytorch}_subgraphidx_{profiler.subgraph_idx}_rank_{profiler.rank}.dot")
+    g.get_dot_graph().write_dot(f"{profiler.name}_PyTorch_{profiler.use_pytorch_ir}_subgraphidx_{profiler.subgraph_idx}_rank_{profiler.rank}.dot")
 
 "Generates a pdf file for this subgraph"
 def print_pdffile(gm: torch.fx.GraphModule, profiler: ModelProfiler):
     g = FxGraphDrawer(gm, "graph")
-    g.get_dot_graph().write_pdf(f"{profiler.name}_PyTorch_{profiler.use_pytorch}_subgraphidx_{profiler.subgraph_idx}_rank_{profiler.rank}.pdf")
+    g.get_dot_graph().write_pdf(f"{profiler.name}_PyTorch_{profiler.use_pytorch_ir}_subgraphidx_{profiler.subgraph_idx}_rank_{profiler.rank}.pdf")
 
 "For aten graphs, save a histogram of target operators in a csv file. Ignores 'placeholder' ops." 
 "For now, all subgraphs append to one csv file. subgraphs are split by 'output' in the csv file"
@@ -51,6 +50,9 @@ def get_operation_count(gm:torch.fx.GraphModule):
                 counted_flops = flop_counter_mode.get_total_flops()
                 print(f'Counted flops for {node.target.__name__} is {counted_flops}')
         
+def get_chakra_graph(gm:torch.fx.GraphModule, profiler: ModelProfiler):
+    profiler.convert_to_chakra(gm)
+
 "Simple function to check if backend has been called"
 def just_hello(gm: torch.fx.GraphModule):
     print("backend compiler has been called")
@@ -62,16 +64,29 @@ def just_hello(gm: torch.fx.GraphModule):
 def my_compiler(gm: torch.fx.GraphModule, profiler: ModelProfiler):   
     #get_aten_histogram(gm, profiler) 
     #print_pdffile(gm, profiler)
-    print_tabular_graph(gm)
+    #print_tabular_graph(gm)
+    get_chakra_graph(gm, profiler)
     #just_hello(gm)
 
 """
-    Usage: torchrun -nprocs-per-node=8 profile_fxgraph.py
+    Usage: torchrun --nproc-per-node=8 profile_fxgraph.py
 """
+import argparse
+def parse_args():
+    # Create parser
+    parser = argparse.ArgumentParser()
+
+    # Arguments
+    parser.add_argument('--custom_backend_all_rank', type=bool, default=False, help='If true, run custom backend on all rank, not just 0')
+    args = parser.parse_args()
+    return args
+
 if __name__ == "__main__":
+    args = parse_args()
+
     "Choose which profiler to use"
-    #profiler = NanoGptProfiler(my_compiler, True)
-    profiler = ResNetProfiler(my_compiler, False)
+    #profiler = NanoGptProfiler(my_compiler, use_pytorch_ir=False, run_custom_backend_all_rank=args.custom_backend_all_rank)
+    profiler = ResNetProfiler(my_compiler, use_pytorch_ir=False, run_custom_backend_all_rank=args.custom_backend_all_rank)
 
     "Choose whether to only trigger JIT compile (through sample input), or running a training session"
     "Choose only one. For some reason running both glitches."

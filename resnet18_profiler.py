@@ -80,7 +80,8 @@ class ResNetProfiler(ModelProfiler):
     def __init__(
             self,
             fxgraph_handler,
-            use_pytorch
+            use_pytorch_ir,
+            run_custom_backend_all_rank: bool
         ):
         self.name = "Resnet18"
 
@@ -90,9 +91,11 @@ class ResNetProfiler(ModelProfiler):
 
         super().__init__(
                 fxgraph_handler,
-                use_pytorch,
+                use_pytorch_ir,
                 model,
-                sample_input)
+                sample_input,
+                run_custom_backend_all_rank
+                )
 
     def run_training_session(self):
         torch.cuda.set_device(self.rank)
