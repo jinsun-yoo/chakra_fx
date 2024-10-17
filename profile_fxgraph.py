@@ -7,6 +7,8 @@ from torch.fx.passes.graph_drawer import FxGraphDrawer
 from resnet18_profiler import ResNetProfiler
 from nanogpt_profiler import NanoGptProfiler
 from model_profiler import ModelProfiler
+from typing import List
+
 
 "Prints the graph in tabular format to stdio. Haven't found how to forward to a file other than piping at command line"
 def print_tabular_graph(gm: torch.fx.GraphModule):
@@ -54,19 +56,10 @@ def get_chakra_graph(gm:torch.fx.GraphModule, profiler: ModelProfiler):
     profiler.convert_to_chakra(gm)
 
 "Simple function to check if backend has been called"
-def just_hello(gm: torch.fx.GraphModule):
-    print("backend compiler has been called")
+def just_hello(gm: torch.fx.GraphModule, profiler: ModelProfiler):
+    print(f"backend compiler has been called at rank {profiler.rank} for subgraph {profiler.subgraph_idx}")
     return
 
-"""
-    Define the set of functions you want to use
-"""
-def my_compiler(gm: torch.fx.GraphModule, profiler: ModelProfiler):   
-    #get_aten_histogram(gm, profiler) 
-    #print_pdffile(gm, profiler)
-    #print_tabular_graph(gm)
-    get_chakra_graph(gm, profiler)
-    #just_hello(gm)
 
 """
     Usage: torchrun --nproc-per-node=8 profile_fxgraph.py
@@ -78,17 +71,33 @@ def parse_args():
 
     # Arguments
     parser.add_argument('--custom_backend_all_rank', type=bool, default=False, help='If true, run custom backend on all rank, not just 0')
+    parser.add_argument('--actions', type=str, default="just", required=False, help="Comma delimited key strings of which functions to invoke in backend compiler. 'just': just_hello, 'chakra': get_chakra_graph, 'pdf': print_pdf_file" )
     args = parser.parse_args()
     return args
 
 if __name__ == "__main__":
     args = parse_args()
+    action_list = args.actions.split(",")
+
+    "Define the set of functions you want to use"
+    def my_compiler(gm: torch.fx.GraphModule, profiler: ModelProfiler, example_inputs):
+        if 'just' in action_list:
+            just_hello(gm, profiler)
+        if 'pdf' in action_list:
+            print_pdffile(gm, profiler)
+        if 'chakra' in action_list:
+            get_chakra_graph(gm, profiler)
+
+        #involve_inductor(gm, example_inputs, profiler)
+        print("***EXITING!!***")
+        exit()
 
     "Choose which profiler to use"
-    #profiler = NanoGptProfiler(my_compiler, use_pytorch_ir=False, run_custom_backend_all_rank=args.custom_backend_all_rank)
-    profiler = ResNetProfiler(my_compiler, use_pytorch_ir=False, run_custom_backend_all_rank=args.custom_backend_all_rank)
+    #profiler = TwoDProfiler(my_compiler, use_pytorch_ir=False, run_custom_backend_all_rank=args.custom_backend_all_rank)
+    profiler = NanoGptProfiler(my_compiler, use_pytorch_ir=False, run_custom_backend_all_rank=args.custom_backend_all_rank)
+    #profiler = ResNetProfiler(my_compiler, use_pytorch_ir=False, run_custom_backend_all_rank=args.custom_backend_all_rank)
 
     "Choose whether to only trigger JIT compile (through sample input), or running a training session"
     "Choose only one. For some reason running both glitches."
-    #profiler.run_sample_input()
-    profiler.run_training_session()
+    profiler.run_sample_input()
+    #profiler.run_training_session()
