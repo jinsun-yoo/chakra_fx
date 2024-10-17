@@ -76,6 +76,7 @@ def parse_args():
 
     # Arguments
     parser.add_argument('--custom_backend_all_rank', type=bool, default=False, help='If true, run custom backend on all rank, not just 0')
+    parser.add_argument('--dse_config_filepath', type=str, default=None, required=False, help='Filepath of the DSE configuration')
     parser.add_argument('--actions', type=str, default="just", required=False, help="Comma delimited key strings of which functions to invoke in backend compiler. 'just': just_hello, 'chakra': get_chakra_graph, 'pdf': print_pdf_file" )
     parser.add_argument('--exp_tag', type=str, default="", required=False, help="A string(tag) to uniquely identify this experiment. Will be used for output directory name, etc. Default is 'YYYY-MM-SS_HH-MM-SS' (UTC)")
     args = parser.parse_args()
@@ -90,7 +91,7 @@ if __name__ == "__main__":
         exp_tag = formatted_dt = now_utc.strftime("%Y-%m-%d_%H-%M-%S")
 
     "Define the set of functions you want to use"
-    def my_compiler(gm: torch.fx.GraphModule, profiler: ModelProfiler, example_inputs):
+    def my_compiler(gm: torch.fx.GraphModule, example_inputs):
         if 'just' in action_list:
             just_hello(gm, profiler)
         if 'pdf' in action_list:
@@ -110,7 +111,7 @@ if __name__ == "__main__":
 
     "Choose which profiler to use"
     #profiler = TwoDProfiler(my_compiler, use_pytorch_ir=False, run_custom_backend_all_rank=args.custom_backend_all_rank)
-    profiler = NanoGptProfiler(my_compiler, use_pytorch_ir=False, run_custom_backend_all_rank=args.custom_backend_all_rank)
+    profiler = NanoGptProfiler(my_compiler, use_pytorch_ir=False, run_custom_backend_all_rank=args.custom_backend_all_rank, dse_config_filepath=args.dse_config_filepath)
     #profiler = ResNetProfiler(my_compiler, use_pytorch_ir=False, run_custom_backend_all_rank=args.custom_backend_all_rank)
 
     "Choose whether to only trigger JIT compile (through sample input), or running a training session"
