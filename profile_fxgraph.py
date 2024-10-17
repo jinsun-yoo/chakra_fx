@@ -59,6 +59,18 @@ def get_chakra_graph(gm:torch.fx.GraphModule, profiler: ModelProfiler, exp_tag: 
     profiler.convert_to_chakra(gm, exp_tag)
 
 
+def involve_inductor(gm:torch.fx.GraphModule, example_inputs, profiler: ModelProfiler):
+    import functools
+    # @functools.wraps(profiler)
+    def handle_inductor_interceptor(gm: torch.fx.GraphModule, example_inputs: List[torch.Tensor],  *args, **kwargs):
+        profiler.name = f"{profiler.name}.after_inductor"
+        print_pdffile(gm, profiler)
+        get_chakra_graph(gm, profiler)
+        from torch._inductor.compile_fx import compile_fx_inner
+        resp_comp_inner = compile_fx_inner(gm, example_inputs, **kwargs)
+        return resp_comp_inner
+    from torch._inductor.compile_fx import compile_fx_aot
+    compile_fx_aot(model_ = gm, example_inputs_=example_inputs)#, inner_compile = handle_inductor_interceptor)
 
 "Simple function to check if backend has been called"
 def just_hello(gm: torch.fx.GraphModule, profiler: ModelProfiler):
