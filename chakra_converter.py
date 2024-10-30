@@ -71,6 +71,9 @@ def fxnode_seqnr(fx_node: fx.Node):
         return -2
     if fx_node.op == "placeholder": 
         return fx_node.name
+    if 'seq_nr' not in fx_node.meta:
+        print(f"Node name {fx_node.name} does not have seq_nr")
+        return fx_node.name
     return fx_node.meta['seq_nr']
 
 def node_debug_id_str(fx_node: fx.Node): 
@@ -89,11 +92,18 @@ class ChakraConverter():
     def __init__(
         self,
         name : str,
-        subgraph_idx : int
+        subgraph_idx : int,
+        dir_name: str
     ):
         self.name = name
         self.subgraph_idx = subgraph_idx
-        self.filename = f"{self.name}_subgraph_{self.subgraph_idx}.{dist.get_rank()}.et"
+        subgraphstr = ""
+        if self.subgraph_idx > 0:
+            subgraphstr = f'_subgraph-idx_{self.subgraph_idx}'
+        if dir_name != "":
+            dir_name += "/"
+        self.filename = f"{dir_name}{self.name}{subgraphstr}.{dist.get_rank()}.et"
+        
 
         # Incremented whenever Chakra Node is crated
         self.chakra_node_id = 0
@@ -213,3 +223,4 @@ class ChakraConverter():
                     continue
                 chakra_node = self.add_upstream_dependency(chakra_node, fx_node)
                 self.add_to_chakra_graph(chakra_node, fx_node)
+

@@ -11,22 +11,18 @@ from torch.distributed.tensor.parallel import (
     ColwiseParallel,
     RowwiseParallel,
 )
+from torch.distributed.tensor.placement_types import Placement, Shard, Partial, Replicate
 import logging
 #torch._logging.set_logs(dynamo=logging.DEBUG, bytecode=True)
 
-from torch.distributed._tensor.device_mesh import init_device_mesh
+from torch.distributed.device_mesh import init_device_mesh
 from typing import Callable 
 # Usage: torchrun --nproc-per-node=<number of processes> transformer.py
 
 num_iters = 10
 batch_size = 1 
 sequence_length = 256
-#batch_size = 64
-#sequence_length = 2048
 dtype = torch.bfloat16
-world_size = int(os.environ["WORLD_SIZE"])
-device_mesh = init_device_mesh(device_type="cuda", mesh_shape=(world_size,))
-rank = device_mesh.get_rank()
 num_transformer_layers = 1 
 
 
@@ -36,8 +32,8 @@ class NanoGptProfiler(ModelProfiler):
                  use_pytorch_ir: bool,
                  run_custom_backend_all_rank: bool
                 ):
-        self.name = f"nanoGPT_nightly_{num_transformer_layers}_layers"
 
+        self.name = f"nanogpt"
         config = GPTConfig(n_transformer_layers=num_transformer_layers)
         tp_model = Block(config).to(dtype).cuda(dist.get_rank())
 
