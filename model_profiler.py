@@ -30,11 +30,11 @@ class ModelProfiler():
 
         return
     
-    def convert_to_chakra(self, gm: torch.fx.GraphModule):
+    def convert_to_chakra(self, gm: torch.fx.GraphModule, exp_tag: str):
         from chakra_converter import ChakraConverter
         # TODO: We create one ChakraConverter per subgraph, but might have to change this due to DDP. 
         # (Depends. There is a possibility no graph break is needed for DDP.)
-        self.chakra_converter = ChakraConverter(self.name, self.subgraph_idx)
+        self.chakra_converter = ChakraConverter(self.name, self.subgraph_idx, exp_tag)
         self.chakra_converter.convert_to_chakra(gm)
 
     """Runs a training session, implemented by each profiler"""
