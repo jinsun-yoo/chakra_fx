@@ -5,8 +5,7 @@ from typing import List
 import torch
 import torch.fx
 
-
-
+from src.chakra_fx.passes.fx_passes import print_tabular_graph, save_pdffile, save_dotfile, convert_save_chakra_graph, just_hello, get_aten_histogram, get_operation_count
 """
     Usage: torchrun --nproc-per-node=8 profile_fxgraph.py
 """
@@ -81,11 +80,11 @@ if __name__ == "__main__":
                 case "just":
                     just_hello(gm, profiler)
                 case "pdf":
-                    print_pdffile(gm, profiler)
+                    save_pdffile(gm, profiler)
                 case "chakra":
-                    get_chakra_graph(gm, profiler, exp_tag)
+                    convert_save_chakra_graph(gm, profiler, exp_tag)
                 case "dot":
-                    print_dotfile(gm, profiler)
+                    save_dotfile(gm, profiler)
                 case "table":
                     print_tabular_graph(gm)
                 case "histogram":
@@ -99,7 +98,7 @@ if __name__ == "__main__":
     "Choose which profiler to use"
     model = args.model
     if model == "nanogpt":
-        from nanogpt_profiler import NanoGptProfiler
+        from src.chakra_fx.profilers.nanogpt_profiler import NanoGptProfiler
 
         profiler = NanoGptProfiler(
             my_compiler,
@@ -108,7 +107,7 @@ if __name__ == "__main__":
             dse_config_filepath=args.dse_config_filepath,
         )
     elif model == "resnet18":
-        from resnet18_profiler import ResNetProfiler
+        from src.chakra_fx.profilers.resnet18_profiler import ResNetProfiler
 
         profiler = ResNetProfiler(
             my_compiler,
