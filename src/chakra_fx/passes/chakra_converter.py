@@ -29,8 +29,10 @@ from torch.utils.flop_counter import FlopCounterMode
 c10d_chakra_map = {
     "all_reduce": ALL_REDUCE,
     "all_gather": ALL_GATHER,
+    "all_gather_into_tensor": ALL_GATHER,
     "all_to_all": ALL_TO_ALL,
     "reduce_scatter": REDUCE_SCATTER,
+    "reduce_scatter_tensor": REDUCE_SCATTER,
     "broadcast": BROADCAST,
 }
 
@@ -120,20 +122,28 @@ class ChakraConverter:
         chakra_node.attr.append(ChakraAttr(name="comm_size", int64_val=comm_size))
         return chakra_node
 
-    def create_comp_node(self, fx_node: fx.Node) -> ChakraNode:
-        node_name = fx_node.name
-        op_name = fx_node.target._opname
+    def estimate_flop_count(self, fx_node: fx.Node) -> int:
         success, args, kwargs = fx_utils.get_fake_args_kwargs(fx_node)
         if not success:
-            print(f"{node_debug_id_str(fx_node)} has flop not countable operator: {op_name}")
-            counted_flops = 1000  # Arbitrary number
+            print(f"{node_debug_id_str(fx_node)} has flop not countable operator: {fx_node.target._opname}")
+            return 1000  # Arbitrary number
+            
+
         with FlopCounterMode() as flop_counter_mode:
+            if fx_node.target._overloadpacket not in flop_counter_mode.flop_registry:
+                print(F"{node_debug_id_str(fx_node)} has operator out of the registry: {fx_node.target._opname}, {fx_node.target._overloadpacket}")
+                return 1000 # Arbitrary number
             fx_node.target(*args, **kwargs)
-            counted_flops = flop_counter_mode.get_total_flops()
+            return flop_counter_mode.get_total_flops()
+
+
+    def create_comp_node(self, fx_node: fx.Node) -> ChakraNode:
+        node_name = fx_node.name
+        estimated_flops = self.estimate_flop_count(fx_node)
 
         chakra_node = self.create_chakra_node(node_name, COMP_NODE)
         chakra_node.attr.append(ChakraAttr(name="is_cpu_op", bool_val=False))
-        chakra_node.attr.append(ChakraAttr(name="num_ops", int64_val=counted_flops))
+        chakra_node.attr.append(ChakraAttr(name="num_ops", int64_val=estimated_flops))
         return chakra_node
 
     def record_fx_node(self, fx_node: fx.Node):
