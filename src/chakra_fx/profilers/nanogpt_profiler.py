@@ -9,7 +9,7 @@ from torch.distributed.tensor.parallel import (
     parallelize_module,
 )
 
-from apply_configuration import apply_configuration
+from src.chakra_fx.profilers.apply_configuration import apply_configuration
 from model_profiler import ModelProfiler
 from nanogpt_model import Block, GPTConfig
 

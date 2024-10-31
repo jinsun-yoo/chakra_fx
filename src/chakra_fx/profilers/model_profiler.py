@@ -39,7 +39,7 @@ class ModelProfiler:
         return
 
     def convert_to_chakra(self, gm: torch.fx.GraphModule, exp_tag: str):
-        from chakra_converter import ChakraConverter
+        from src.chakra_fx.passes.chakra_converter import ChakraConverter
 
         # TODO: We create one ChakraConverter per subgraph, but might have to change this due to DDP.
         # (Depends. There is a possibility no graph break is needed for DDP.)
