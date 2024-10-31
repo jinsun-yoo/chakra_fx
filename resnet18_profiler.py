@@ -1,25 +1,18 @@
-#!/usr/bin/env python
-
-import os
-import torch
-import torch.distributed as dist
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-from torch.fx.passes.graph_drawer import FxGraphDrawer
-
 from math import ceil
 from random import Random
-from torch.multiprocessing import Process
+
+import torch
+import torch.distributed as dist
+import torch.nn.functional as F
+import torch.optim as optim
 from torch.autograd import Variable
-from torchvision import datasets, transforms, models
-from torch._dynamo.backends.common import aot_autograd
-from functorch.compile import make_boxed_func
-from typing import List
+from torchvision import datasets, models, transforms
+
+from model_profiler import ModelProfiler
 
 
 class Partition(object):
-    """ Dataset-like object, but only access a subset of it. """
+    """Dataset-like object, but only access a subset of it."""
 
     def __init__(self, data, index):
         self.data = data
@@ -34,9 +27,11 @@ class Partition(object):
 
 
 class DataPartitioner(object):
-    """ Partitions a dataset into different chuncks. """
+    """Partitions a dataset into different chuncks."""
 
-    def __init__(self, data, sizes=[0.7, 0.2, 0.1], seed=1234):
+    def __init__(self, data, sizes, seed=1234):
+        if sizes is None:
+            sizes = [0.7, 0.2, 0.1]
         self.data = data
         self.partitions = []
         rng = Random()
@@ -55,47 +50,37 @@ class DataPartitioner(object):
 
 
 def partition_dataset():
-    """ Partitioning MNIST """
+    """Partitioning MNIST."""
     dataset = datasets.CIFAR10(
-        '../data_cifar10',
+        "../data_cifar10",
         train=True,
         download=True,
-        transform=transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize((0.1307, ), (0.3081, ))
-        ]))
+        transform=transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]),
+    )
     size = dist.get_world_size()
     bsz = 128 // size
     partition_sizes = [1.0 / size for _ in range(size)]
     partition = DataPartitioner(dataset, partition_sizes)
     partition = partition.use(dist.get_rank())
-    train_set = torch.utils.data.DataLoader(
-        partition, batch_size=bsz, shuffle=True)
+    train_set = torch.utils.data.DataLoader(partition, batch_size=bsz, shuffle=True)
     return train_set, bsz
 
 
-
-from model_profiler import ModelProfiler
 class ResNetProfiler(ModelProfiler):
-    def __init__(
-            self,
-            fxgraph_handler,
-            use_pytorch_ir,
-            run_custom_backend_all_rank: bool
-        ):
+    def __init__(self, fxgraph_handler, use_pytorch_ir, run_custom_backend_all_rank: bool):
         self.name = "Resnet18"
 
-        model = models.resnet18().cuda(dist.get_rank()) 
+        model = models.resnet18().cuda(dist.get_rank())
         model = torch.nn.parallel.DistributedDataParallel(model)
         sample_input = torch.randn(1, 3, 224, 224, device=f"cuda:{dist.get_rank()}")
 
         super().__init__(
-                fxgraph_handler,
-                use_pytorch_ir,
-                model,
-                sample_input,
-                run_custom_backend_all_rank
-                )
+            fxgraph_handler,
+            use_pytorch_ir,
+            model,
+            sample_input,
+            run_custom_backend_all_rank,
+        )
 
     def run_training_session(self):
         torch.cuda.set_device(self.rank)
@@ -104,7 +89,6 @@ class ResNetProfiler(ModelProfiler):
         optimizer = optim.SGD(self.model.parameters(), lr=0.01, momentum=0.5)
         epoch_loss = 0.0
         target = torch.randint(0, 1000, (1,), device="cuda")
-        
 
         optimizer.zero_grad()
         output = self.model(self.sample_input)
@@ -116,14 +100,11 @@ class ResNetProfiler(ModelProfiler):
 
     """Fancy training using full dataset"""
     """Not defined in super() yet"""
+
     def run_training_session_fancy(self):
         torch.cuda.set_device(self.rank)
         train_set, bsz = partition_dataset()
         super().compile_model()
-
-        # model = torch.nn.parallel.DistributedDataParallel(self.model)
-        # if self.rank == 0:
-        #     model = torch.compile(model, backend=aot_autograd(fw_compiler=self.fxgraph_handler))
 
         optimizer = optim.SGD(self.model.parameters(), lr=0.01, momentum=0.5)
         num_batches = ceil(len(train_set.dataset) / float(bsz))
@@ -131,7 +112,10 @@ class ResNetProfiler(ModelProfiler):
         for epoch in range(num_epochs):
             epoch_loss = 0.0
             for data, target in train_set:
-                data, target = Variable(data.cuda(self.rank)), Variable(target.cuda(self.rank))
+                data, target = (
+                    Variable(data.cuda(self.rank)),
+                    Variable(target.cuda(self.rank)),
+                )
 
                 optimizer.zero_grad()
                 output = self.model(data)
@@ -139,6 +123,4 @@ class ResNetProfiler(ModelProfiler):
                 epoch_loss += loss
                 loss.backward()
                 optimizer.step()
-            print('Rank ',
-                    dist.get_rank(), ', epoch ', epoch, ': ',
-                    epoch_loss / num_batches)
+            print(f"Rank {dist.get_rank()}, epoch {epoch}: {epoch_loss / num_batches}")

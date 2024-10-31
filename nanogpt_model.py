@@ -1,10 +1,5 @@
-# SPDX-FileCopyrightText: Copyright (c) 2024-present NVIDIA CORPORATION & AFFILIATES.
-# All rights reserved.
-# SPDX-License-Identifier: BSD-3-Clause
-
 # NanoGPT model definition taken from https://github.com/Lightning-AI/lightning-thunder/blob/main/thunder/tests/nanogpt_model.py
 # and modified for compatibility with PyTorch's Tensor Parallel API.
-
 import math
 from dataclasses import dataclass
 
@@ -14,7 +9,7 @@ from torch.nn import functional as F
 
 
 class LayerNorm(nn.Module):
-    """LayerNorm but with an optional bias. PyTorch doesn't support simply bias=False"""
+    """LayerNorm but with an optional bias. PyTorch doesn't support simply bias=False."""
 
     def __init__(self, ndim, bias):
         super().__init__()
@@ -86,9 +81,7 @@ class CausalSelfAttention(nn.Module):
             att = F.softmax(att, dim=-1)
             att = self.attn_dropout(att)
             y = att @ v  # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
-        y = (
-            y.transpose(1, 2).contiguous().view(B, T, C)
-        )  # re-assemble all head outputs side by side
+        y = y.transpose(1, 2).contiguous().view(B, T, C)  # re-assemble all head outputs side by side
 
         # output projection
         y = self.resid_dropout(self.c_proj(y))
@@ -123,7 +116,7 @@ class Block(nn.Module):
         self.n_transformer_layers = config.n_transformer_layers
 
     def forward(self, x):
-        for i in range(self.n_transformer_layers):
+        for _ in range(self.n_transformer_layers):
             x = x + self.attn(self.ln_1(x))
             x = x + self.mlp(self.ln_2(x))
         return x
@@ -133,10 +126,9 @@ class Block(nn.Module):
 class GPTConfig:
     block_size: int = 1024
     vocab_size: int = 50304  # GPT-2 vocab_size of 50257, padded up to nearest multiple of 64 for efficiency
-    n_layer: int = 96
     n_head: int = 96
     n_embd: int = 12288
     dropout: float = 0.1
     bias: bool = True  # True: bias in Linears and LayerNorms, like GPT-2. False: a bit better and faster
     n_devices: int = 1
-    n_transformer_layers: int = 1 # Number of transfor layers to stack
+    n_transformer_layers: int = 1  # Number of transfor layers to stack

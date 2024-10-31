@@ -1,0 +1,6 @@
+ruff==0.7.1
+pandas-stubs==2.2.*
+pyright==1.1.386
+build==1.2.*
+vulture==2.13
+import-linter==2.0.*

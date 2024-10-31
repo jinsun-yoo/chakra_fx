@@ -1,41 +1,36 @@
 import os
-
-
-from nanogpt_model import Block, GPTConfig
-from model_profiler import ModelProfiler
+from typing import Callable
 
 import torch
-import torch.distributed as dist
+from torch.distributed.device_mesh import init_device_mesh
 from torch.distributed.tensor.parallel import (
-    parallelize_module,
     ColwiseParallel,
     RowwiseParallel,
+    parallelize_module,
 )
-from torch.distributed.tensor.placement_types import Placement, Shard, Partial, Replicate
-import logging
-#torch._logging.set_logs(dynamo=logging.DEBUG, bytecode=True)
 
-from torch.distributed.device_mesh import init_device_mesh
-from typing import Callable 
 from apply_configuration import apply_configuration
+from model_profiler import ModelProfiler
+from nanogpt_model import Block, GPTConfig
+
 # Usage: torchrun --nproc-per-node=<number of processes> transformer.py
 
 num_iters = 10
-batch_size = 1 
+batch_size = 1
 sequence_length = 256
 dtype = torch.bfloat16
-num_transformer_layers = 1 
+num_transformer_layers = 1
 
 
 class NanoGptProfiler(ModelProfiler):
-    def __init__(self, 
-                 fxgraph_handler: Callable[[torch.fx.GraphModule],None],
-                 use_pytorch_ir: bool,
-                 run_custom_backend_all_rank: bool,
-                 dse_config_filepath: str,
-                ):
-
-        self.name = f"nanogpt"
+    def __init__(
+        self,
+        fxgraph_handler: Callable[[torch.fx.GraphModule], None],
+        use_pytorch_ir: bool,
+        run_custom_backend_all_rank: bool,
+        dse_config_filepath: str,
+    ):
+        self.name = "nanogpt"
         config = GPTConfig(n_transformer_layers=num_transformer_layers)
         tp_model = Block(config).to(dtype)
 
@@ -57,18 +52,16 @@ class NanoGptProfiler(ModelProfiler):
                     "mlp.c_proj": RowwiseParallel(),
                 },
             )
-        
-        sample_input = torch.rand(
-            batch_size, sequence_length, config.n_embd, dtype=dtype, device="cuda"
-        )
+
+        sample_input = torch.rand(batch_size, sequence_length, config.n_embd, dtype=dtype, device="cuda")
 
         super().__init__(
-                fxgraph_handler,
-                use_pytorch_ir,
-                tp_model,
-                sample_input,
-                run_custom_backend_all_rank
-                )
+            fxgraph_handler,
+            use_pytorch_ir,
+            tp_model,
+            sample_input,
+            run_custom_backend_all_rank,
+        )
 
     def run_training_session(self):
         super().compile_model()
@@ -77,4 +70,3 @@ class NanoGptProfiler(ModelProfiler):
 
         output.sum().backward()
         torch.cuda.synchronize()
-

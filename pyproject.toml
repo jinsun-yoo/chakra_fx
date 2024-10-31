@@ -1,0 +1,54 @@
+[project]
+name = "chakra_fx"
+dynamic = ["version"]
+dependencies = []
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.version]
+source = "scm"
+
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+
+  [tool.ruff.format]
+  indent-style = "space"
+
+  [tool.ruff.lint]
+  select = ["I", "B", "E", "D", "F", "SIM", "W", "C90", "EXE", "ERA"]
+  ignore = [
+    "D407", # Missing dashed underline after section
+    "D203", # conflicts with D211
+    "D212", # conflicts with D213
+    "D413", # Missing blank line after last section
+
+    # TODO: Remove these once we have docstrings
+    "D100", # Missing docstring in public module
+    "D101", # Missing docstring in public class
+    "D102", # Missing docstring in public method
+    "D103", # Missing docstring in public function
+    "D104", # Missing docstring in public package
+    "D105", # Missing docstring in magic method
+    "D107", # Missing docstring in `__init__`
+  ]
+
+    [tool.ruff.lint.per-file-ignores]
+    "**/tests/*" = ["D"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+empty_parameter_set_mark = "fail_at_collect"
+
+[tool.importlinter]
+root_package = "chakra_fx"
+
+[tool.vulture]
+ignore_names = ["mock_datetime_now"]
+min_confidence = 100
+
+[tool.coverage.report]
+exclude_also = ["@abstractmethod"]
