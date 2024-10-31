@@ -10,7 +10,7 @@ def convert_save_chakra_graph(gm: torch.fx.GraphModule, dirname: str, filename: 
         print(f"Output path {dirname} does not exist!")
         exit()
 
-    from src.chakra_fx.passes.chakra_converter import ChakraConverter
+    from chakra_fx.src.chakra_fx.passes.chakra_converter import ChakraConverter
     chakra_converter = ChakraConverter(filename, subgraph_idx, dirname)
     chakra_converter.convert_to_chakra(gm)
 
