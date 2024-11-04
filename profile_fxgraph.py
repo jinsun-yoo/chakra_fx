@@ -4,8 +4,19 @@ from typing import List
 
 import torch
 import torch.fx
+from functorch.compile import make_boxed_func
 
-from src.chakra_fx.passes.fx_passes import print_tabular_graph, save_pdffile, save_dotfile, convert_save_chakra_graph, just_hello, get_aten_histogram, get_operation_count
+from src.chakra_fx.passes.fx_passes import (
+    convert_save_chakra_graph,
+    get_aten_histogram,
+    get_operation_count,
+    just_hello,
+    print_tabular_graph,
+    save_dotfile,
+    save_fxgraph_module,
+    save_pdffile,
+)
+
 """
     Usage: torchrun --nproc-per-node=8 profile_fxgraph.py
 """
@@ -35,7 +46,7 @@ def parse_args():
         default="just",
         required=False,
         help="""Comma delimited key strings of which functions to invoke in backend compiler.
-        'just': just_hello, 'chakra': get_chakra_graph, 'pdf': print_pdf_file""",
+        'just': just_hello, 'chakra': get_chakra_graph, 'pdf': print_pdf_file, 'dumpgraph': save_fxgraph_module""",
     )
     parser.add_argument(
         "--exp_tag",
@@ -50,7 +61,7 @@ def parse_args():
         type=str,
         default="sample",
         required=False,
-        help="""Either 'sample' or 'training'.
+        help="""Either 'sample' or 'training' or 'postexec_chakra.
         \nDecides whether to run a single forward pass on a sample input, or a full training session.""",
     )
     parser.add_argument(
@@ -58,7 +69,7 @@ def parse_args():
         type=str,
         default="nanogpt",
         required=False,
-        help="""Either 'nanogpt' or 'resnet18'. Chooses which model to work on.""",
+        help="""Either 'simple' or 'nanogpt' or 'resnet18'. Chooses which model to work on.""",
     )
     args = parser.parse_args()
     return args
@@ -78,26 +89,35 @@ if __name__ == "__main__":
         for action in action_list:
             match action:
                 case "just":
-                    just_hello(gm, profiler)
+                    just_hello(gm, 0)
                 case "pdf":
-                    save_pdffile(gm, profiler)
+                    save_pdffile(gm, "trace", 0)
                 case "chakra":
-                    convert_save_chakra_graph(gm, profiler, exp_tag)
+                    convert_save_chakra_graph(gm, exp_tag, "trace", 0)
                 case "dot":
-                    save_dotfile(gm, profiler)
+                    save_dotfile(gm, "trace", 0)
+                case "dumpgraph":
+                    save_fxgraph_module(gm, exp_tag, "trace", 0)
                 case "table":
                     print_tabular_graph(gm)
                 case "histogram":
                     get_aten_histogram(gm, profiler)
                 case "opcount":
                     get_operation_count(gm, profiler)
-
-        print("***EXITING!!***")
-        exit()
+        return make_boxed_func(gm.forward)
 
     "Choose which profiler to use"
     model = args.model
-    if model == "nanogpt":
+    if model == "simple":
+        from src.chakra_fx.profilers.simple_profiler import SimpleModelProfiler
+
+        profiler = SimpleModelProfiler(
+            my_compiler,
+            use_pytorch_ir=False,
+            run_custom_backend_all_rank=args.custom_backend_all_rank,
+            dse_config_filepath=args.dse_config_filepath,
+        )
+    elif model == "nanogpt":
         from src.chakra_fx.profilers.nanogpt_profiler import NanoGptProfiler
 
         profiler = NanoGptProfiler(
@@ -123,3 +143,9 @@ if __name__ == "__main__":
         profiler.run_sample_input()
     elif job == "training":
         profiler.run_training_session()
+    elif job == "postexec_chakra":
+        profiler.collect_postexecution_graph(exp_tag, "trace")
+    elif job == "nsys":
+        profiler.run_nsys_workload()
+    elif job == "eager":
+        profiler.run_eager()

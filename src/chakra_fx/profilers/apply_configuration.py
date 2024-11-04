@@ -1,4 +1,5 @@
 import yaml
+from torch.distributed._tensor.placement_types import Replicate
 from torch.distributed.device_mesh import init_device_mesh
 from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
 from torch.distributed.tensor.parallel import (
@@ -12,6 +13,8 @@ from torch.distributed.tensor.parallel import (
 def axis_to_style(axis_name: str) -> ParallelStyle:
     if axis_name == "Rowwise":
         return RowwiseParallel()
+    if axis_name == "Rowwise_output_replicate":
+        return RowwiseParallel(output_layouts=Replicate())
     if axis_name == "Colwise":
         return ColwiseParallel()
     raise ValueError(f"Invalid axis name: {axis_name}")
@@ -27,6 +30,14 @@ def apply_tensor_parallel(model, tp_data, device_mesh):
 
 def apply_fsdp(model, _, device_mesh):
     model = FSDP(model, device_mesh=device_mesh, use_orig_params=True)
+    return model
+
+
+def apply_simplefsdp(model, _, dp_mesh):
+    from torch_spmd.data_parallel import data_parallel
+
+    model = data_parallel(model, dp_mesh, mode="fully_shard")
+    print("Apply SimpleFSDP to the model")
     return model
 
 
@@ -60,7 +71,7 @@ def apply_configuration(model, dse_config_filepath):
         if parallelization == "tp":
             parallelized_model = apply_tensor_parallel(model, data["tp"], device_mesh[parallelization])
         elif parallelization == "fsdp":
-            parallelized_model = apply_fsdp(model, data["fsdp"], device_mesh[parallelization])
+            parallelized_model = apply_simplefsdp(model, data["fsdp"], device_mesh[parallelization])
         else:
             raise ValueError(f"Error, parallelization strategy {parallelization} not found!")
 

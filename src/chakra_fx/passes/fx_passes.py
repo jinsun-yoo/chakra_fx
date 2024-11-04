@@ -1,9 +1,10 @@
-import csv 
+import csv
 import os
-import torch 
 
+import torch
 from torch.fx.passes.graph_drawer import FxGraphDrawer
 from torch.utils.flop_counter import FlopCounterMode
+
 
 def convert_save_chakra_graph(gm: torch.fx.GraphModule, dirname: str, filename: str, subgraph_idx: int):
     if not os.path.exists(f"./{dirname}"):
@@ -11,32 +12,45 @@ def convert_save_chakra_graph(gm: torch.fx.GraphModule, dirname: str, filename: 
         exit()
 
     from chakra_fx.src.chakra_fx.passes.chakra_converter import ChakraConverter
+
     chakra_converter = ChakraConverter(filename, subgraph_idx, dirname)
     chakra_converter.convert_to_chakra(gm)
 
 
-
 "Generates a dot file for this subgraph"
-def save_dotfile(gm: torch.fx.GraphModule, name: str, subgraph_idx: int, rank: int):
+
+
+def save_dotfile(gm: torch.fx.GraphModule, name: str, subgraph_idx: int):
+    rank = os.environ["RANK"]
     g = FxGraphDrawer(gm, "graph")
-    g.get_dot_graph().write_dot(
-        f"{name}_subgraph_{subgraph_idx}_rank_{rank}.dot"
-    )
+    g.get_dot_graph().write_dot(f"{name}_subgraph_{subgraph_idx}_rank_{rank}.dot")
 
 
 "Generates a pdf file for this subgraph"
-def save_pdffile(gm: torch.fx.GraphModule, name: str, subgraph_idx: int, rank: int):
+
+
+def save_pdffile(gm: torch.fx.GraphModule, name: str, subgraph_idx: int):
+    rank = os.environ["RANK"]
     g = FxGraphDrawer(gm, "graph")
-    g.get_dot_graph().write_pdf(
-        f"{name}_subgraph_{subgraph_idx}_rank_{rank}.pdf"
-    )
+    g.get_dot_graph().write_pdf(f"{name}_subgraph_{subgraph_idx}_rank_{rank}.pdf")
+
+
+def save_fxgraph_module(gm: torch.fx.GraphModule, dirname: str, name: str, subgraph_idx: int):
+    rank = os.environ["RANK"]
+    gm.to_folder(f"{dirname}/{name}_subgraph_{subgraph_idx}/rank_{rank}")
+
 
 "Prints the graph in tabular format to stdio. Haven't found how to forward to a file other than piping at command line"
+
+
 def print_tabular_graph(gm: torch.fx.GraphModule):
     print(gm.graph.print_tabular())
 
+
 "For aten graphs, save a histogram of target operators in a csv file. Ignores 'placeholder' ops."
 "For now, all subgraphs append to one csv file. subgraphs are split by 'output' in the csv file"
+
+
 def get_aten_histogram(gm: torch.fx.GraphModule, name: str, subgraph_idx: int, rank: int):
     ops_map = dict()
     for node in gm.graph.nodes:
@@ -63,7 +77,11 @@ def get_operation_count(gm: torch.fx.GraphModule):
                 counted_flops = flop_counter_mode.get_total_flops()
                 print(f"Counted flops for {node.target.__name__} is {counted_flops}")
 
+
 "Simple function to check if backend has been called"
-def just_hello(_: torch.fx.GraphModule, rank: int, subgraph_idx: int):
+
+
+def just_hello(_: torch.fx.GraphModule, subgraph_idx: int):
+    rank = os.environ["RANK"]
     print(f"backend compiler has been called at rank {rank} for subgraph {subgraph_idx}")
     return

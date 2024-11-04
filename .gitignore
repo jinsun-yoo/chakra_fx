@@ -2,7 +2,9 @@ __pycache__
 .nvcode
 .vscode
 *.json
+*.nsys-rep
 *.et
 *.pdf
 *.csv
 *.dot
+2024*

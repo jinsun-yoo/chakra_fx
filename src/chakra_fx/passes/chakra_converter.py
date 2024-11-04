@@ -127,15 +127,15 @@ class ChakraConverter:
         if not success:
             print(f"{node_debug_id_str(fx_node)} has flop not countable operator: {fx_node.target._opname}")
             return 1000  # Arbitrary number
-            
 
         with FlopCounterMode() as flop_counter_mode:
             if fx_node.target._overloadpacket not in flop_counter_mode.flop_registry:
-                print(F"{node_debug_id_str(fx_node)} has operator out of the registry: {fx_node.target._opname}, {fx_node.target._overloadpacket}")
-                return 1000 # Arbitrary number
+                print(
+                    f"{node_debug_id_str(fx_node)} has operator out of the registry: {fx_node.target._opname}, {fx_node.target._overloadpacket}"
+                )
+                return 1000  # Arbitrary number
             fx_node.target(*args, **kwargs)
             return flop_counter_mode.get_total_flops()
-
 
     def create_comp_node(self, fx_node: fx.Node) -> ChakraNode:
         node_name = fx_node.name
