@@ -136,14 +136,32 @@ class ChakraConverter:
                 return 1000  # Arbitrary number
             fx_node.target(*args, **kwargs)
             return flop_counter_mode.get_total_flops()
+            
+    def estimate_tensor_size(self, fx_node: fx.Node) -> int:
+        success, args, kwargs = fx_utils.get_fake_args_kwargs(fx_node)
+        if not success:
+            print(f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}")
+            return 1000  # Arbitrary number
+
+        a = args[1].size()
+        b = args[2].size()
+        # TODO: Size
+        size = 4
+        estimated_tensor_size =  2 * size * (a[0] * a[1] + b[0]*b[1] + a[0]*b[1])
+        print(f"Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} result {estimated_tensor_size}")
+        return estimated_tensor_size
 
     def create_comp_node(self, fx_node: fx.Node) -> ChakraNode:
         node_name = fx_node.name
         estimated_flops = self.estimate_flop_count(fx_node)
+        estimated_tensor_size = 0
+        if estimated_flops != 1000:
+            estimated_tensor_size = self.estimate_tensor_size(fx_node)
 
         chakra_node = self.create_chakra_node(node_name, COMP_NODE)
         chakra_node.attr.append(ChakraAttr(name="is_cpu_op", bool_val=False))
         chakra_node.attr.append(ChakraAttr(name="num_ops", int64_val=estimated_flops))
+        chakra_node.attr.append(ChakraAttr(name="tensor_size", uint64_val=estimated_tensor_size))
         return chakra_node
 
     def record_fx_node(self, fx_node: fx.Node):

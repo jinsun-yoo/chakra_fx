@@ -75,6 +75,13 @@ class SimpleModelProfiler(ModelProfiler):
         torch.cuda.synchronize()
 
     def run_eager(self):
+        num_range = os.environ['NUM_RANGE']
+        if num_range != '':
+            num_range = int(num_range)
+        else:
+            num_range = 1
+        if os.environ['RANK'] == '0':
+            print(f'num_range is {num_range}')
         output = self.model(self.sample_input)
         torch.cuda.synchronize()
         output.sum().backward()
