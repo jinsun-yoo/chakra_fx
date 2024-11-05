@@ -1,4 +1,5 @@
 import torch._inductor.fx_utils as fx_utils
+import torch 
 import torch.distributed as dist
 import torch.fx as fx
 from chakra.schema.protobuf.et_def_pb2 import (
@@ -43,6 +44,13 @@ c10d_chakra_map = {
 # TODO: Are these operators _really_ not meaningful compute-wise? Need to check
 skip_operator_list = ["wait_tensor", "view", "t", "transpose", "split"]
 
+timestamp_map = {
+    "linear": {
+        # Kineto trace of actual execution
+        1024 * 12288 * 6144: 1531, #.677,
+        1024 * 12288 * 49152: 9453 
+    }
+}
 
 # Functions to help inspecting FX Nodes.
 def fxnode_seqnr(fx_node: fx.Node):
@@ -107,6 +115,7 @@ class ChakraConverter:
         node_name = fx_node.name
         op_name = fx_node.target._opname
         comm_size = 0
+        comm_type = c10d_chakra_map[op_name]
         if "val" not in fx_node.meta or not isinstance(fx_node.meta["val"], FakeTensor):
             print(f"{node_debug_id_str(fx_node)} is c10d, but fake input is not found")
         else:
@@ -115,6 +124,11 @@ class ChakraConverter:
             tensor_dtype = comm_tensor.element_size()
             tensor_numelements = comm_tensor.numel()
             comm_size = tensor_dtype * tensor_numelements
+            if comm_type == ALL_GATHER or REDUCE_SCATTER:
+                import torch.distributed.distributed_c10d as c10d
+                process_group_name = fx_node.args[-1]
+                process_group_ranks = c10d.get_process_group_ranks(c10d._resolve_process_group(process_group_name))
+                comm_size = int(comm_size / len(process_group_ranks))
 
         chakra_node = self.create_chakra_node(node_name, COMM_COLL_NODE)
         chakra_node.attr.append(ChakraAttr(name="is_cpu_op", bool_val=False))
@@ -151,17 +165,50 @@ class ChakraConverter:
         print(f"Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} result {estimated_tensor_size}")
         return estimated_tensor_size
 
+    def lookup_duration(self, fx_node: fx.Node) -> int:
+        success, args, kwargs = fx_utils.get_fake_args_kwargs(fx_node)
+        if not success:
+            print(f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}")
+            return 1000  # Arbitrary number
+        
+        lookup_op = "-1"
+        target_op = fx_node.target._overloadpacket
+        aten = torch.ops.aten
+        if target_op == aten.addmm or target_op == aten.mm:
+            lookup_op = "linear"
+
+        a = args[1].size()
+        b = args[2].size()
+        if a[1] != b[0]:
+            print(f"{node_debug_id_str(fx_node)} tensor size does not match for matrix multiplication: {a[1]}, {b[0]}")
+
+        numel = a[0] * a[1] * b[1]
+        if lookup_op not in timestamp_map:
+            print(f"{node_debug_id_str(fx_node)} does not have lookup op {lookup_op} for {target_op} in lookup map")
+            return -1
+        if numel in timestamp_map[lookup_op]:
+            lookup_duration = timestamp_map[lookup_op][numel]
+        else:
+            print(f"{node_debug_id_str(fx_node)} Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} with total numel {numel} not in map")
+            return -1
+
+        print(f"Estimated duration, a: {a[0]} {a[1]} b: {b[0]} {b[1]} result {lookup_duration}")
+        return lookup_duration
+
     def create_comp_node(self, fx_node: fx.Node) -> ChakraNode:
         node_name = fx_node.name
         estimated_flops = self.estimate_flop_count(fx_node)
         estimated_tensor_size = 0
+        estimated_duration = 0
         if estimated_flops != 1000:
             estimated_tensor_size = self.estimate_tensor_size(fx_node)
+            estimated_duration = self.lookup_duration(fx_node)
 
         chakra_node = self.create_chakra_node(node_name, COMP_NODE)
         chakra_node.attr.append(ChakraAttr(name="is_cpu_op", bool_val=False))
-        chakra_node.attr.append(ChakraAttr(name="num_ops", int64_val=estimated_flops))
-        chakra_node.attr.append(ChakraAttr(name="tensor_size", uint64_val=estimated_tensor_size))
+        #chakra_node.attr.append(ChakraAttr(name="num_ops", int64_val=estimated_flops))
+        #chakra_node.attr.append(ChakraAttr(name="tensor_size", uint64_val=estimated_tensor_size))
+        chakra_node.duration_micros = estimated_duration
         return chakra_node
 
     def record_fx_node(self, fx_node: fx.Node):

@@ -75,11 +75,9 @@ class SimpleModelProfiler(ModelProfiler):
         torch.cuda.synchronize()
 
     def run_eager(self):
-        num_range = os.environ['NUM_RANGE']
-        if num_range != '':
-            num_range = int(num_range)
-        else:
-            num_range = 1
+        num_range = 1
+        if 'NUM_RANGE' in os.environ:
+            num_range = int(os.environ['NUM_RANGE'])
         if os.environ['RANK'] == '0':
             print(f'num_range is {num_range}')
         output = self.model(self.sample_input)
@@ -91,6 +89,9 @@ class SimpleModelProfiler(ModelProfiler):
         from torch.profiler import ExecutionTraceObserver, profile
 
         rank = os.environ["RANK"]
+        if "COMPILE" in os.environ and os.environ["COMPILE"] == "True":
+            print('compile model')
+            self.model = torch.compile(self.model)
 
         def kineto_trace_handler(prof):
             prof.export_chrome_trace(f"{dirname}/{name}_kineto_rank{rank}.json")
@@ -104,7 +105,7 @@ class SimpleModelProfiler(ModelProfiler):
                 torch.profiler.ProfilerActivity.CPU,
                 torch.profiler.ProfilerActivity.CUDA,
             ],
-            schedule=torch.profiler.schedule(wait=0, warmup=10, active=1),
+            schedule=torch.profiler.schedule(wait=0, warmup=10, active=10),
             on_trace_ready=kineto_trace_handler,
             with_flops=True,
         ) as prof:
@@ -118,10 +119,13 @@ class SimpleModelProfiler(ModelProfiler):
                 output.sum().backward()
                 torch.cuda.synchronize()
                 prof.step()
-        et.stop()
+        et.stop() 
         et.unregister_callback()
 
     def run_nsys_workload(self):
+        if "COMPILE" in os.environ and os.environ["COMPILE"] == "True":
+            print('compile model')
+            self.model = torch.compile(self.model)
         nb_iters = 20
         warmup_iters = 10
         for i in range(nb_iters):
