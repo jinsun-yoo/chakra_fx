@@ -24,6 +24,7 @@ def apply_tensor_parallel(model, tp_data, device_mesh):
     parallelize_plan = {}
     for layer_fqn, axis in tp_data["layers"].items():
         parallelize_plan[layer_fqn] = axis_to_style(axis)
+    print(parallelize_plan)
     model = parallelize_module(module=model, device_mesh=device_mesh, parallelize_plan=parallelize_plan)
     return model
 
@@ -56,6 +57,10 @@ def apply_configuration(model, dse_config_filepath):
     dimensions = data["overall"]["dimensions"]
     dim_parallelizations = data["overall"]["parallelization"]
 
+    # world_mesh needs to be declared in opposite order. 
+    dimensions.reverse()
+    dim_parallelizations.reverse()
+
     # Initialize the device mesh
     device_mesh = init_device_mesh(
         device_type="cuda",
@@ -63,6 +68,8 @@ def apply_configuration(model, dse_config_filepath):
         mesh_dim_names=tuple(dim_parallelizations),
     )
     model = model.to("cuda")
+    dimensions.reverse()
+    dim_parallelizations.reverse()
 
     # Apply parallelization strategy
     # TODO: Since we now know that FSDP2 does not work with 2D parallelism, this code has to be fixed to use SimpleFSDP.

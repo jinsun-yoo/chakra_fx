@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Current File with Arguments",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/usr/local/bin/torchrun",
+            "console": "integratedTerminal",
+            "cwd": "/workspace/chakra_fx",
+            "args": [
+                "--nproc-per-node=8",
+                //"-Xfrozen_modules=off",
+                "profile_fxgraph.py",
+                "--custom_backend_all_rank", "False",
+                "--dse_config_filepath", "./configs/simple_FSDP_8.yml",
+                "--actions", "chakra",
+                "--exp_tag", "dump",
+                "--job", "sample",
+                "--model", "simple"
+            ],
+            "justMyCode": false
+        }
+    ]
+}

@@ -1,6 +1,5 @@
 __pycache__
 .nvcode
-.vscode
 *.json
 *.nsys-rep
 *.et
