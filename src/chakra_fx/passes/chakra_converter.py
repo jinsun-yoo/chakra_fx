@@ -157,8 +157,13 @@ class ChakraConverter:
             print(f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}")
             return 1000  # Arbitrary number
 
-        a = args[1].size()
-        b = args[2].size()
+        a = args[0].size()
+        b = args[1].size()
+        
+        aten = torch.ops.aten
+        if fx_node.target._overloadpacket != aten.mm:
+            a = args[1].size()
+            b = args[2].size()
         # TODO: Size
         size = 4
         estimated_tensor_size =  2 * size * (a[0] * a[1] + b[0]*b[1] + a[0]*b[1])
@@ -177,8 +182,13 @@ class ChakraConverter:
         if target_op == aten.addmm or target_op == aten.mm:
             lookup_op = "linear"
 
-        a = args[1].size()
-        b = args[2].size()
+        a = args[0].size()
+        b = args[1].size()
+        
+        aten = torch.ops.aten
+        if fx_node.target._overloadpacket != aten.mm:
+            a = args[1].size()
+            b = args[2].size()
         if a[1] != b[0]:
             print(f"{node_debug_id_str(fx_node)} tensor size does not match for matrix multiplication: {a[1]}, {b[0]}")
 
@@ -204,6 +214,8 @@ class ChakraConverter:
             estimated_tensor_size = self.estimate_tensor_size(fx_node)
             estimated_duration = self.lookup_duration(fx_node)
 
+        if estimated_duration == -1:
+            estimated_duration = 4000
         chakra_node = self.create_chakra_node(node_name, COMP_NODE)
         chakra_node.attr.append(ChakraAttr(name="is_cpu_op", bool_val=False))
         #chakra_node.attr.append(ChakraAttr(name="num_ops", int64_val=estimated_flops))

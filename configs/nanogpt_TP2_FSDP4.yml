@@ -1,0 +1,11 @@
+overall:
+  dimensions: [4, 2]
+  parallelization: ["tp", "fsdp"]
+fsdp:
+tp:
+  layers:
+    "attn.c_attn": "Colwise"
+    "attn.c_proj": "Rowwise"
+    "mlp.c_fc": "Colwise"
+    "mlp.c_proj": "Rowwise"
+  

@@ -7,7 +7,7 @@ from torch.utils.flop_counter import FlopCounterMode
 
 
 def convert_save_chakra_graph(gm: torch.fx.GraphModule, dirname: str, filename: str, subgraph_idx: int):
-    if not os.path.exists(f"./{dirname}"):
+    if not os.path.exists(f"{dirname}"):
         print(f"Output path {dirname} does not exist!")
         exit()
 
@@ -20,24 +20,24 @@ def convert_save_chakra_graph(gm: torch.fx.GraphModule, dirname: str, filename: 
 "Generates a dot file for this subgraph"
 
 
-def save_dotfile(gm: torch.fx.GraphModule, name: str, subgraph_idx: int):
+def save_dotfile(gm: torch.fx.GraphModule, dirname: str, name: str, subgraph_idx: int):
     rank = os.environ["RANK"]
     g = FxGraphDrawer(gm, "graph")
-    g.get_dot_graph().write_dot(f"{name}_subgraph_{subgraph_idx}_rank_{rank}.dot")
+    g.get_dot_graph().write_dot(f"{dirname}/{name}_subgraph_{subgraph_idx}_rank_{rank}.dot")
 
 
 "Generates a pdf file for this subgraph"
 
 
-def save_pdffile(gm: torch.fx.GraphModule, name: str, subgraph_idx: int):
+def save_pdffile(gm: torch.fx.GraphModule, dirname: str, name: str, subgraph_idx: int):
     rank = os.environ["RANK"]
     g = FxGraphDrawer(gm, "graph")
-    g.get_dot_graph().write_pdf(f"{name}_subgraph_{subgraph_idx}_rank_{rank}.pdf")
+    g.get_dot_graph().write_pdf(f"{dirname}/{name}_subgraph_{subgraph_idx}_rank_{rank}.pdf")
 
 
 def save_fxgraph_module(gm: torch.fx.GraphModule, dirname: str, name: str, subgraph_idx: int):
     rank = os.environ["RANK"]
-    gm.to_folder(f"{dirname}/{name}_subgraph_{subgraph_idx}/rank_{rank}")
+    gm.to_folder(f"{dirname}/{name}_subgraph_{subgraph_idx}_rank_{rank}")
 
 
 "Prints the graph in tabular format to stdio. Haven't found how to forward to a file other than piping at command line"

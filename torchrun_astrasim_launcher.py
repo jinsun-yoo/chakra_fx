@@ -62,16 +62,19 @@ def generate_config_file(args) -> str:
     }
     parallelization_list = args.config_parallelization.split(",")
     dimensions_list = []
-    for parallelization_strategy in parallelization_list:
-        if parallelization_strategy == "tp":
-            config_yaml_dict["tp"] = tp_struct
-            dimensions_list.append(args.config_tp)
-        if parallelization_strategy == "fsdp":
-            dimensions_list.append(args.config_fsdp)
-            config_yaml_dict["fsdp"] = {}
+    final_parallelization_list = []
+    # Need to follow specific dim order
+    if "tp" in parallelization_list:
+        config_yaml_dict["tp"] = tp_struct
+        dimensions_list.append(args.config_tp)
+        final_parallelization_list.append("tp")
+    if "fsdp" in parallelization_list:
+        dimensions_list.append(args.config_fsdp)
+        config_yaml_dict["fsdp"] = {}
+        final_parallelization_list.append("fsdp")
     config_yaml_dict["overall"] = {
         "dimensions": dimensions_list,
-        "parallelization": parallelization_list,
+        "parallelization": final_parallelization_list,
     }
 
     config_filename = f"{output_dir}/config.yml"
@@ -108,8 +111,7 @@ if __name__ == "__main__":
     # TODO: Multi-node run
     # Run the torchrun command to execute 'profile_fxgraph.py' script across multiple GPUs.
     # profile_fxgraph.py will perform PyTorch Model -> FX Graph -> Chakra Graph conversion.
-    result = subprocess.run(
-        [
+    args_list = [
             "/usr/local/bin/torchrun",
             "--nproc_per_node",
             f"{total_num_gpus}",
@@ -122,19 +124,36 @@ if __name__ == "__main__":
             "chakra",
             "--exp_tag",
             output_dir,
-        ],
-        stdout=subprocess.PIPE,
-    )
+        ]
+    print(args_list)
+    try:
+        result = subprocess.run(
+            args_list,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+        if result.returncode != 0:
+            print('torchrun result is not 0')
+            print(result.stdout.decode())
+            print('stderr')
+            print(result.stderr.decode())
+            import sys
+            sys.exit(-1)
+
+    except Exception as e:
+        print('Failed to run torchrun', e)
+        import sys
+        sys.exit(-1)
 
     # TODO: Dynamic ASTRA-sim network layer input for multi-node run.
     # TODO: Dynamic ASTRA-sim system layer input depending on DSE search space.
     # Run the astra-sim command with the Chakra Graph generated above as workload input.
     astrasim_dir = "/workspace/astra-sim"
     binary = f"{astrasim_dir}/build/astra_analytical/build/AnalyticalAstra/bin/AnalyticalAstra"
-    workload = f"{output_dir}/nanogpt"
-    system = f"{astrasim_dir}/inputs/system/Ring.json"
-    network = f"{astrasim_dir}/inputs/network/analytical/Switch_8.yml"
-    remote_mem = f"{astrasim_dir}/inputs/remote_memory/analytical/no_memory_expansion.json"
+    workload = f"{output_dir}/trace"
+    system = f"{astrasim_dir}/examples/network_analytical/system.json"
+    network = f"{astrasim_dir}/examples/network_analytical/network.yml"
+    remote_mem = f"{astrasim_dir}/examples/network_analytical/remote_memory.json"
     result = subprocess.run(
         [
             binary,

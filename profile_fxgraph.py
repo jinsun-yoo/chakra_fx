@@ -6,7 +6,7 @@ import torch
 import torch.fx
 from functorch.compile import make_boxed_func
 
-from src.chakra_fx.passes.fx_passes import (
+from chakra_fx.src.chakra_fx.passes.fx_passes import (
     convert_save_chakra_graph,
     get_aten_histogram,
     get_operation_count,
@@ -78,6 +78,7 @@ def parse_args():
 if __name__ == "__main__":
     args = parse_args()
     action_list = args.actions.split(",")
+    job = args.job
     exp_tag = args.exp_tag
     if exp_tag == "":
         now_utc = datetime.now(timezone.utc)
@@ -91,11 +92,11 @@ if __name__ == "__main__":
                 case "just":
                     just_hello(gm, 0)
                 case "pdf":
-                    save_pdffile(gm, "trace", 0)
+                    save_pdffile(gm, exp_tag, "trace", 0)
                 case "chakra":
                     convert_save_chakra_graph(gm, exp_tag, "trace", 0)
                 case "dot":
-                    save_dotfile(gm, "trace", 0)
+                    save_dotfile(gm, exp_tag, "trace", 0)
                 case "dumpgraph":
                     save_fxgraph_module(gm, exp_tag, "trace", 0)
                 case "table":
@@ -109,7 +110,7 @@ if __name__ == "__main__":
     "Choose which profiler to use"
     model = args.model
     if model == "simple":
-        from src.chakra_fx.profilers.simple_profiler import SimpleModelProfiler
+        from chakra_fx.src.chakra_fx.profilers.simple_profiler import SimpleModelProfiler
 
         profiler = SimpleModelProfiler(
             my_compiler,
@@ -118,7 +119,7 @@ if __name__ == "__main__":
             dse_config_filepath=args.dse_config_filepath,
         )
     elif model == "nanogpt":
-        from src.chakra_fx.profilers.nanogpt_profiler import NanoGptProfiler
+        from chakra_fx.src.chakra_fx.profilers.nanogpt_profiler import NanoGptProfiler
 
         profiler = NanoGptProfiler(
             my_compiler,
@@ -126,8 +127,17 @@ if __name__ == "__main__":
             run_custom_backend_all_rank=args.custom_backend_all_rank,
             dse_config_filepath=args.dse_config_filepath,
         )
+    elif model == "llama":
+        from chakra_fx.src.chakra_fx.profilers.llama_profiler import LlamaProfiler
+        profiler = LlamaProfiler(
+            my_compiler, 
+            use_pytorch_ir=False,
+            run_custom_backend_all_rank=args.custom_backend_all_rank,
+            dse_config_filepath=args.dse_config_filepath,
+            job = job
+        )
     elif model == "resnet18":
-        from src.chakra_fx.profilers.resnet18_profiler import ResNetProfiler
+        from chakra_fx.src.chakra_fx.profilers.resnet18_profiler import ResNetProfiler
 
         profiler = ResNetProfiler(
             my_compiler,
@@ -138,9 +148,10 @@ if __name__ == "__main__":
     "Choose whether to only trigger JIT compile (through sample input), or running a training session"
     "Choose only one. For some reason running both glitches."
     # TODO: Remove invalid values
-    job = args.job
     if job == "sample":
         profiler.run_sample_input()
+    elif job == "inductor":
+        profiler.run_inductor()
     elif job == "training":
         profiler.run_training_session()
     elif job == "postexec_chakra":
