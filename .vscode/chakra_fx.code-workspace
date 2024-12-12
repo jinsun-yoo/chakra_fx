@@ -17,6 +17,9 @@
 		},
 		{
 			"path": "../../pytorch_intern24"
+		},
+		{
+			"path": "../../../usr/local/lib/python3.12/dist-packages/torch"
 		}
 	],
 	"settings": {

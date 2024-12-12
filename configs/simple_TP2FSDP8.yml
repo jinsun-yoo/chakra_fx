@@ -1,0 +1,8 @@
+overall:
+  dimensions: [2, 8]
+  parallelization: ["tp", "fsdp"]
+fsdp:
+tp:
+  layers:
+    "w1": "Colwise"
+    "w2": "Rowwise_output_replicate"

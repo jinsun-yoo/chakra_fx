@@ -105,6 +105,7 @@ if __name__ == "__main__":
                     get_aten_histogram(gm, profiler)
                 case "opcount":
                     get_operation_count(gm, profiler)
+            exit()
         return make_boxed_func(gm.forward)
 
     "Choose which profiler to use"

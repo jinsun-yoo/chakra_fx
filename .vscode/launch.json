@@ -11,37 +11,34 @@
             "program": "/workspace/astra-sim/build/astra_analytical/build/AnalyticalAstra/bin/AnalyticalAstra",
             "cwd": "/workspace/astra-sim",
             "args": [
-                "--workload-configuration","/my_workspace/data/20241112_LargeNanogpt_FSDP8/trace_new",
+                "--workload-configuration","/my_workspace/data/20241125_Llama3_chakrafxmodel_TP4FSDP2/trace",
                 "--system-configuration", "./examples/network_analytical/system.json",
                 "--network-configuration", "./examples/network_analytical/network.yml",
-                "--remote-memory-configuration", "./examples/network_analytical/remote_memory.json"
+                "--remote-memory-configuration", "./examples/network_analytical/remote_memory.json",
+                "--comm-group-configuration", "./examples/network_analytical/communication_group_TP4FSDP2.json"
             ],
         },
         {
             "name": "Llama Model NSys",
             "type": "debugpy",
             "request": "launch",
-            "program": "/usr/local/cuda/bin/nsys",
+            "program": "/usr/local/bin/torchrun",
             "console": "integratedTerminal",
             "cwd": "/workspace/chakra_fx",
             "args": [
-                "profile", 
-                "-w", "true",
-                "-t", "cuda,nvtx,osrt,cudnn,cublas,mpi,openmp",
-                "--cudabacktrace=true",
-                "-x", "true",
-                "torchrun",
                 "--nproc-per-node=8",
-                //"-Xfrozen_modules=off",
                 "profile_fxgraph.py",
                 "--custom_backend_all_rank", "False",
-                "--dse_config_filepath", "./configs/simple_TP2_FSDP4.yml",
+                "--dse_config_filepath", "./configs/simple_FSDP8.yml",
                 "--actions", "chakra",
-                "--exp_tag", "/my_workspace/data/20241114_Llama2_271M_TP2FSDP4",
+                "--exp_tag", "/my_workspace/data/20241131_Llama3_chakrafxmodel_nsyscompile_FSDP8",
                 "--job", "nsys",
                 "--model", "llama"
             ],
-            "justMyCode": false
+            "justMyCode": false,
+            "env": {
+                "COMPILE":"True"
+            }
         },
         {
             "name": "Llama Model",
@@ -79,7 +76,46 @@
             "justMyCode": false
         },
         {
-            "name": "Python Debugger: Current File with Arguments",
+            "name": "Chakra_FX Just Dump",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/usr/local/bin/torchrun",
+            "console": "integratedTerminal",
+            "cwd": "/workspace/chakra_fx",
+            "args": [
+                "--nproc-per-node=8",
+                //"-Xfrozen_modules=off",
+                "profile_fxgraph.py",
+                "--dse_config_filepath", "./configs/simple_TP2FSDP4.yml",
+                "--actions", "chakra",
+                "--exp_tag", "dump",
+                "--job", "sample",
+                "--model", "llama"
+            ],
+            "justMyCode": false
+        },
+        {
+            "name": "Chakra_FX Chakra Nodes",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/usr/local/bin/torchrun",
+            "console": "integratedTerminal",
+            "cwd": "/workspace/chakra_fx",
+            "args": [
+                "--nproc-per-node=8",
+                //"-Xfrozen_modules=off",
+                "profile_fxgraph.py",
+                "--custom_backend_all_rank", "False",
+                "--dse_config_filepath", "./configs/simple_TP2FSDP4.yml",
+                "--actions", "chakra",
+                "--exp_tag", "dump",
+                "--job", "sample",
+                "--model", "llama"
+            ],
+            "justMyCode": false
+        },
+        {
+            "name": "Chakra_FX Inductor",
             "type": "debugpy",
             "request": "launch",
             "program": "/usr/local/bin/torchrun",

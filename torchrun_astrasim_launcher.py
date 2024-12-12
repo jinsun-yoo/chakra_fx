@@ -99,14 +99,15 @@ if __name__ == "__main__":
 
         now_utc = dt.now(timezone.utc)
         output_dir = formatted_dt = now_utc.strftime("%Y-%m-%d_%H-%M-%S")
-    if not os.path.exists(f"./{output_dir}"):
-        os.mkdir(f"./{output_dir}")
+    if not os.path.exists(f"{output_dir}"):
+        os.mkdir(f"{output_dir}")
 
     if config_filepath == "":
         config_filepath = generate_config_file(args)
 
     # TODO: Dynamic values in multi-node run
     total_num_gpus = 8
+    """
 
     # TODO: Multi-node run
     # Run the torchrun command to execute 'profile_fxgraph.py' script across multiple GPUs.
@@ -144,6 +145,7 @@ if __name__ == "__main__":
         print('Failed to run torchrun', e)
         import sys
         sys.exit(-1)
+    """
 
     # TODO: Dynamic ASTRA-sim network layer input for multi-node run.
     # TODO: Dynamic ASTRA-sim system layer input depending on DSE search space.

@@ -4,6 +4,7 @@ import os
 import torch
 from torch.fx.passes.graph_drawer import FxGraphDrawer
 from torch.utils.flop_counter import FlopCounterMode
+from torch.distributed.distributed_c10d import _world
 
 
 def convert_save_chakra_graph(gm: torch.fx.GraphModule, dirname: str, filename: str, subgraph_idx: int):
@@ -84,4 +85,6 @@ def get_operation_count(gm: torch.fx.GraphModule):
 def just_hello(_: torch.fx.GraphModule, subgraph_idx: int):
     rank = os.environ["RANK"]
     print(f"backend compiler has been called at rank {rank} for subgraph {subgraph_idx}")
+    print(_world.pg_group_ranks)
+    print('printed group rank')
     return

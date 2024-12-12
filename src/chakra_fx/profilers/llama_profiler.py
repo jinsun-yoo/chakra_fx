@@ -75,7 +75,7 @@ class LlamaProfiler(ModelProfiler):
         print('start llama profiler')
         self.name = "llama"
         job_config = create_llama_job_config()
-        tokenizer_n_words = 12825
+        tokenizer_n_words = 12_288
 
         # Configure parallelDims
         with open(dse_config_filepath, "r") as file:
@@ -103,7 +103,7 @@ class LlamaProfiler(ModelProfiler):
         parallel_dims = ParallelDims(dp=dp, tp=tp, pp=1, world_size=int(os.environ['WORLD_SIZE']), enable_loss_parallel=True, dp_type='fsdp')
         world_mesh = parallel_dims.build_mesh('cuda')
 
-        model_config = llama3_configs["debugmodel"]
+        model_config = llama3_configs["chakrafxmodel"]
         model_config.norm_type = job_config.model.norm_type
         model_config.vocab_size = tokenizer_n_words 
         model_config.max_seq_len = job_config.training.seq_len
