@@ -57,7 +57,7 @@ def apply_configuration(model, dse_config_filepath):
     dimensions = data["overall"]["dimensions"]
     dim_parallelizations = data["overall"]["parallelization"]
 
-    # world_mesh needs to be declared in opposite order. 
+    # world_mesh needs to be declared in opposite order.
     dimensions.reverse()
     dim_parallelizations.reverse()
 

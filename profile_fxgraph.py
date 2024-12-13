@@ -130,12 +130,13 @@ if __name__ == "__main__":
         )
     elif model == "llama":
         from chakra_fx.src.chakra_fx.profilers.llama_profiler import LlamaProfiler
+
         profiler = LlamaProfiler(
-            my_compiler, 
+            my_compiler,
             use_pytorch_ir=False,
             run_custom_backend_all_rank=args.custom_backend_all_rank,
             dse_config_filepath=args.dse_config_filepath,
-            job = job
+            job=job,
         )
     elif model == "resnet18":
         from chakra_fx.src.chakra_fx.profilers.resnet18_profiler import ResNetProfiler

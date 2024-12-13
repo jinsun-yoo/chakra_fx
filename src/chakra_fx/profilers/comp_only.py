@@ -1,6 +1,3 @@
-import os
-from typing import Callable
-
 import torch
 
 # Usage: torchrun --nproc-per-node=<number of processes> transformer.py
@@ -19,7 +16,7 @@ class SimpleModel(torch.nn.Module):
 
 
 if __name__ == "__main__":
-    model = SimpleModel() 
+    model = SimpleModel()
     model = model.to("cuda")
 
     sample_input = torch.rand(1024, 12_288, dtype=torch.float, device="cuda")
@@ -29,4 +26,3 @@ if __name__ == "__main__":
 
     output.sum().backward()
     torch.cuda.synchronize()
-

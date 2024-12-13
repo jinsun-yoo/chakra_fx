@@ -5,10 +5,9 @@ import torch
 import torch.distributed as dist
 import torch.nn.functional as F
 import torch.optim as optim
+from model_profiler import ModelProfiler
 from torch.autograd import Variable
 from torchvision import datasets, models, transforms
-
-from model_profiler import ModelProfiler
 
 
 class Partition(object):

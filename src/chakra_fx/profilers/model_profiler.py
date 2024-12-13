@@ -59,7 +59,7 @@ class ModelProfiler:
     def run_sample_input(self):
         self.compile_model()
         self.model(self.sample_input)
-    
+
     def run_inductor(self):
         self.run_custom_backend = False
         self.compile_model()
@@ -91,10 +91,10 @@ class ModelProfiler:
 
     def run_eager(self):
         num_range = 1
-        if 'NUM_RANGE' in os.environ:
-            num_range = int(os.environ['NUM_RANGE'])
-        if os.environ['RANK'] == '0':
-            print(f'num_range is {num_range}')
+        if "NUM_RANGE" in os.environ:
+            num_range = int(os.environ["NUM_RANGE"])
+        if os.environ["RANK"] == "0":
+            print(f"num_range is {num_range}")
         output = self.model(self.sample_input)
         torch.cuda.synchronize()
         output.sum().backward()
@@ -105,7 +105,7 @@ class ModelProfiler:
 
         rank = os.environ["RANK"]
         if "COMPILE" in os.environ and os.environ["COMPILE"] == "True":
-            print('compile model')
+            print("compile model")
             self.model = torch.compile(self.model)
 
         def kineto_trace_handler(prof):
@@ -136,18 +136,18 @@ class ModelProfiler:
                 output.sum().backward()
                 torch.cuda.synchronize()
                 prof.step()
-        et.stop() 
+        et.stop()
         et.unregister_callback()
 
-    def run_nsys_workload(self):
+    def run_nsys_workload(self): # noqa: C901. Ignore complaints about code being too complex.
         if "COMPILE" in os.environ and os.environ["COMPILE"] == "True":
-            print('compile model')
+            print("compile model")
             self.model = torch.compile(self.model)
-        nb_iters = 10 
-        warmup_iters = 5 
+        nb_iters = 10
+        warmup_iters = 5
         for i in range(nb_iters):
-            if os.environ['RANK'] == '0':
-                print(f'start iteration {i}')
+            if os.environ["RANK"] == "0":
+                print(f"start iteration {i}")
             # start profiling after 10 warmup iterations
             if i == warmup_iters:
                 torch.cuda.cudart().cudaProfilerStart()

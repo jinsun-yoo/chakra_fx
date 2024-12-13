@@ -76,10 +76,10 @@ class SimpleModelProfiler(ModelProfiler):
 
     def run_eager(self):
         num_range = 1
-        if 'NUM_RANGE' in os.environ:
-            num_range = int(os.environ['NUM_RANGE'])
-        if os.environ['RANK'] == '0':
-            print(f'num_range is {num_range}')
+        if "NUM_RANGE" in os.environ:
+            num_range = int(os.environ["NUM_RANGE"])
+        if os.environ["RANK"] == "0":
+            print(f"num_range is {num_range}")
         output = self.model(self.sample_input)
         torch.cuda.synchronize()
         output.sum().backward()
@@ -90,7 +90,7 @@ class SimpleModelProfiler(ModelProfiler):
 
         rank = os.environ["RANK"]
         if "COMPILE" in os.environ and os.environ["COMPILE"] == "True":
-            print('compile model')
+            print("compile model")
             self.model = torch.compile(self.model)
 
         def kineto_trace_handler(prof):
@@ -119,12 +119,12 @@ class SimpleModelProfiler(ModelProfiler):
                 output.sum().backward()
                 torch.cuda.synchronize()
                 prof.step()
-        et.stop() 
+        et.stop()
         et.unregister_callback()
 
     def run_nsys_workload(self):
         if "COMPILE" in os.environ and os.environ["COMPILE"] == "True":
-            print('compile model')
+            print("compile model")
             self.model = torch.compile(self.model)
         nb_iters = 20
         warmup_iters = 10

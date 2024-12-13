@@ -1,5 +1,7 @@
+import os
+
+import torch
 import torch._inductor.fx_utils as fx_utils
-import torch 
 import torch.distributed as dist
 import torch.fx as fx
 from chakra.schema.protobuf.et_def_pb2 import (
@@ -25,9 +27,8 @@ from chakra.schema.protobuf.et_def_pb2 import (
 from chakra.src.third_party.utils.protolib import encodeMessage as encode_message
 from torch._ops import OpOverload
 from torch._subclasses.fake_tensor import FakeTensor
-from torch.utils.flop_counter import FlopCounterMode
 from torch.fx.experimental.proxy_tensor import maybe_disable_fake_tensor_mode
-import os
+from torch.utils.flop_counter import FlopCounterMode
 
 # Map from c10d operator string to Chakra collective enumeration
 c10d_chakra_map = {
@@ -50,10 +51,11 @@ skip_operator_list = ["wait_tensor", "view", "t", "transpose", "split"]
 timestamp_map = {
     "linear": {
         # Kineto trace of actual execution
-        1024 * 12288 * 6144: 1531, #.677,
-        1024 * 12288 * 49152: 9453 
+        1024 * 12288 * 6144: 1531,  # .677,
+        1024 * 12288 * 49152: 9453,
     }
 }
+
 
 # Functions to help inspecting FX Nodes.
 def fxnode_seqnr(fx_node: fx.Node):
@@ -124,10 +126,11 @@ class ChakraConverter:
             exit()
 
         import torch.distributed.distributed_c10d as c10d
+
         process_group_name = fx_node.args[-1]
         process_group_ranks = c10d.get_process_group_ranks(c10d._resolve_process_group(process_group_name))
         num_process_groups = len(c10d._world.pg_names)
-        
+
         # Use FakeTensor, which is included in the FX Graph as a fake input, to determine communication size
         comm_tensor: FakeTensor = fx_node.meta["val"]
         tensor_dtype = comm_tensor.element_size()
@@ -135,7 +138,7 @@ class ChakraConverter:
         comm_size = tensor_dtype * tensor_numelements
 
         if comm_type == ALL_GATHER or REDUCE_SCATTER:
-            # The fx_node, which is the 'result' of the ALL_GATHER/REDUCE_SCATTER, points to the *output* tensor. 
+            # The fx_node, which is the 'result' of the ALL_GATHER/REDUCE_SCATTER, points to the *output* tensor.
             # Therefore, we have to divide it by # of ranks to get input tensor size.
             comm_size = int(comm_size / len(process_group_ranks))
 
@@ -157,47 +160,52 @@ class ChakraConverter:
     def estimate_flop_count(self, fx_node: fx.Node) -> int:
         success, args, kwargs = fx_utils.get_fake_args_kwargs(fx_node)
         if not success:
-            #print(f"{node_debug_id_str(fx_node)} has flop not countable operator: {fx_node.target._opname}")
+            # TODO: Add logger, and make this print only in verbose mode.
+            # print(f"{node_debug_id_str(fx_node)} has flop not countable operator: {fx_node.target._opname}") # noqa: ERA001
             return 1000  # Arbitrary number
 
         with FlopCounterMode(display=False) as flop_counter_mode:
             if fx_node.target._overloadpacket not in flop_counter_mode.flop_registry:
-                if (os.environ['RANK'] == '0'):
+                if os.environ["RANK"] == "0":
                     print(
                         f"{node_debug_id_str(fx_node)} has operator out of the registry: {fx_node.target._opname}, {fx_node.target._overloadpacket}"
                     )
                 return 1000  # Arbitrary number
             fx_node.target(*args, **kwargs)
             return flop_counter_mode.get_total_flops()
-            
+
     def estimate_tensor_size(self, fx_node: fx.Node) -> int:
         success, args, kwargs = fx_utils.get_fake_args_kwargs(fx_node)
         if not success:
-            if  (os.environ['RANK'] == '0'):
-                print(f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}")
+            if os.environ["RANK"] == "0":
+                print(
+                    f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}"
+                )
             return 1000  # Arbitrary number
 
         a = args[0].size()
         b = args[1].size()
-        
+
         aten = torch.ops.aten
         if fx_node.target._overloadpacket != aten.mm:
             a = args[1].size()
             b = args[2].size()
         # TODO: Size
         size = 4
-        estimated_tensor_size =  2 * size * (a[0] * a[1] + b[0]*b[1] + a[0]*b[1])
-        if (os.environ['RANK'] == '0'):
+        estimated_tensor_size = 2 * size * (a[0] * a[1] + b[0] * b[1] + a[0] * b[1])
+        if os.environ["RANK"] == "0":
             print(f"Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} result {estimated_tensor_size}")
         return estimated_tensor_size
 
-    def lookup_duration(self, fx_node: fx.Node) -> int:
+    def lookup_duration(self, fx_node: fx.Node) -> int: # noqa: C901. TODO: Make logger print only for rank=0. (Remove the branches = code complexity)
         success, args, kwargs = fx_utils.get_fake_args_kwargs(fx_node)
         if not success:
-            if (os.environ['RANK'] == '0'):
-                print(f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}")
+            if os.environ["RANK"] == "0":
+                print(
+                    f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}"
+                )
             return 1000  # Arbitrary number
-        
+
         lookup_op = "-1"
         target_op = fx_node.target._overloadpacket
         aten = torch.ops.aten
@@ -206,7 +214,7 @@ class ChakraConverter:
 
         a = args[0].size()
         b = args[1].size()
-        
+
         aten = torch.ops.aten
         if fx_node.target._overloadpacket != aten.mm:
             a = args[1].size()
@@ -216,43 +224,48 @@ class ChakraConverter:
 
         numel = a[0] * a[1] * b[1]
         if lookup_op not in timestamp_map:
-            if (os.environ['RANK'] == '0'):
+            if os.environ["RANK"] == "0":
                 print(f"{node_debug_id_str(fx_node)} does not have lookup op {lookup_op} for {target_op} in lookup map")
             return -1
         if numel in timestamp_map[lookup_op]:
             lookup_duration = timestamp_map[lookup_op][numel]
         else:
-            if (os.environ['RANK'] == '0'):
-                print(f"{node_debug_id_str(fx_node)} Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} with total numel {numel} not in map")
+            if os.environ["RANK"] == "0":
+                print(
+                    f"{node_debug_id_str(fx_node)} Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} with total numel {numel} not in map"
+                )
             return -1
-        if (os.environ['RANK'] == '0'):
+        if os.environ["RANK"] == "0":
             print(f"Estimated duration, a: {a[0]} {a[1]} b: {b[0]} {b[1]} result {lookup_duration}")
         return lookup_duration
 
     def measure_duration_microsecond(self, fx_node: fx.Node) -> int:
         import torch._subclasses.fake_tensor
+
         with maybe_disable_fake_tensor_mode():
+
             def realify_fake_tensor(arg) -> torch.Tensor:
                 # "Scalar" value
-                if type(arg) != fx.Node:
+                if type(arg) is fx.Node:
                     return arg
-                fake_tensor: torch._subclasses.fake_tensor.FakeTensor = arg.meta['val']
-                real_tensor = torch.rand(fake_tensor.size(), dtype = fake_tensor.dtype, device = fake_tensor.device)
+                fake_tensor: torch._subclasses.fake_tensor.FakeTensor = arg.meta["val"]
+                real_tensor = torch.rand(fake_tensor.size(), dtype=fake_tensor.dtype, device=fake_tensor.device)
                 return real_tensor
+
             flat_args = [realify_fake_tensor(arg) for arg in fx_node.args]
             flat_kwargs = fx_node.kwargs
             num_iters = 10
             import time
+
             start_event = torch.cuda.Event(enable_timing=True)
             end_event = torch.cuda.Event(enable_timing=True)
-            total_memory = 0
             num_warmup_iters = 3
             for _ in range(num_warmup_iters):
                 fx_node.target._overloadpacket(*flat_args, **flat_kwargs)
             """
-            In simpleFSDP, they subtract (cpu_end - cpu_start) FROM the cuda event measured elapsed time. 
-            This doesn't make sense, since cuda event measured time alone should be a good measurement of device time. 
-            If you wanted to remove host latency... This is not the way.
+            Ref: https://github.com/pytorch/pytorch/blob/45d62d6fc59e43e674985edd138e396268fe12fd/torch/distributed/_tools/runtime_estimator.py#L209
+            torch.cuda.Event.record() inserts events into the GPU stream before/after running the kernel.
+            This allows us to measure GPU time without host latency, etc.
             """
             cpu_start = time.time()
             start_event.record(torch.cuda.current_stream())
@@ -261,11 +274,12 @@ class ChakraConverter:
             end_event.record(torch.cuda.current_stream())
             cpu_end = time.time()
             torch.cuda.synchronize()
-            cpu_time = (cpu_end - cpu_start) * 1_000_000 # Second to microsecond
-            if (os.environ['RANK'] == '0'):
-                print(f"For fx node {fx_node.name}, cpu measured is {cpu_time}, event dur is {start_event.elapsed_time(end_event)}")
-            #total_op_time = start_event.elapsed_time(end_event) - cpu_time
-            total_op_time = start_event.elapsed_time(end_event) * 1000 # Millisecond to microsecond
+            cpu_time = (cpu_end - cpu_start) * 1_000_000  # Second to microsecond
+            if os.environ["RANK"] == "0":
+                print(
+                    f"For fx node {fx_node.name}, cpu measured is {cpu_time}, event dur is {start_event.elapsed_time(end_event)}"
+                )
+            total_op_time = start_event.elapsed_time(end_event) * 1000  # Millisecond to microsecond
             mean_op_time = total_op_time / num_iters
         return int(mean_op_time)
 
@@ -282,8 +296,8 @@ class ChakraConverter:
             estimated_duration = 4000
         chakra_node = self.create_chakra_node(node_name, COMP_NODE)
         chakra_node.attr.append(ChakraAttr(name="is_cpu_op", bool_val=False))
-        #chakra_node.attr.append(ChakraAttr(name="num_ops", int64_val=estimated_flops))
-        #chakra_node.attr.append(ChakraAttr(name="tensor_size", uint64_val=estimated_tensor_size))
+        chakra_node.attr.append(ChakraAttr(name="num_ops", int64_val=estimated_flops))
+        chakra_node.attr.append(ChakraAttr(name="tensor_size", uint64_val=estimated_tensor_size))
         chakra_node.duration_micros = estimated_duration
         return chakra_node
 
