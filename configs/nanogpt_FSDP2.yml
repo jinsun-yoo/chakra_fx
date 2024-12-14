@@ -1,0 +1,4 @@
+overall:
+  dimensions: [2]
+  parallelization: ["fsdp"]
+fsdp:

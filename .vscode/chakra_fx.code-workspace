@@ -1,0 +1,30 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../chakra"
+		},
+		{
+			"path": "../../../my_workspace/data"
+		},
+		{
+			"path": "../../astra-sim"
+		},
+		{
+			"path": "../../torchtitan"
+		},
+		{
+			"path": "../../pytorch_intern24"
+		},
+		{
+			"path": "../../../usr/local/lib/python3.12/dist-packages/torch"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"chrono": "cpp"
+		}
+	}
+}
