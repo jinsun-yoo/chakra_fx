@@ -1,0 +1,7 @@
+overall:
+  dimensions: [8]
+  parallelization: ["tp"]
+tp:
+  layers:
+    "w1": "Colwise"
+    "w2": "Rowwise_output_replicate"

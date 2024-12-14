@@ -1,0 +1,167 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "ASTRA-sim",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/workspace/astra-sim/build/astra_analytical/build/AnalyticalAstra/bin/AnalyticalAstra",
+            "cwd": "/workspace/astra-sim",
+            "args": [
+                "--workload-configuration","/my_workspace/data/20241125_Llama3_chakrafxmodel_TP4FSDP2/trace",
+                "--system-configuration", "./examples/network_analytical/system.json",
+                "--network-configuration", "./examples/network_analytical/network.yml",
+                "--remote-memory-configuration", "./examples/network_analytical/remote_memory.json",
+                "--comm-group-configuration", "./examples/network_analytical/communication_group_TP4FSDP2.json"
+            ],
+        },
+        {
+            "name": "Llama Model NSys",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/usr/local/bin/torchrun",
+            "console": "integratedTerminal",
+            "cwd": "/workspace/chakra_fx",
+            "args": [
+                "--nproc-per-node=8",
+                "profile_fxgraph.py",
+                "--custom_backend_all_rank", "False",
+                "--dse_config_filepath", "./configs/simple_FSDP8.yml",
+                "--actions", "chakra",
+                "--exp_tag", "/my_workspace/data/20241131_Llama3_chakrafxmodel_nsyscompile_FSDP8",
+                "--job", "nsys",
+                "--model", "llama"
+            ],
+            "justMyCode": false,
+            "env": {
+                "COMPILE":"True"
+            }
+        },
+        {
+            "name": "Llama Model",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/usr/local/bin/torchrun",
+            "console": "integratedTerminal",
+            "cwd": "/workspace/chakra_fx",
+            "args": [
+                "--nproc-per-node=8",
+                //"-Xfrozen_modules=off",
+                "profile_fxgraph.py",
+                "--custom_backend_all_rank", "False",
+                "--dse_config_filepath", "./configs/simple_TP2_FSDP4.yml",
+                "--actions", "chakra",
+                "--exp_tag", "/my_workspace/data/20241114_Llama2_271M_TP2FSDP4",
+                "--job", "nsys",
+                "--model", "llama"
+            ],
+            "justMyCode": false
+        },
+        {
+            "name": "Torchtitan",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/usr/local/bin/torchrun",
+            "console": "integratedTerminal",
+            "cwd": "/workspace/torchtitan",
+            "args": [
+                "--nproc-per-node=2",
+                //"-Xfrozen_modules=off",
+                "train.py",
+                "--job.config_file", "./train_configs/debug_model.toml"
+            ],
+            "justMyCode": false
+        },
+        {
+            "name": "Chakra_FX Just Dump",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/usr/local/bin/torchrun",
+            "console": "integratedTerminal",
+            "cwd": "/workspace/chakra_fx",
+            "args": [
+                "--nproc-per-node=8",
+                //"-Xfrozen_modules=off",
+                "profile_fxgraph.py",
+                "--dse_config_filepath", "./configs/simple_TP2FSDP4.yml",
+                "--actions", "chakra",
+                "--exp_tag", "dump",
+                "--job", "sample",
+                "--model", "llama"
+            ],
+            "justMyCode": false
+        },
+        {
+            "name": "Chakra_FX Chakra Nodes",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/usr/local/bin/torchrun",
+            "console": "integratedTerminal",
+            "cwd": "/workspace/chakra_fx",
+            "args": [
+                "--nproc-per-node=8",
+                //"-Xfrozen_modules=off",
+                "profile_fxgraph.py",
+                "--custom_backend_all_rank", "False",
+                "--dse_config_filepath", "./configs/simple_TP2FSDP4.yml",
+                "--actions", "chakra",
+                "--exp_tag", "dump",
+                "--job", "sample",
+                "--model", "llama"
+            ],
+            "justMyCode": false
+        },
+        {
+            "name": "Chakra_FX Inductor",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/usr/local/bin/torchrun",
+            "console": "integratedTerminal",
+            "cwd": "/workspace/chakra_fx",
+            "args": [
+                "--nproc-per-node=2",
+                //"-Xfrozen_modules=off",
+                "profile_fxgraph.py",
+                "--dse_config_filepath", "./configs/nanogpt_FSDP2.yml",
+                "--actions", "just",
+                "--exp_tag", "dump",
+                "--job", "inductor",
+                "--model", "nanogpt"
+            ],
+            "justMyCode": false
+        },
+        {
+            "name": "MultiGPU-Local",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/usr/local/bin/torchrun",
+            "console": "integratedTerminal",
+            "cwd": "/workspace/chakra_fx",
+            "justMyCode": false,
+            "args": [ 
+                "--nproc_per_node=8",
+                "--nnodes=2",
+                "--node_rank=0",
+                "--rdzv_id=456",
+                "--rdzv_backend=c10d",
+                "--rdzv_endpoint=10.184.206.136:29603",
+                "--rdzv_conf=is_host=true",
+                "profile_fxgraph.py",
+                "--custom_backend_all_rank", "False",
+                "--dse_config_filepath", "./configs/nanogpt_FSDP_16.yml",
+                "--actions", "just",
+                "--exp_tag", "/my_workspace/data/temp",
+                "--job", "sample",
+                "--model", "nanogpt"
+            ],
+            "env": {
+                "TORCH_LOGS":"+c10d",
+                "NCCL_DEBUG":"INFO",
+                "NCCL_SOCKET_IFNAME":"enp226s0"
+            },
+        }
+    ]
+}
