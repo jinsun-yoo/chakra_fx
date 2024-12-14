@@ -21,3 +21,12 @@ torchrun        --rdzv-id=456 --rdzv-backend=c10d --rdzv-endpoint=$head_node_ip:
 ```
 sbatch -p {CLUSTER_NAME} slurm.sh
 ```
+
+# Running inside docker container
+```
+docker run  -it --rm -p 8888:8888 --gpus all --network=host --uts=host --ipc=host --ulimit stack=67108864 --ulimit memlock=-1 --cap-add=SYS_ADMIN --cap-add=SYS_PTRACE --security-opt seccomp=unconfined \
+-e TERM=screen-256color \
+-v /mnt/nvdl/usr/${USER}/:/my_workspace/ \
+${1:-'github.com'} /bin/bash
+```
+
