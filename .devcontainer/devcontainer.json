@@ -1,0 +1,32 @@
+{
+    "name": "fxgraph_ASK_JINSUN",
+    "dockerFile": "../Dockerfile",
+    "remoteUser": "jyoo332",
+    "workspaceFolder": "/workspace/chakra_fx",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-vscode.cpptools",
+                "ms-vscode.cmake-tools",
+                "charliermarsh.ruff"
+            ]
+        }
+    },
+    "postCreateCommand": "pip install -r requirements-dev.txt",
+    "mounts": [
+        "source=/nethome/jyoo332/.ssh,target=/home/jyoo332/.ssh,type=bind,consistency=cached",
+        "source=/nethome/jyoo332/torchtitan,target=/workspace/torchtitan,type=bind,consistency=cached",
+        "source=/nethome/jyoo332/pytorch,target=/workspace/pytorch,type=bind,consistency=cached",
+        "source=${localWorkspaceFolder},target=/workspace/chakra_fx,type=bind,consistency=cached"
+    ],
+    "runArgs": [
+        "--name", "fxgraph_ASK_JINSUN",
+        "--privileged",
+        "--gpus", "all",
+        "--ipc", "host",
+        "--ulimit", "memlock=-1",
+        "--ulimit", "stack=6710886",
+        "--shm-size", "8g"
+    ]
+}
