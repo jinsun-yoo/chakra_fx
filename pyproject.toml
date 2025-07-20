@@ -11,19 +11,48 @@ build-backend = "pdm.backend"
 source = "scm"
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py312"
 line-length = 150
 
   [tool.ruff.format]
   indent-style = "space"
 
   [tool.ruff.lint]
-  select = ["I", "B", "E", "D", "F", "SIM", "W", "C90", "EXE", "ERA"]
+  select = [
+    "I", # Import
+    "B", # Bugbear
+    "E", # PyCodeStyle: Error
+    "W", # PyCodeStyle: Warning
+    "D", # PyDocStyle
+    "F", # PyFlakes
+    "SIM",
+    "C90",
+    "EXE",
+    "ERA",
+    "PERF",
+    "A",
+    "B904",
+  ]
   ignore = [
     "D407", # Missing dashed underline after section
     "D203", # conflicts with D211
     "D212", # conflicts with D213
     "D413", # Missing blank line after last section
+
+    # Avoid conflict with formatter
+    # Refer to: https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
+    "W191",
+    "E111",
+    "E114",
+    "E117",
+    "D206",
+    "D300",
+    "Q000",
+    "Q001",
+    "Q002",
+    "Q003",
+    "COM812",
+    "COM819",
 
     # TODO: Remove these once we have docstrings
     "D100", # Missing docstring in public module
