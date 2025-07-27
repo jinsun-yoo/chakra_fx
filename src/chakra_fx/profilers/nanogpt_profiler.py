@@ -9,9 +9,9 @@ from torch.distributed.tensor.parallel import (
     parallelize_module,
 )
 
-from chakra_fx.src.chakra_fx.profilers.apply_configuration import apply_configuration
-from chakra_fx.src.chakra_fx.profilers.model_profiler import ModelProfiler
-from chakra_fx.src.chakra_fx.profilers.nanogpt_model import Block, GPTConfig
+from src.chakra_fx.profilers.apply_configuration import apply_configuration
+from src.chakra_fx.profilers.model_profiler import ModelProfiler
+from src.chakra_fx.profilers.nanogpt_model import Block, GPTConfig
 
 # Usage: torchrun --nproc-per-node=<number of processes> transformer.py
 

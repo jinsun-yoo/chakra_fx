@@ -5,8 +5,9 @@ from typing import List
 import torch
 import torch.fx
 from functorch.compile import make_boxed_func
+from torch.distributed import destroy_process_group
 
-from chakra_fx.src.chakra_fx.passes.fx_passes import (
+from src.chakra_fx.passes.fx_passes import (
     convert_save_chakra_graph,
     get_aten_histogram,
     get_operation_count,
@@ -111,7 +112,7 @@ if __name__ == "__main__":
     "Choose which profiler to use"
     model = args.model
     if model == "simple":
-        from chakra_fx.src.chakra_fx.profilers.simple_profiler import SimpleModelProfiler
+        from src.chakra_fx.profilers.simple_profiler import SimpleModelProfiler
 
         profiler = SimpleModelProfiler(
             my_compiler,
@@ -120,7 +121,7 @@ if __name__ == "__main__":
             dse_config_filepath=args.dse_config_filepath,
         )
     elif model == "nanogpt":
-        from chakra_fx.src.chakra_fx.profilers.nanogpt_profiler import NanoGptProfiler
+        from src.chakra_fx.profilers.nanogpt_profiler import NanoGptProfiler
 
         profiler = NanoGptProfiler(
             my_compiler,
@@ -129,7 +130,7 @@ if __name__ == "__main__":
             dse_config_filepath=args.dse_config_filepath,
         )
     elif model == "llama":
-        from chakra_fx.src.chakra_fx.profilers.llama_profiler import LlamaProfiler
+        from src.chakra_fx.profilers.llama_profiler import LlamaProfiler
 
         profiler = LlamaProfiler(
             my_compiler,
@@ -139,7 +140,7 @@ if __name__ == "__main__":
             job=job,
         )
     elif model == "resnet18":
-        from chakra_fx.src.chakra_fx.profilers.resnet18_profiler import ResNetProfiler
+        from src.chakra_fx.profilers.resnet18_profiler import ResNetProfiler
 
         profiler = ResNetProfiler(
             my_compiler,
@@ -162,3 +163,5 @@ if __name__ == "__main__":
         profiler.run_nsys_workload()
     elif job == "eager":
         profiler.run_eager()
+
+    destroy_process_group()

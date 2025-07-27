@@ -12,8 +12,8 @@
             "console": "integratedTerminal",
             "cwd": "/workspace/chakra_fx/minimal_repro/fsdp",
             "args": [
-                "--nproc-per-node=2",
-                "sample.py"
+                "--nproc-per-node=4",
+                "sample2.py"
             ],
             "justMyCode": false
         },
@@ -39,13 +39,12 @@
             "console": "integratedTerminal",
             "cwd": "/workspace/chakra_fx",
             "args": [
-                "--nproc-per-node=8",
+                "--nproc-per-node=4",
                 "profile_fxgraph.py",
-                "--custom_backend_all_rank", "False",
-                "--dse_config_filepath", "./configs/simple_FSDP8.yml",
+                "--custom_backend_all_rank", "True",
                 "--actions", "chakra",
-                "--exp_tag", "/my_workspace/data/20241131_Llama3_chakrafxmodel_nsyscompile_FSDP8",
-                "--job", "nsys",
+                "--job", "sample",
+                "--exp_tag", "output",
                 "--model", "llama"
             ],
             "justMyCode": false,

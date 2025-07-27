@@ -32,9 +32,12 @@ class ModelProfiler:
         if run_custom_backend_all_rank or self.local_rank == 0:
             self.run_custom_backend = True
 
-        torch.cuda.set_device(int(self.local_rank))
+        # TODO: WHen parsing FXGraph, should not specify rank.
+        # TODO: But when parsing chakra trace, SHOULD specify rank.
+        # torch.cuda.set_device(int(self.local_rank))
         self.fxgraph_handler = fxgraph_handler
-        self.model = model.cuda(int(self.local_rank))
+        self.model = model
+        # self.model = model.cuda(int(self.local_rank))
         self.sample_input = sample_input
 
         return
@@ -84,6 +87,8 @@ class ModelProfiler:
                 model = torch.compile(
                     self.model,
                     backend=aot_autograd(fw_compiler=self.__custom_aten_compiler),
+                    # dynamic=True,
+                    fullgraph=True,
                 )
         else:
             model = torch.compile(self.model)
@@ -139,7 +144,7 @@ class ModelProfiler:
         et.stop()
         et.unregister_callback()
 
-    def run_nsys_workload(self): # noqa: C901. Ignore complaints about code being too complex.
+    def run_nsys_workload(self):  # noqa: C901. Ignore complaints about code being too complex.
         if "COMPILE" in os.environ and os.environ["COMPILE"] == "True":
             print("compile model")
             self.model = torch.compile(self.model)

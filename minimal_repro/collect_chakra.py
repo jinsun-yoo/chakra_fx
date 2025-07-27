@@ -5,16 +5,13 @@ from torch.distributed.device_mesh import init_device_mesh
 from torch.distributed.tensor import Replicate, Shard
 from torch.distributed.tensor.parallel import (
     ColwiseParallel,
+    PrepareModuleInput,
     RowwiseParallel,
     SequenceParallel,
-    PrepareModuleInput,
     parallelize_module,
 )
 from torch.profiler import ExecutionTraceObserver, profile
-
-from torchtitan.models.llama3 import llama3_configs
-from torchtitan.models.llama3 import Transformer
-
+from torchtitan.models.llama3 import Transformer, llama3_configs
 
 # Define llama model
 tokenizer_n_words = 12_288
@@ -76,13 +73,14 @@ for transformer_block in model.layers.values():
 sample_input = torch.randint(high=tokenizer_n_words, size=(batch_size, seq_length), dtype=torch.int64, device=device)
 
 
-
 rank = int(os.environ["RANK"])
 et = ExecutionTraceObserver()
-et.register_callback(f'pytorch_trace.{rank}.json')
+et.register_callback(f"pytorch_trace.{rank}.json")
+
 
 def kineto_trace_handler(profiler):
     profiler.export_chrome_trace(f"kineto_trace.{rank}.json")
+
 
 with profile(
     activities=[torch.profiler.ProfilerActivity.CPU, torch.profiler.ProfilerActivity.CUDA],

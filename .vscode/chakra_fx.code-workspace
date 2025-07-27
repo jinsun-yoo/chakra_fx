@@ -4,10 +4,10 @@
 			"path": ".."
 		},
 		{
-			"path": "../../../usr/local/lib/python3.12/dist-packages/torch"
+			"path": "../../torchtitan"
 		},
 		{
-			"path": "../../torchtitan"
+			"path": "../../../usr/local/lib/python3.12/dist-packages/torch"
 		}
 	],
 	"settings": {

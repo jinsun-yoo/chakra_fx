@@ -17,6 +17,7 @@
     "mounts": [
         "source=/nethome/jyoo332/.ssh,target=/home/jyoo332/.ssh,type=bind,consistency=cached",
         "source=/nethome/jyoo332/torchtitan,target=/workspace/torchtitan,type=bind,consistency=cached",
+        "source=/nethome/jyoo332/chakra,target=/workspace/chakra,type=bind,consistency=cached",
         "source=/nethome/jyoo332/pytorch,target=/workspace/pytorch,type=bind,consistency=cached",
         "source=${localWorkspaceFolder},target=/workspace/chakra_fx,type=bind,consistency=cached"
     ],
@@ -28,5 +29,5 @@
         "--ulimit", "memlock=-1",
         "--ulimit", "stack=6710886",
         "--shm-size", "8g"
-    ]
+    ],
 }

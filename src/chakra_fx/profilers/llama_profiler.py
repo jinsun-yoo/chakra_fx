@@ -2,21 +2,14 @@ import os
 from typing import Callable
 
 import torch
-import yaml
 from torch.distributed._tensor import DTensor
-from torch.distributed.device_mesh import init_device_mesh
-from torch.distributed.tensor.parallel import (
-    ColwiseParallel,
-    RowwiseParallel,
-    parallelize_module,
-)
-from torchtitan.torchtitan.config_manager import JobConfig
-from torchtitan.torchtitan.models.llama import llama3_configs
-from torchtitan.torchtitan.models.llama.model import Transformer
-from torchtitan.torchtitan.parallelisms.parallel_dims import ParallelDims
-from torchtitan.torchtitan.parallelisms.parallelize_llama import torch_spmd_parallelize
+from torchtitan.config_manager import ActivationCheckpoint, JobConfig, Training
+from torchtitan.distributed.parallel_dims import ParallelDims
+from torchtitan.experiments.simple_fsdp import SimpleFSDPTransformer
+from torchtitan.experiments.simple_fsdp.parallelize import parallelize_llama
+from torchtitan.models.llama3.model.args import TransformerModelArgs
 
-from chakra_fx.src.chakra_fx.profilers.model_profiler import ModelProfiler
+from src.chakra_fx.profilers.model_profiler import ModelProfiler
 
 # Usage: torchrun --nproc-per-node=<number of processes> transformer.py
 
@@ -71,76 +64,72 @@ class LlamaProfiler(ModelProfiler):
     ):
         print("start llama profiler")
         self.name = "llama"
-        job_config = create_llama_job_config()
+        # job_config = create_llama_job_config()
         tokenizer_n_words = 12_288
 
-        # Configure parallelDims
-        with open(dse_config_filepath, "r") as file:
-            data = yaml.safe_load(file)
-        dim_parallelizations = data["overall"]["parallelization"]
-        dimensions = data["overall"]["dimensions"]
-
-        dp = 1
-        tp = 1
-        for idx, parallelization in enumerate(dim_parallelizations):
-            if parallelization == "tp":
-                tp = dimensions[idx]
-            if parallelization == "fsdp":
-                dp = dimensions[idx]
-
-        dimensions.reverse()
-        dim_parallelizations.reverse()
-
-        # Initialize the device mesh
-        device_mesh = init_device_mesh(
-            device_type="cuda",
-            mesh_shape=tuple(dimensions),
-            mesh_dim_names=tuple(dim_parallelizations),
+        print("Creating Model")
+        model_config = TransformerModelArgs(
+            dim=256,
+            n_layers=2,
+            n_heads=2,
+            n_kv_heads=2,
+            rope_theta=500000,
         )
-        parallel_dims = ParallelDims(
-            dp=dp, tp=tp, pp=1, world_size=int(os.environ["WORLD_SIZE"]), enable_loss_parallel=True, dp_type="fsdp"
-        )
-        world_mesh = parallel_dims.build_mesh("cuda")
-
-        model_config = llama3_configs["chakrafxmodel"]
-        model_config.norm_type = job_config.model.norm_type
         model_config.vocab_size = tokenizer_n_words
-        model_config.max_seq_len = job_config.training.seq_len
-        model = Transformer.from_model_args(model_config)
-        parallelized_model = {}
-        print("created model")
+        model_config.max_seq_len = 2048  # job_config.training.seq_len
+        model_config.norm_type = "layernorm"  # job_config.model.norm_type
+        model = SimpleFSDPTransformer(model_config).to("cuda:0")
 
-        if dse_config_filepath is not None:
-            if job != "sample":
-                job_config.training.compile = False
-                print("apply parallelization without compile")
-            parallelized_model = torch_spmd_parallelize(model, world_mesh, parallel_dims, job_config)
-            device = "cuda"
-            parallelized_model.to_empty(device=device)
-            parallelized_model.init_weights()
-            parallelized_model.train()
+        print("Parallelizing model")
+        # # Configure parallelDims
+        # with open(dse_config_filepath, "r") as file:
+        #     data = yaml.safe_load(file)
+        # dim_parallelizations = data["overall"]["parallelization"]
+        # dimensions = data["overall"]["dimensions"]
 
-        else:
-            world_size = int(os.environ["WORLD_SIZE"])
-            device_mesh = init_device_mesh(device_type="cuda", mesh_shape=(world_size,))
-            model = model.to("cuda")
+        # dp = 1
+        # tp = 1
+        # for idx, parallelization in enumerate(dim_parallelizations):
+        #     if parallelization == "tp":
+        #         tp = dimensions[idx]
+        #     if parallelization == "fsdp":
+        #         dp = dimensions[idx]
 
-            # Parallelization plan. Tensor parallel
-            parallelized_model = parallelize_module(
-                module=model,
-                device_mesh=device_mesh,
-                parallelize_plan={
-                    "attn.c_attn": ColwiseParallel(),
-                    "attn.c_proj": RowwiseParallel(),
-                    "mlp.c_fc": ColwiseParallel(),
-                    "mlp.c_proj": RowwiseParallel(),
-                },
-            )
+        # dimensions.reverse()
+        # dim_parallelizations.reverse()
+
+        # # Initialize the device mesh
+        # device_mesh = init_device_mesh(
+        #     device_type="cuda",
+        #     mesh_shape=tuple(dimensions),
+        #     mesh_dim_names=tuple(dim_parallelizations),
+        # )
+        world_size = int(os.environ["WORLD_SIZE"])
+        parallel_dims = ParallelDims(
+            dp_replicate=world_size // 2,
+            dp_shard=world_size // 2,
+            tp=1,
+            pp=1,
+            ep=1,
+            cp=1,
+            world_size=world_size,
+        )
+
+        job_config = JobConfig(
+            training=Training(compile=False, seq_len=sequence_length, mixed_precision_param="float32", mixed_precision_reduce="float32"),
+            activation_checkpoint=ActivationCheckpoint(mode="none"),
+        )
+
+        # if job != "sample":
+        #     job_config.training.compile = False
+        #     print("apply parallelization without compile")
+        parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+        # parallelized_model.init_weights()
+        # parallelized_model.train()
+
         print("finish applying parallelization")
 
-        sample_input = torch.randint(
-            high=tokenizer_n_words, size=(batch_size, sequence_length), dtype=torch.int64, device="cuda"
-        )
+        sample_input = torch.randint(high=tokenizer_n_words, size=(batch_size, sequence_length), dtype=torch.int64, device="cuda:0")
 
         super().__init__(
             fxgraph_handler,

@@ -26,8 +26,9 @@ from chakra.schema.protobuf.et_def_pb2 import (
 )
 from chakra.src.third_party.utils.protolib import encodeMessage as encode_message
 from torch._ops import OpOverload
-from torch._subclasses.fake_tensor import FakeTensor
-from torch.fx.experimental.proxy_tensor import maybe_disable_fake_tensor_mode
+from torch._subclasses.fake_tensor import FakeTensor, unset_fake_temporarily
+
+# from torch.fx.experimental.proxy_tensor import maybe_disable_fake_tensor_mode
 from torch.utils.flop_counter import FlopCounterMode
 
 # Map from c10d operator string to Chakra collective enumeration
@@ -178,9 +179,7 @@ class ChakraConverter:
         success, args, kwargs = fx_utils.get_fake_args_kwargs(fx_node)
         if not success:
             if os.environ["RANK"] == "0":
-                print(
-                    f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}"
-                )
+                print(f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}")
             return 1000  # Arbitrary number
 
         a = args[0].size()
@@ -197,13 +196,11 @@ class ChakraConverter:
             print(f"Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} result {estimated_tensor_size}")
         return estimated_tensor_size
 
-    def lookup_duration(self, fx_node: fx.Node) -> int: # noqa: C901. TODO: Make logger print only for rank=0. (Remove the branches = code complexity)
+    def lookup_duration(self, fx_node: fx.Node) -> int:  # noqa: C901. TODO: Make logger print only for rank=0. (Remove the branches = code complexity)
         success, args, kwargs = fx_utils.get_fake_args_kwargs(fx_node)
         if not success:
             if os.environ["RANK"] == "0":
-                print(
-                    f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}"
-                )
+                print(f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}")
             return 1000  # Arbitrary number
 
         lookup_op = "-1"
@@ -231,9 +228,7 @@ class ChakraConverter:
             lookup_duration = timestamp_map[lookup_op][numel]
         else:
             if os.environ["RANK"] == "0":
-                print(
-                    f"{node_debug_id_str(fx_node)} Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} with total numel {numel} not in map"
-                )
+                print(f"{node_debug_id_str(fx_node)} Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} with total numel {numel} not in map")
             return -1
         if os.environ["RANK"] == "0":
             print(f"Estimated duration, a: {a[0]} {a[1]} b: {b[0]} {b[1]} result {lookup_duration}")
@@ -242,12 +237,14 @@ class ChakraConverter:
     def measure_duration_microsecond(self, fx_node: fx.Node) -> int:
         import torch._subclasses.fake_tensor
 
-        with maybe_disable_fake_tensor_mode():
+        with unset_fake_temporarily():
 
             def realify_fake_tensor(arg) -> torch.Tensor:
-                # "Scalar" value
-                if type(arg) is fx.Node:
+                if not isinstance(arg, fx.Node):
                     return arg
+                # "Scalar" value
+                # if type(arg) is fx.Node:
+                #     return arg
                 fake_tensor: torch._subclasses.fake_tensor.FakeTensor = arg.meta["val"]
                 real_tensor = torch.rand(fake_tensor.size(), dtype=fake_tensor.dtype, device=fake_tensor.device)
                 return real_tensor
@@ -276,9 +273,7 @@ class ChakraConverter:
             torch.cuda.synchronize()
             cpu_time = (cpu_end - cpu_start) * 1_000_000  # Second to microsecond
             if os.environ["RANK"] == "0":
-                print(
-                    f"For fx node {fx_node.name}, cpu measured is {cpu_time}, event dur is {start_event.elapsed_time(end_event)}"
-                )
+                print(f"For fx node {fx_node.name}, cpu measured is {cpu_time}, event dur is {start_event.elapsed_time(end_event)}")
             total_op_time = start_event.elapsed_time(end_event) * 1000  # Millisecond to microsecond
             mean_op_time = total_op_time / num_iters
         return int(mean_op_time)
