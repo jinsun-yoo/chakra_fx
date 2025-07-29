@@ -1,5 +1,10 @@
 FROM nvcr.io/nvidia/pytorch:25.06-py3
 
+ARG USER_ID=3029572
+ARG GROUP_ID=2626
+ARG USER_NAME=jyoo332
+ARG GROUP_NAME=gtperson
+
 RUN pip uninstall torch torchvision torchaudio -y
 
 # Delete torch from dep
@@ -16,5 +21,16 @@ RUN chown -R 3029572:2626 /usr/local/lib/python3.12/dist-packages/torch
 COPY changes.patch /tmp/changes.patch
 RUN patch /usr/local/lib/python3.12/dist-packages/torch/distributed/tensor/placement_types.py /tmp/changes.patch
 
-RUN groupadd -g 2626 gtperson
-RUN useradd -u 3029572 -g 2626 -m -s /bin/bash jyoo332
+# Install other dependencies
+RUN pip install torchtitan
+RUN git clone https://github.com/mlcommons/chakra.git
+RUN cd chakra && pip install .
+RUN pip install --upgrade protobuf
+
+RUN groupadd -g $GROUP_ID $GROUP_NAME
+RUN useradd -u $USER_ID -g $GROUP_ID -m -s /bin/bash $USER_NAME
+
+RUN chown -R $USER_ID:$GROUP_ID /usr/local/lib/python3.12/dist-packages/torch
+RUN chown -R $USER_ID:$GROUP_ID /workspace/chakra
+
+RUN echo 'export PATH=/home/$USER_NAME/.local/bin:$PATH' >> /home/$USER_NAME/.bashrc
