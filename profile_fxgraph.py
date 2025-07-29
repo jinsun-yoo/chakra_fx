@@ -31,7 +31,7 @@ def parse_args():
     parser.add_argument(
         "--custom_backend_all_rank",
         type=bool,
-        default=False,
+        default=True,
         help="If true, run custom backend on all rank, not just 0",
     )
     parser.add_argument(
