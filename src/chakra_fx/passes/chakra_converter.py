@@ -306,6 +306,11 @@ class ChakraConverter:
         encode_message(self.et_file, chakra_node)
         self.fxname_chakraid_map[fx_node.name] = chakra_node.id
 
+    # o(chakra id 10) -> [] -> [] -> [] -> o(chakra id 11)
+    #          o (chakra id 12) -> |
+
+
+
     # Find which Chakra nodes to declare as upstream dependency for this Chakra node.
     # Starting from corresponding FX node, iterate the FX Graph upwards
     # until we find nodes that have already been converted to Chakra Nodes.
@@ -339,6 +344,7 @@ class ChakraConverter:
                 # Record node info in internal lookup tables.
                 self.record_fx_node(fx_node)
 
+                # In chakra no node for tensor
                 # Skip nodes that are 1) placeholders 2) insignificant compute
                 if fx_node.name == "root" or fx_node.op in ["placeholder", "output"] or "getitem" in fx_node.name:
                     continue

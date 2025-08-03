@@ -1,5 +1,3 @@
-import argparse
-from datetime import datetime, timezone
 from typing import List
 
 import torch
@@ -7,6 +5,7 @@ import torch.fx
 from functorch.compile import make_boxed_func
 from torch.distributed import destroy_process_group
 
+from src.args import parse_args
 from src.chakra_fx.passes.fx_passes import (
     convert_save_chakra_graph,
     get_aten_histogram,
@@ -19,87 +18,29 @@ from src.chakra_fx.passes.fx_passes import (
 )
 
 """
-    Usage: torchrun --nproc-per-node=8 profile_fxgraph.py
+    Usage: torchrun \
+        --nproc-per-node=8 \
+        --rdzv_id=... \
+        profile_fxgraph.py \
 """
-
-
-def parse_args():
-    # Create parser
-    parser = argparse.ArgumentParser()
-
-    # Arguments
-    parser.add_argument(
-        "--custom_backend_all_rank",
-        type=bool,
-        default=True,
-        help="If true, run custom backend on all rank, not just 0",
-    )
-    parser.add_argument(
-        "--dse_config_filepath",
-        type=str,
-        default=None,
-        required=False,
-        help="Filepath of the DSE configuration",
-    )
-    parser.add_argument(
-        "--actions",
-        type=str,
-        default="just",
-        required=False,
-        help="""Comma delimited key strings of which functions to invoke in backend compiler.
-        'just': just_hello, 'chakra': get_chakra_graph, 'pdf': print_pdf_file, 'dumpgraph': save_fxgraph_module""",
-    )
-    parser.add_argument(
-        "--exp_tag",
-        type=str,
-        default="",
-        required=False,
-        help="""A string(tag) to uniquely identify this experiment. Will be used for output directory name, etc.
-        Default is 'YYYY-MM-SS_HH-MM-SS' (UTC)""",
-    )
-    parser.add_argument(
-        "--job",
-        type=str,
-        default="sample",
-        required=False,
-        help="""Either 'sample' or 'training' or 'postexec_chakra.
-        \nDecides whether to run a single forward pass on a sample input, or a full training session.""",
-    )
-    parser.add_argument(
-        "--model",
-        type=str,
-        default="nanogpt",
-        required=False,
-        help="""Either 'simple' or 'nanogpt' or 'resnet18'. Chooses which model to work on.""",
-    )
-    args = parser.parse_args()
-    return args
-
 
 if __name__ == "__main__":
     args = parse_args()
-    action_list = args.actions.split(",")
-    job = args.job
-    exp_tag = args.exp_tag
-    if exp_tag == "":
-        now_utc = datetime.now(timezone.utc)
-        exp_tag = now_utc.strftime("%Y-%m-%d_%H-%M-%S")
 
-    "Define the set of functions you want to use"
-
+    # "Define the set of functions you want to use"
     def my_compiler(gm: torch.fx.GraphModule, _: List[torch.Tensor]):
-        for action in action_list:
+        for action in args.action_list:
             match action:
                 case "just":
                     just_hello(gm, 0)
                 case "pdf":
-                    save_pdffile(gm, exp_tag, "trace", 0)
+                    save_pdffile(gm, args.exp_tag, "trace", 0)
                 case "chakra":
-                    convert_save_chakra_graph(gm, exp_tag, "trace", 0)
+                    convert_save_chakra_graph(gm, args.exp_tag, "trace", 0)
                 case "dot":
-                    save_dotfile(gm, exp_tag, "trace", 0)
+                    save_dotfile(gm, args.exp_tag, "trace", 0)
                 case "dumpgraph":
-                    save_fxgraph_module(gm, exp_tag, "trace", 0)
+                    save_fxgraph_module(gm, args.exp_tag, "trace", 0)
                 case "table":
                     print_tabular_graph(gm)
                 case "histogram":
@@ -137,7 +78,7 @@ if __name__ == "__main__":
             use_pytorch_ir=False,
             run_custom_backend_all_rank=args.custom_backend_all_rank,
             dse_config_filepath=args.dse_config_filepath,
-            job=job,
+            job=args.job,
         )
     elif model == "resnet18":
         from src.chakra_fx.profilers.resnet18_profiler import ResNetProfiler
@@ -151,17 +92,17 @@ if __name__ == "__main__":
     "Choose whether to only trigger JIT compile (through sample input), or running a training session"
     "Choose only one. For some reason running both glitches."
     # TODO: Remove invalid values
-    if job == "sample":
+    if args.job == "sample":
         profiler.run_sample_input()
-    elif job == "inductor":
+    elif args.job == "inductor":
         profiler.run_inductor()
-    elif job == "training":
+    elif args.job == "training":
         profiler.run_training_session()
-    elif job == "postexec_chakra":
-        profiler.collect_postexecution_graph(exp_tag, "trace")
-    elif job == "nsys":
+    elif args.job == "postexec_chakra":
+        profiler.collect_postexecution_graph(args.exp_tag, "trace")
+    elif args.job == "nsys":
         profiler.run_nsys_workload()
-    elif job == "eager":
+    elif args.job == "eager":
         profiler.run_eager()
 
     destroy_process_group()
