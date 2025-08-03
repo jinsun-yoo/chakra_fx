@@ -1,5 +1,5 @@
 import os
-from typing import Callable
+from typing import List
 
 import torch
 from torch.distributed._tensor import DTensor
@@ -10,8 +10,6 @@ from torchtitan.experiments.simple_fsdp.parallelize import parallelize_llama
 from torchtitan.models.llama3.model.args import TransformerModelArgs
 
 from src.chakra_fx.profilers.model_profiler import ModelProfiler
-
-# Usage: torchrun --nproc-per-node=<number of processes> transformer.py
 
 num_iters = 10
 batch_size = 8
@@ -56,15 +54,15 @@ def create_llama_job_config() -> JobConfig:
 class LlamaProfiler(ModelProfiler):
     def __init__(
         self,
-        fxgraph_handler: Callable[[torch.fx.GraphModule], None],
-        use_pytorch_ir: bool,
+        job: str,
+        exp_tag: str,
+        fxgraph_actions: List[str],
         run_custom_backend_all_rank: bool,
         dse_config_filepath: str,
-        job: str,
+        use_pytorch_ir: bool = False,
     ):
         print("start llama profiler")
         self.name = "llama"
-        # job_config = create_llama_job_config()
         tokenizer_n_words = 12_288
 
         print("Creating Model")
@@ -81,29 +79,6 @@ class LlamaProfiler(ModelProfiler):
         model = SimpleFSDPTransformer(model_config).to("cuda:0")
 
         print("Parallelizing model")
-        # # Configure parallelDims
-        # with open(dse_config_filepath, "r") as file:
-        #     data = yaml.safe_load(file)
-        # dim_parallelizations = data["overall"]["parallelization"]
-        # dimensions = data["overall"]["dimensions"]
-
-        # dp = 1
-        # tp = 1
-        # for idx, parallelization in enumerate(dim_parallelizations):
-        #     if parallelization == "tp":
-        #         tp = dimensions[idx]
-        #     if parallelization == "fsdp":
-        #         dp = dimensions[idx]
-
-        # dimensions.reverse()
-        # dim_parallelizations.reverse()
-
-        # # Initialize the device mesh
-        # device_mesh = init_device_mesh(
-        #     device_type="cuda",
-        #     mesh_shape=tuple(dimensions),
-        #     mesh_dim_names=tuple(dim_parallelizations),
-        # )
         world_size = int(os.environ["WORLD_SIZE"])
         parallel_dims = ParallelDims(
             dp_replicate=world_size // 2,
@@ -114,28 +89,24 @@ class LlamaProfiler(ModelProfiler):
             cp=1,
             world_size=world_size,
         )
-
         job_config = JobConfig(
             training=Training(compile=False, seq_len=sequence_length, mixed_precision_param="float32", mixed_precision_reduce="float32"),
             activation_checkpoint=ActivationCheckpoint(mode="none"),
         )
-
-        # if job != "sample":
-        #     job_config.training.compile = False
-        #     print("apply parallelization without compile")
         parallelized_model = parallelize_llama(model, parallel_dims, job_config)
-        # parallelized_model.init_weights()
-        # parallelized_model.train()
 
         print("finish applying parallelization")
 
         sample_input = torch.randint(high=tokenizer_n_words, size=(batch_size, sequence_length), dtype=torch.int64, device="cuda:0")
+        sample_label = torch.rand(batch_size, sequence_length, type=torch.int64, device="cuda:0")
 
         super().__init__(
-            fxgraph_handler,
             use_pytorch_ir,
             parallelized_model,
             sample_input,
+            sample_label,
+            exp_tag,
+            fxgraph_actions,
             run_custom_backend_all_rank,
         )
 
@@ -144,13 +115,3 @@ class LlamaProfiler(ModelProfiler):
         if isinstance(pred, DTensor):
             pred._local_tensor = pred._local_tensor.contiguous()
         return torch.nn.functional.cross_entropy(pred.flatten(0, 1), labels.flatten(0, 1))
-
-    def run_training_session(self):
-        output = self.model(self.sample_input)
-        torch.cuda.synchronize()
-        labels = torch.rand(batch_size, sequence_length, type=torch.int64, device="cuda")
-        loss = self.loss_fn(output, labels)
-
-        del output
-        loss.backward()
-        torch.cuda.synchronize()

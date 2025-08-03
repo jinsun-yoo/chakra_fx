@@ -5,68 +5,44 @@ import torch.fx
 from functorch.compile import make_boxed_func
 from torch._dynamo.backends.common import aot_autograd
 
+from src.chakra_fx.passes.custom_compiler import construct_custom_backend_compiler
+
 
 class ModelProfiler:
     def __init__(
         self,
-        fxgraph_handler,
-        use_pytorch_ir,
         model,
         sample_input,
-        run_custom_backend_all_rank=False,
+        sample_label,
+        exp_tag: str,
+        fxgraph_actions: List[str],
+        run_custom_backend_all_rank: bool,
+        use_pytorch_ir: bool = False,
     ):
         self.rank = int(os.environ.get("RANK", 0))
         self.size = int(os.environ.get("WORLD_SIZE", 1))
         self.local_rank = int(os.environ.get("LOCAL_RANK", 0))
 
-        "If true, work on PyTorch FX Graph, if false, work on aten FX Graph"
+        # If true, work on PyTorch FX Graph, if false, work on aten FX Graph
         self.use_pytorch_ir = use_pytorch_ir
-        "Index of subgraph at each graph break. Increments with each subgraph"
+        # Index of subgraph at each graph break. Increments with each subgraph
         self.subgraph_idx = 0
-        "This name will be used at, e.g. start of generated filenames"
+        # This name will be used at, e.g. start of generated filenames
         if not hasattr(self, "name"):
             print("Name not provided. Use default name.")
             self.name = "modelProfiler"
-        "Unless otherwise noted, do not run custom backends, apart from rank 0."
-        self.run_custom_backend = False
-        if run_custom_backend_all_rank or self.local_rank == 0:
-            self.run_custom_backend = True
+
+        # Unless otherwise noted, run custom backend instead of the default inductor backend.
+        # Would set run_custom_backend_all_rank to False for e.g. debugging purposes.
+        self.run_custom_backend = run_custom_backend_all_rank or self.local_rank == 0
 
         # TODO: WHen parsing FXGraph, should not specify rank.
         # TODO: But when parsing chakra trace, SHOULD specify rank.
-        # torch.cuda.set_device(int(self.local_rank))
-        self.fxgraph_handler = fxgraph_handler
+        self.fxgraph_handler = construct_custom_backend_compiler(fxgraph_actions, exp_tag, self)
         self.model = model
-        # self.model = model.cuda(int(self.local_rank))
         self.sample_input = sample_input
-
+        self.sample_label = sample_label
         return
-
-    def convert_to_chakra(self, gm: torch.fx.GraphModule, exp_tag: str):
-        from src.chakra_fx.passes.chakra_converter import ChakraConverter
-
-        # TODO: We create one ChakraConverter per subgraph, but might have to change this due to DDP.
-        # (Depends. There is a possibility no graph break is needed for DDP.)
-        self.chakra_converter = ChakraConverter(self.name, self.subgraph_idx, exp_tag)
-        self.chakra_converter.convert_to_chakra(gm)
-
-    """Runs a training session, implemented by each profiler"""
-
-    def run_training_session(self):
-        print(f"Training session not implemented for profiler {self.name}")
-        return
-
-    """Simply complies a model & with the 'fxgraph_handler' backend.
-    Inference on sample_input is used to trigger JIT compiling"""
-
-    def run_sample_input(self):
-        self.compile_model()
-        self.model(self.sample_input)
-
-    def run_inductor(self):
-        self.run_custom_backend = False
-        self.compile_model()
-        self.model(self.sample_input)
 
     def __custom_pytorch_compiler(self, gm: torch.fx.GraphModule, _: List[torch.Tensor]):
         self.fxgraph_handler(gm, self)
@@ -82,24 +58,34 @@ class ModelProfiler:
     def compile_model(self):
         if self.run_custom_backend:
             if self.use_pytorch_ir:
-                model = torch.compile(self.model, backend=self.__custom_pytorch_compiler)
+                compiled_model = torch.compile(self.model, backend=self.__custom_pytorch_compiler)
             else:
-                model = torch.compile(
+                compiled_model = torch.compile(
                     self.model,
                     backend=aot_autograd(fw_compiler=self.__custom_aten_compiler),
-                    # dynamic=True,
                     fullgraph=True,
                 )
         else:
-            model = torch.compile(self.model)
-        self.model = model
+            compiled_model = torch.compile(self.model)
+        self.model = compiled_model
 
-    def run_eager(self):
-        num_range = 1
-        if "NUM_RANGE" in os.environ:
-            num_range = int(os.environ["NUM_RANGE"])
-        if os.environ["RANK"] == "0":
-            print(f"num_range is {num_range}")
+    # From here down, we have the code for the various jobs that can be run on the model.
+
+    def run_fwbw_pass(self):
+        self.compile_model()
+        output = self.model(self.sample_input)
+        torch.cuda.synchronize()
+        loss = self.loss_fn(output, self.sample_label)
+
+        del output
+        loss.backward()
+        torch.cuda.synchronize()
+
+    def run_fw_pass(self):
+        self.compile_model()
+        self.model(self.sample_input)
+
+    def run_eager_fwbw_pass(self):
         output = self.model(self.sample_input)
         torch.cuda.synchronize()
         output.sum().backward()

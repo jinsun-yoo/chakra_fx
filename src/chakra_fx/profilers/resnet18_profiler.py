@@ -81,7 +81,7 @@ class ResNetProfiler(ModelProfiler):
             run_custom_backend_all_rank,
         )
 
-    def run_training_session(self):
+    def run_fwbw_pass(self):
         torch.cuda.set_device(self.rank)
         super().compile_model()
 

@@ -7,6 +7,8 @@ from torch.fx.passes.graph_drawer import FxGraphDrawer
 from torch.utils.flop_counter import FlopCounterMode
 
 
+# This is the entrypoint to ChakraConverter's convert_to_chakra function.
+# Simply take the FXGraph and pass it to the ChakraConverter.
 def convert_save_chakra_graph(gm: torch.fx.GraphModule, dirname: str, filename: str, subgraph_idx: int):
     if not os.path.exists(f"{dirname}"):
         print(f"Output path {dirname} does not exist!")
@@ -18,40 +20,37 @@ def convert_save_chakra_graph(gm: torch.fx.GraphModule, dirname: str, filename: 
     chakra_converter.convert_to_chakra(gm)
 
 
-"Generates a dot file for this subgraph"
-
-
+# Generates a dot file for this subgraph.
+# This dotfile is used by graphviz(i.e. generate_pdf) to generate a pdf file.
+# However, if the graph is too large, generating the pdf could take forever.
+# Therefore, we only generate the dotfile.
 def save_dotfile(gm: torch.fx.GraphModule, dirname: str, name: str, subgraph_idx: int):
     rank = os.environ["RANK"]
     g = FxGraphDrawer(gm, "graph")
     g.get_dot_graph().write_dot(f"{dirname}/{name}_subgraph_{subgraph_idx}_rank_{rank}.dot")
 
 
-"Generates a pdf file for this subgraph"
-
-
+# Generates a pdf file for this subgraph.
 def save_pdffile(gm: torch.fx.GraphModule, dirname: str, name: str, subgraph_idx: int):
     rank = os.environ["RANK"]
     g = FxGraphDrawer(gm, "graph")
     g.get_dot_graph().write_pdf(f"{dirname}/{name}_subgraph_{subgraph_idx}_rank_{rank}.pdf")
 
 
+# Uses torch.export to save the FX graph to a folder.
 def save_fxgraph_module(gm: torch.fx.GraphModule, dirname: str, name: str, subgraph_idx: int):
     rank = os.environ["RANK"]
     gm.to_folder(f"{dirname}/{name}_subgraph_{subgraph_idx}_rank_{rank}")
 
 
-"Prints the graph in tabular format to stdio. Haven't found how to forward to a file other than piping at command line"
-
-
+# Prints the graph in tabular format to stdio.
+# Haven't found how to forward to a file other than piping at command line
 def print_tabular_graph(gm: torch.fx.GraphModule):
     print(gm.graph.print_tabular())
 
 
-"For aten graphs, save a histogram of target operators in a csv file. Ignores 'placeholder' ops."
-"For now, all subgraphs append to one csv file. subgraphs are split by 'output' in the csv file"
-
-
+# For aten graphs, save a histogram of target operators in a csv file. Ignores 'placeholder' ops.
+# For now, all subgraphs append to one csv file. subgraphs are split by 'output' in the csv file
 def get_aten_histogram(gm: torch.fx.GraphModule, name: str, subgraph_idx: int, rank: int):
     ops_map = dict()
     for node in gm.graph.nodes:
@@ -79,9 +78,7 @@ def get_operation_count(gm: torch.fx.GraphModule):
                 print(f"Counted flops for {node.target.__name__} is {counted_flops}")
 
 
-"Simple function to check if backend has been called"
-
-
+# Simple function to check if backend has been called
 def just_hello(_: torch.fx.GraphModule, subgraph_idx: int):
     rank = os.environ["RANK"]
     print(f"backend compiler has been called at rank {rank} for subgraph {subgraph_idx}")

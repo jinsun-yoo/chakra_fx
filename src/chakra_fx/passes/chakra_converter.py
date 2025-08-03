@@ -2,6 +2,7 @@ import os
 
 import torch
 import torch._inductor.fx_utils as fx_utils
+import torch._subclasses.fake_tensor
 import torch.distributed as dist
 import torch.fx as fx
 from chakra.schema.protobuf.et_def_pb2 import (
@@ -158,87 +159,56 @@ class ChakraConverter:
         chakra_node.attr.append(ChakraAttr(name="ranks", int64_list=pg_ranks_protobuf))
         return chakra_node
 
+    # Obtain the flop count of an FX Node based on the recorded operation and (symbolic) tensor argument.
+    # We use the 'FlopCounterMode' provided by PyTorch.
+    # 'FlopCounterMode' provides an analytical flop counter that calculates (i.e. does not actually run an operation and count)
+    # for a handpicked list of functions.
+    # TODO: Find a way to count flops for other operations.
+    # Will return 0, False if the flop count cannot be obtained.
     def estimate_flop_count(self, fx_node: fx.Node) -> int:
         success, args, kwargs = fx_utils.get_fake_args_kwargs(fx_node)
         if not success:
             # TODO: Add logger, and make this print only in verbose mode.
             # print(f"{node_debug_id_str(fx_node)} has flop not countable operator: {fx_node.target._opname}") # noqa: ERA001
-            return 1000  # Arbitrary number
+            return 0, False
 
         with FlopCounterMode(display=False) as flop_counter_mode:
             if fx_node.target._overloadpacket not in flop_counter_mode.flop_registry:
+                # TODO: Make this debugging print clean
                 if os.environ["RANK"] == "0":
                     print(
                         f"{node_debug_id_str(fx_node)} has operator out of the registry: {fx_node.target._opname}, {fx_node.target._overloadpacket}"
                     )
-                return 1000  # Arbitrary number
+                return 0, False
             fx_node.target(*args, **kwargs)
-            return flop_counter_mode.get_total_flops()
+            return flop_counter_mode.get_total_flops(), True
 
     def estimate_tensor_size(self, fx_node: fx.Node) -> int:
         success, args, kwargs = fx_utils.get_fake_args_kwargs(fx_node)
         if not success:
             if os.environ["RANK"] == "0":
                 print(f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}")
-            return 1000  # Arbitrary number
+            return 0
 
+        # Assumption: The first two arguments are the input tensors.
         a = args[0].size()
         b = args[1].size()
 
-        aten = torch.ops.aten
-        if fx_node.target._overloadpacket != aten.mm:
+        if fx_node.target._overloadpacket != torch.ops.aten.mm:
             a = args[1].size()
             b = args[2].size()
-        # TODO: Size
-        size = 4
-        estimated_tensor_size = 2 * size * (a[0] * a[1] + b[0] * b[1] + a[0] * b[1])
+        numbytes_per_element = 4
+        estimated_tensor_size = 2 * numbytes_per_element * (a[0] * a[1] + b[0] * b[1] + a[0] * b[1])
         if os.environ["RANK"] == "0":
             print(f"Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} result {estimated_tensor_size}")
         return estimated_tensor_size
 
-    def lookup_duration(self, fx_node: fx.Node) -> int:  # noqa: C901. TODO: Make logger print only for rank=0. (Remove the branches = code complexity)
-        success, args, kwargs = fx_utils.get_fake_args_kwargs(fx_node)
-        if not success:
-            if os.environ["RANK"] == "0":
-                print(f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}")
-            return 1000  # Arbitrary number
-
-        lookup_op = "-1"
-        target_op = fx_node.target._overloadpacket
-        aten = torch.ops.aten
-        if target_op == aten.addmm or target_op == aten.mm:
-            lookup_op = "linear"
-
-        a = args[0].size()
-        b = args[1].size()
-
-        aten = torch.ops.aten
-        if fx_node.target._overloadpacket != aten.mm:
-            a = args[1].size()
-            b = args[2].size()
-        if a[1] != b[0]:
-            print(f"{node_debug_id_str(fx_node)} tensor size does not match for matrix multiplication: {a[1]}, {b[0]}")
-
-        numel = a[0] * a[1] * b[1]
-        if lookup_op not in timestamp_map:
-            if os.environ["RANK"] == "0":
-                print(f"{node_debug_id_str(fx_node)} does not have lookup op {lookup_op} for {target_op} in lookup map")
-            return -1
-        if numel in timestamp_map[lookup_op]:
-            lookup_duration = timestamp_map[lookup_op][numel]
-        else:
-            if os.environ["RANK"] == "0":
-                print(f"{node_debug_id_str(fx_node)} Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} with total numel {numel} not in map")
-            return -1
-        if os.environ["RANK"] == "0":
-            print(f"Estimated duration, a: {a[0]} {a[1]} b: {b[0]} {b[1]} result {lookup_duration}")
-        return lookup_duration
-
+    # Measure the duration of a compute operation by running it on actual GPU.
+    # This is possible because we have 1) the operation and 2) the symbolic shape of the input tensors (i.e. FakeTensor).
+    # We create a real tensor from the FakeTensor, and run the operation on it.
     def measure_duration_microsecond(self, fx_node: fx.Node) -> int:
-        import torch._subclasses.fake_tensor
-
         with unset_fake_temporarily():
-
+            # Create a real tensor with random values, from the shape info in the FakeTensor.
             def realify_fake_tensor(arg) -> torch.Tensor:
                 if not isinstance(arg, fx.Node):
                     return arg
@@ -251,44 +221,51 @@ class ChakraConverter:
 
             flat_args = [realify_fake_tensor(arg) for arg in fx_node.args]
             flat_kwargs = fx_node.kwargs
+            num_warmup_iters = 3
             num_iters = 10
+
             import time
 
-            start_event = torch.cuda.Event(enable_timing=True)
-            end_event = torch.cuda.Event(enable_timing=True)
-            num_warmup_iters = 3
+            compute_function = fx_node.target._overloadpacket
             for _ in range(num_warmup_iters):
-                fx_node.target._overloadpacket(*flat_args, **flat_kwargs)
+                compute_function(*flat_args, **flat_kwargs)
             """
             Ref: https://github.com/pytorch/pytorch/blob/45d62d6fc59e43e674985edd138e396268fe12fd/torch/distributed/_tools/runtime_estimator.py#L209
             torch.cuda.Event.record() inserts events into the GPU stream before/after running the kernel.
             This allows us to measure GPU time without host latency, etc.
             """
-            cpu_start = time.time()
-            start_event.record(torch.cuda.current_stream())
+            start_cuda_event = torch.cuda.Event(enable_timing=True)
+            end_cuda_event = torch.cuda.Event(enable_timing=True)
+            start_cpu_measured = time.time()
+            start_cuda_event.record(torch.cuda.current_stream())
             for _ in range(num_iters):
-                fx_node.target._overloadpacket(*flat_args, **flat_kwargs)
-            end_event.record(torch.cuda.current_stream())
-            cpu_end = time.time()
+                compute_function(*flat_args, **flat_kwargs)
+            end_cuda_event.record(torch.cuda.current_stream())
+            end_cpu_measured = time.time()
             torch.cuda.synchronize()
-            cpu_time = (cpu_end - cpu_start) * 1_000_000  # Second to microsecond
+            cpu_time = (end_cpu_measured - start_cpu_measured) * 1_000_000  # Second to microsecond
             if os.environ["RANK"] == "0":
-                print(f"For fx node {fx_node.name}, cpu measured is {cpu_time}, event dur is {start_event.elapsed_time(end_event)}")
-            total_op_time = start_event.elapsed_time(end_event) * 1000  # Millisecond to microsecond
-            mean_op_time = total_op_time / num_iters
-        return int(mean_op_time)
+                print(
+                    f"For fx node {fx_node.name}, duration measured by CPU is {cpu_time}, duration measured by CUDA Events is {start_cuda_event.elapsed_time(end_cuda_event)}"
+                )
+            total_duration_cuda_event = start_cuda_event.elapsed_time(end_cuda_event) * 1000  # Millisecond to microsecond
+            mean_duration_cuda_event = int(total_duration_cuda_event / num_iters)
+        return mean_duration_cuda_event
 
+    # Create a Compute Chakra Node from an FX Node.
+    # We need to add three attributes:
+    # num_ops: number of flops, used for roofline analysis.
+    # tensor_size: size of the input tensors, used for roofline analysis.
+    # duration_micros: duration of the operation, used for replay.
     def create_comp_node(self, fx_node: fx.Node) -> ChakraNode:
         node_name = fx_node.name
-        estimated_flops = self.estimate_flop_count(fx_node)
+        estimated_flops, can_get_real_optarg = self.estimate_flop_count(fx_node)
         estimated_tensor_size = 0
         estimated_duration = 0
-        if estimated_flops != 1000:
+        if can_get_real_optarg:
             estimated_tensor_size = self.estimate_tensor_size(fx_node)
             estimated_duration = self.measure_duration_microsecond(fx_node)
 
-        if estimated_duration == -1:
-            estimated_duration = 4000
         chakra_node = self.create_chakra_node(node_name, COMP_NODE)
         chakra_node.attr.append(ChakraAttr(name="is_cpu_op", bool_val=False))
         chakra_node.attr.append(ChakraAttr(name="num_ops", int64_val=estimated_flops))
@@ -308,8 +285,6 @@ class ChakraConverter:
 
     # o(chakra id 10) -> [] -> [] -> [] -> o(chakra id 11)
     #          o (chakra id 12) -> |
-
-
 
     # Find which Chakra nodes to declare as upstream dependency for this Chakra node.
     # Starting from corresponding FX node, iterate the FX Graph upwards
@@ -334,39 +309,84 @@ class ChakraConverter:
                 continue
             for next_upstream in upstream_candidate.all_input_nodes:
                 upstream_search_queue.append(next_upstream)
-        return chakra_node
+        return
+
+    def process_fx_node(self, fx_node: fx.Node):
+        # Record node info in internal lookup tables.
+        self.record_fx_node(fx_node)
+
+        # The following conditions check if the FX Node is worth converting to a Chakra Node.
+        # Skip nodes that are 1) placeholders 2) insignificant compute
+        if fx_node.name == "root" or fx_node.op in ["placeholder", "output"] or "getitem" in fx_node.name:
+            return
+        # At this point, all remaining nodes should target the type OpOverload
+        # OpOverload is a PyTorch wrapper for ATen/c10d operators, defined in torch/_ops.py
+        # TODO: Complex cases may involve target with any Callable that are not OpOverload type.
+        if not isinstance(fx_node.target, OpOverload):
+            print(
+                f"""{node_debug_id_str(fx_node)},
+                After filters, we still have a node whose target is not OpOverload but {type(fx_node.target)}"""
+            )
+            return
+        # Remove operators that does not do anything significant.
+        if fx_node.target._opname in skip_operator_list:
+            return
+
+        # Convert to Chakra node.
+        # Check if it should be converted to a COMP or a COMM node.
+        if is_comm_node(fx_node):
+            chakra_node = self.create_comm_node(fx_node)
+        elif is_comp_node(fx_node):
+            chakra_node = self.create_comp_node(fx_node)
+        else:
+            print(f"{node_debug_id_str(fx_node)} is neither c10d or aten")
+            return
+
+        # Add the upstream dependency to the created chakra node.
+        self.add_upstream_dependency(chakra_node, fx_node)
+        self.add_to_chakra_graph(chakra_node, fx_node)
 
     def convert_to_chakra(self, gm: fx.GraphModule):
         with open(self.filename, "wb") as et:
             self.et_file = et
             encode_message(et, GlobalMetadata(version="0.0.4"))
             for fx_node in gm.graph.nodes:
-                # Record node info in internal lookup tables.
-                self.record_fx_node(fx_node)
+                self.process_fx_node(fx_node)
 
-                # In chakra no node for tensor
-                # Skip nodes that are 1) placeholders 2) insignificant compute
-                if fx_node.name == "root" or fx_node.op in ["placeholder", "output"] or "getitem" in fx_node.name:
-                    continue
-                # At this point, all remaining nodes should target the type OpOverload
-                # OpOverload is a PyTorch wrapper for ATen/c10d operators, defined in torch/_ops.py
-                # TODO: Complex cases may involve target with any Callable that are not OpOverload type.
-                if not isinstance(fx_node.target, OpOverload):
-                    print(
-                        f"""{node_debug_id_str(fx_node)},
-                        After filters, we still have a node whose target is not OpOverload but {type(fx_node.target)}"""
-                    )
-                    continue
-                # Remove operators that does not do anything significant.
-                elif fx_node.target._opname in skip_operator_list:
-                    continue
-                # Convert to Chakra node. Check if it should be converted to a COMP or a COMM node.
-                elif is_comm_node(fx_node):
-                    chakra_node = self.create_comm_node(fx_node)
-                elif is_comp_node(fx_node):
-                    chakra_node = self.create_comp_node(fx_node)
-                else:
-                    print(f"{node_debug_id_str(fx_node)} is neither c10d or aten")
-                    continue
-                chakra_node = self.add_upstream_dependency(chakra_node, fx_node)
-                self.add_to_chakra_graph(chakra_node, fx_node)
+    # def lookup_duration(self, fx_node: fx.Node) -> int:  # noqa: C901. TODO: Make logger print only for rank=0. (Remove the branches = code complexity)
+    #     success, args, kwargs = fx_utils.get_fake_args_kwargs(fx_node)
+    #     if not success:
+    #         if os.environ["RANK"] == "0":
+    #             print(f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}")
+    #         return 1000  # Arbitrary number
+
+    #     lookup_op = "-1"
+    #     target_op = fx_node.target._overloadpacket
+    #     aten = torch.ops.aten
+    #     if target_op == aten.addmm or target_op == aten.mm:
+    #         lookup_op = "linear"
+
+    #     a = args[0].size()
+    #     b = args[1].size()
+
+    #     aten = torch.ops.aten
+    #     if fx_node.target._overloadpacket != aten.mm:
+    #         a = args[1].size()
+    #         b = args[2].size()
+    #     if a[1] != b[0]:
+    #         print(f"{node_debug_id_str(fx_node)} tensor size does not match for matrix multiplication: {a[1]}, {b[0]}")
+
+    #     numel = a[0] * a[1] * b[1]
+    #     if lookup_op not in timestamp_map:
+    #         if os.environ["RANK"] == "0":
+    #             print(f"{node_debug_id_str(fx_node)} does not have lookup op {lookup_op} for {target_op} in lookup map")
+    #         return -1
+    #     if numel in timestamp_map[lookup_op]:
+    #         lookup_duration = timestamp_map[lookup_op][numel]
+    #     else:
+    #         if os.environ["RANK"] == "0":
+    #             print(f"{node_debug_id_str(fx_node)} Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} with total numel {numel} not in map")
+    #         return -1
+    #     if os.environ["RANK"] == "0":
+    #         print(f"Estimated duration, a: {a[0]} {a[1]} b: {b[0]} {b[1]} result {lookup_duration}")
+    #     return lookup_duration

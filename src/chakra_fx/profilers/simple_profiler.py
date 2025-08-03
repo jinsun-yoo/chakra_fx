@@ -66,7 +66,7 @@ class SimpleModelProfiler(ModelProfiler):
             run_custom_backend_all_rank,
         )
 
-    def run_training_session(self):
+    def run_fwbw_pass(self):
         super().compile_model()
         output = self.model(self.sample_input)
         torch.cuda.synchronize()

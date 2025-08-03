@@ -14,19 +14,13 @@ def parse_args():
         help="If true, run custom backend on all rank, not just 0",
     )
     parser.add_argument(
-        "--dse_config_filepath",
-        type=str,
-        default=None,
-        required=False,
-        help="Filepath of the DSE configuration",
-    )
-    parser.add_argument(
-        "--actions",
+        "--fxgraph_actions",
         type=str,
         default="just",
         required=False,
-        help="""Comma delimited key strings of which functions to invoke in backend compiler.
-        'just': just_hello, 'chakra': get_chakra_graph, 'pdf': print_pdf_file, 'dumpgraph': save_fxgraph_module""",
+        help="""Choose which actions to perform on the fxgraph provided by torch.compile. Comma delimited string.
+        Refer to custom_backend_compiler for a detailed description of each action.""",
+        choices=["chakra", "just", "pdf", "dot", "dumpgraph", "table", "histogram", "opcount"],
     )
     parser.add_argument(
         "--exp_tag",
@@ -39,17 +33,32 @@ def parse_args():
     parser.add_argument(
         "--job",
         type=str,
-        default="sample",
+        default="fwbw",
         required=False,
-        help="""Either 'sample' or 'training' or 'postexec_chakra.
-        \nDecides whether to run a single forward pass on a sample input, or a full training session.""",
+        help=(
+            "What job to perform on the selected model. Possible options are:\n"
+            "  fw: Run a single forward pass on a sample input.\n"
+            "  fwbw: Run a single forward-backward pass on a sample input.\n"
+            "  postexec_chakra: Collect the post-execution Chakra graph.\n"
+            "  eager: Run a single forward-backward pass on a sample input, but using eager mode.\n"
+            "  nsys: Run the model under nsys profiler."
+        ),
+        choices=["fw", "fwbw", "postexec_chakra", "eager", "nsys"],
     )
     parser.add_argument(
         "--model",
         type=str,
-        default="nanogpt",
+        default="llama",
         required=False,
-        help="""Either 'simple' or 'nanogpt' or 'resnet18'. Chooses which model to work on.""",
+        help="""Choose which model to work on. Each model has its own profiler under src/chakra_fx/profilers.""",
+        choices=["llama", "simple", "nanogpt", "resnet18"],
+    )
+    parser.add_argument(
+        "--dse_config_filepath",
+        type=str,
+        default=None,
+        required=False,
+        help="[IGNORE FOR NOW] Filepath of the DSE configuration",
     )
     args = parser.parse_args()
 
