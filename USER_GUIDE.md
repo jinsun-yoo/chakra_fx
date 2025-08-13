@@ -78,6 +78,9 @@ torchrun ...
 ### Extracting Chakra traces
 ```bash
 cd chakra_fx #top directory
+# IF using within docker container, 
+# MUST switch to user owning chakra_fx
+su {USER_NAME} 
 mkdir test_output
 torchrun --nproc-per-node=4 profile_fxgraph.py --fxgraph_actions chakra --exp_tag test_output --job fwbw --model llama
 ls test_output
@@ -88,12 +91,12 @@ cat trace.0.json
 
 ### Extracting Chakra traces for different configs
 ```bash
-torchrun --nproc-per-node=8 profile_fxgraph.py --fxgraph_actions chakra --exp_tag test_output --job fwbw --model llama --dse_config_filepath configs/llama_TP_8.yml
 
 torchrun --nproc-per-node=8 profile_fxgraph.py --fxgraph_actions chakra --exp_tag test_output --job fwbw --model llama --dse_config_filepath configs/llama_FSDP_8.yml
 
 torchrun --nproc-per-node=4 profile_fxgraph.py --fxgraph_actions chakra --exp_tag test_output --job fwbw
  --model llama --dse_config_filepath configs/llama_FSDP_4.yml
 
+torchrun --nproc-per-node=8 profile_fxgraph.py --fxgraph_actions chakra --exp_tag test_output --job fwbw --model llama --dse_config_filepath configs/llama_TP_8.yml
 
 ```
