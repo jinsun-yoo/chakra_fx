@@ -21,8 +21,9 @@ tokenizer_n_words = 12_288
 batch_size = 8
 seq_length = 2048
 
-model_config = llama3_configs["debugmodel"]
+model_config = llama3_configs["8B"]
 print(model_config)
+model_config.n_layers = 6 
 model_config.vocab_size = tokenizer_n_words
 model_config.max_seq_len = seq_length
 model_config.norm_type = "layernorm"
@@ -30,7 +31,9 @@ model = Transformer(model_config)
 device = "cuda:0"
 model.to(device)
 world_size = int(os.environ["WORLD_SIZE"])
-device_mesh = init_device_mesh(device_type="cuda", mesh_shape=(world_size,))
+device_mesh = init_device_mesh(device_type="cuda", mesh_shape=(world_size,), backend_override={
+    0: "gloo",
+})
 parallelize_module(
     model,
     device_mesh,
@@ -86,14 +89,14 @@ def kineto_trace_handler(profiler):
 
 with profile(
     activities=[torch.profiler.ProfilerActivity.CPU, torch.profiler.ProfilerActivity.CUDA],
-    schedule=torch.profiler.schedule(wait=1, warmup=1, active=3),
+    schedule=torch.profiler.schedule(wait=0, warmup=0, active=1),
     on_trace_ready=kineto_trace_handler,
     execution_trace_observer=et,
     record_shapes=True,
 ) as prof:
-    for _ in range(5):
+    for _ in range(1):
         output = model(sample_input)
-        torch.cuda.synchronize()
+        #torch.cuda.synchronize()
         labels = torch.randint(high=tokenizer_n_words, size=(batch_size, seq_length), dtype=torch.int64, device=device)
         loss = torch.nn.functional.cross_entropy(output.flatten(0, 1), labels.flatten(0, 1))
         loss.backward()

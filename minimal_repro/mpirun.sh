@@ -1,0 +1,1 @@
+mpirun -np 4 -N 1 torchrun --nnodes 4 --nproc-per-node=1 --rdzv-id=456 --rdzv-backend=c10d --rdzv-endpoint=$(hostname):29500 collect_chakra.py
