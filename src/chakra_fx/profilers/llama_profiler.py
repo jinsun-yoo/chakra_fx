@@ -2,6 +2,7 @@ import os
 from typing import List
 
 import torch
+import yaml
 from torch.distributed._tensor import DTensor
 from torchtitan.config_manager import ActivationCheckpoint, JobConfig, Training
 from torchtitan.distributed.parallel_dims import ParallelDims
@@ -58,8 +59,9 @@ class LlamaProfiler(ModelProfiler):
         exp_tag: str,
         fxgraph_actions: List[str],
         run_custom_backend_all_rank: bool,
-        dse_config_filepath: str,
         use_pytorch_ir: bool = False,
+        dse_config_filepath: str = None,
+        job_config_filepath: str = None,
     ):
         print("start llama profiler")
         self.name = "llama"
@@ -79,21 +81,24 @@ class LlamaProfiler(ModelProfiler):
         model = SimpleFSDPTransformer(model_config).to("cuda:0")
 
         print("Parallelizing model")
-        world_size = int(os.environ["WORLD_SIZE"])
-        parallel_dims = ParallelDims(
-            dp_replicate=world_size // 2,
-            dp_shard=world_size // 2,
-            tp=1,
-            pp=1,
-            ep=1,
-            cp=1,
-            world_size=world_size,
-        )
         job_config = JobConfig(
             training=Training(compile=False, seq_len=sequence_length, mixed_precision_param="float32", mixed_precision_reduce="float32"),
             activation_checkpoint=ActivationCheckpoint(mode="none"),
         )
-        parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+        if dse_config_filepath is not None:
+            parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
+        else:
+            world_size = int(os.environ["WORLD_SIZE"])
+            parallel_dims = ParallelDims(
+                dp_replicate=world_size // 2,
+                dp_shard=world_size // 2,
+                tp=1,
+                pp=1,
+                ep=1,
+                cp=1,
+                world_size=world_size,
+            )
+            parallelized_model = parallelize_llama(model, parallel_dims, job_config)
 
         print("finish applying parallelization")
 
@@ -109,6 +114,27 @@ class LlamaProfiler(ModelProfiler):
             run_custom_backend_all_rank,
             use_pytorch_ir,
         )
+
+    def apply_configuration(self, model, dse_config_filepath: str, job_config: JobConfig):
+        with open(dse_config_filepath, "r") as file:
+            data = yaml.safe_load(file)
+        if data is None:
+            return model
+
+        dim_parallelizations = data["parallelization"]
+        world_size = int(os.environ["WORLD_SIZE"])
+        parallel_dims = ParallelDims(
+            dp_replicate=dim_parallelizations.get("dp_replicate", 1),
+            dp_shard=dim_parallelizations.get("dp_shard", 1),
+            tp=dim_parallelizations["tp"],
+            pp=dim_parallelizations.get("pp", 1),
+            ep=dim_parallelizations.get("ep", 1),
+            cp=dim_parallelizations.get("cp", 1),
+            world_size=world_size,
+        )
+
+        parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+        return parallelized_model
 
     def loss_fn(self, pred, labels):
         # TODO(ruisizhang123): temporary fix to enable async TP for full model compile

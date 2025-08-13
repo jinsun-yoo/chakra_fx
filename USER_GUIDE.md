@@ -85,3 +85,15 @@ trace.0.et  trace.1.et  trace.2.et  trace.3.et
 chakra_jsonizer --input_filename trace.0.et --output_filename trace.0.json
 cat trace.0.json
 ```
+
+### Extracting Chakra traces for different configs
+```bash
+torchrun --nproc-per-node=8 profile_fxgraph.py --fxgraph_actions chakra --exp_tag test_output --job fwbw --model llama --dse_config_filepath configs/llama_TP_8.yml
+
+torchrun --nproc-per-node=8 profile_fxgraph.py --fxgraph_actions chakra --exp_tag test_output --job fwbw --model llama --dse_config_filepath configs/llama_FSDP_8.yml
+
+torchrun --nproc-per-node=4 profile_fxgraph.py --fxgraph_actions chakra --exp_tag test_output --job fwbw
+ --model llama --dse_config_filepath configs/llama_FSDP_4.yml
+
+
+```
