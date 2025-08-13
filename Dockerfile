@@ -15,14 +15,16 @@ RUN sed -i '/torchvision==/d' /etc/pip/constraint.txt
 RUN pip install --no-input --pre torch==2.9.0.dev20250704+cu129 torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/nightly/cu129
 
 # Edit the files we need to edit
-RUN chown -R 3029572:2626 /usr/local/lib/python3.12/dist-packages/torch
+RUN chown -R $USER_ID:$GROUP_ID /usr/local/lib/python3.12/dist-packages/torch
 
 # Apply patch
 COPY changes.patch /tmp/changes.patch
 RUN patch /usr/local/lib/python3.12/dist-packages/torch/distributed/tensor/placement_types.py /tmp/changes.patch
 
 # Install other dependencies
-RUN pip install torchtitan
+RUN git clone https://github.com/pytorch/torchtitan && cd torchtitan && git checkout 183f6fce1a586ce66027deee2c4fdb823616cd75
+RUN cd torchtitan && pip install -r requirements.txt && pip install .
+
 RUN git clone https://github.com/mlcommons/chakra.git
 RUN cd chakra && pip install .
 RUN pip install --upgrade protobuf
