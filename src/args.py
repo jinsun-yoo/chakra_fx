@@ -62,7 +62,7 @@ def parse_args():
     )
     args = parser.parse_args()
 
-    args.action_list = args.actions.split(",")
+    args.action_list = args.fxgraph_actions.split(",")
     if args.exp_tag == "":
         now_utc = datetime.now(timezone.utc)
         args.exp_tag = now_utc.strftime("%Y-%m-%d_%H-%M-%S")

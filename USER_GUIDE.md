@@ -79,7 +79,7 @@ torchrun ...
 ```bash
 cd chakra_fx #top directory
 mkdir test_output
-torchrun --nproc-per-node=4 profile_fxgraph.py --actions chakra --exp_tag test_output --job sample --model llama
+torchrun --nproc-per-node=4 profile_fxgraph.py --fxgraph_actions chakra --exp_tag test_output --job fwbw --model llama
 ls test_output
 trace.0.et  trace.1.et  trace.2.et  trace.3.et
 chakra_jsonizer --input_filename trace.0.et --output_filename trace.0.json

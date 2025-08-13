@@ -98,16 +98,16 @@ class LlamaProfiler(ModelProfiler):
         print("finish applying parallelization")
 
         sample_input = torch.randint(high=tokenizer_n_words, size=(batch_size, sequence_length), dtype=torch.int64, device="cuda:0")
-        sample_label = torch.rand(batch_size, sequence_length, type=torch.int64, device="cuda:0")
+        sample_label = torch.randint(high=tokenizer_n_words, size=(batch_size, sequence_length), dtype=torch.int64, device="cuda:0")
 
         super().__init__(
-            use_pytorch_ir,
             parallelized_model,
             sample_input,
             sample_label,
             exp_tag,
             fxgraph_actions,
             run_custom_backend_all_rank,
+            use_pytorch_ir,
         )
 
     def loss_fn(self, pred, labels):

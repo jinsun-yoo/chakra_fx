@@ -21,7 +21,7 @@ if __name__ == "__main__":
             profiler = LlamaProfiler(
                 job=args.job,
                 exp_tag=args.exp_tag,
-                fxgraph_actions=args.fxgraph_actions,
+                fxgraph_actions=args.action_list,
                 run_custom_backend_all_rank=args.custom_backend_all_rank,
                 dse_config_filepath=args.dse_config_filepath,
             )
@@ -31,7 +31,7 @@ if __name__ == "__main__":
             profiler = SimpleModelProfiler(
                 job=args.job,
                 exp_tag=args.exp_tag,
-                fxgraph_actions=args.fxgraph_actions,
+                fxgraph_actions=args.action_list,
                 run_custom_backend_all_rank=args.custom_backend_all_rank,
                 dse_config_filepath=args.dse_config_filepath,
             )
@@ -41,7 +41,7 @@ if __name__ == "__main__":
             profiler = NanoGptProfiler(
                 job=args.job,
                 exp_tag=args.exp_tag,
-                fxgraph_actions=args.fxgraph_actions,
+                fxgraph_actions=args.action_list,
                 run_custom_backend_all_rank=args.custom_backend_all_rank,
                 dse_config_filepath=args.dse_config_filepath,
             )
@@ -51,7 +51,7 @@ if __name__ == "__main__":
             profiler = ResNetProfiler(
                 job=args.job,
                 exp_tag=args.exp_tag,
-                fxgraph_actions=args.fxgraph_actions,
+                fxgraph_actions=args.action_list,
                 run_custom_backend_all_rank=args.custom_backend_all_rank,
                 dse_config_filepath=args.dse_config_filepath,
             )
