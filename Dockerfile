@@ -23,6 +23,8 @@ RUN patch /usr/local/lib/python3.12/dist-packages/torch/distributed/tensor/place
 
 # Install other dependencies
 RUN git clone https://github.com/pytorch/torchtitan && cd torchtitan && git checkout 183f6fce1a586ce66027deee2c4fdb823616cd75
+COPY torchtitan.patch /tmp/torchtitan.patch
+RUN patch -d ../torchtitan -p1 < /tmp/torchtitan.patch
 RUN cd torchtitan && pip install -r requirements.txt && pip install .
 
 RUN git clone https://github.com/mlcommons/chakra.git

@@ -71,8 +71,8 @@ class LlamaProfiler(ModelProfiler):
         model_config = TransformerModelArgs(
             dim=256,
             n_layers=2,
-            n_heads=2,
-            n_kv_heads=2,
+            n_heads=8,
+            n_kv_heads=8,
             rope_theta=500000,
         )
         model_config.vocab_size = tokenizer_n_words
