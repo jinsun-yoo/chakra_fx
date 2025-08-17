@@ -99,4 +99,10 @@ torchrun --nproc-per-node=4 profile_fxgraph.py --fxgraph_actions chakra --exp_ta
 
 torchrun --nproc-per-node=8 profile_fxgraph.py --fxgraph_actions chakra --exp_tag test_output --job fwbw --model llama --dse_config_filepath configs/llama_TP_8.yml
 
+torchrun --nproc-per-node=16 profile_fxgraph.py --fxgraph_actions chakra --exp_tag test_output --job fwbw --model llama --dse_config_filepath configs/llama_TP_4_FSDP_4.yml
+
 ```
+
+### For debugging
+```bash
+TORCH_SHOW_CPP_STACKTRACES=1 TORCH_LOGS="+dynamo,+aot_graphs,bytecode" torchrun --nproc-per-node=4 --local-ranks-filter=0 profile_fxgraph.py --fxgraph_actions chakra --exp_tag test_output --job fwbw --model llama --dse_config_filepath configs/llama_TP_4.yml
