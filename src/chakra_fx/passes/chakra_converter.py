@@ -216,8 +216,16 @@ class ChakraConverter:
                 # if type(arg) is fx.Node:
                 #     return arg
                 fake_tensor: torch._subclasses.fake_tensor.FakeTensor = arg.meta["val"]
-                real_tensor = torch.empty(fake_tensor.size(), dtype=fake_tensor.dtype, device=fake_tensor.device)
-                real_tensor = real_tensor.as_strided(fake_tensor.size(), fake_tensor.stride())
+                faketensor_size = fake_tensor.size()
+                # [NOTE]: Abandon the change below. Errs with TP, DTensor. For now, modify PT code to force lowering, at 'graph_compile.py'
+                # torch.compile(dynamic=True) needed to trigger AOT lowering (avoid lazy lowering)
+                # size_array = []
+                # for size_value in fake_tensor.size():
+                #     size_value_resolved = int(size_value)
+                #     size_array.append(size_value_resolved)
+                # faketensor_size = torch.Size(size_array)
+                real_tensor = torch.empty(faketensor_size, dtype=fake_tensor.dtype, device=fake_tensor.device)
+                real_tensor = real_tensor.as_strided(faketensor_size, fake_tensor.stride())
                 return real_tensor
 
             flat_args = [realify_fake_tensor(arg) for arg in fx_node.args]

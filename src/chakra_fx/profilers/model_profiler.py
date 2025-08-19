@@ -64,7 +64,6 @@ class ModelProfiler:
                     self.model,
                     backend=aot_autograd(fw_compiler=self._custom_aten_compiler),
                     fullgraph=True,
-                    dynamic=True
                 )
         else:
             compiled_model = torch.compile(self.model)
