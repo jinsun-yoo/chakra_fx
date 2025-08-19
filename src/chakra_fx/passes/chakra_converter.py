@@ -194,7 +194,7 @@ class ChakraConverter:
         a = args[0].size()
         b = args[1].size()
 
-        if fx_node.target._overloadpacket != torch.ops.aten.mm:
+        if fx_node.target._overloadpacket != torch.ops.aten.mm and fx_node.target._overloadpacket != torch.ops.aten._scaled_mm:
             a = args[1].size()
             b = args[2].size()
         numbytes_per_element = 4
@@ -216,7 +216,8 @@ class ChakraConverter:
                 # if type(arg) is fx.Node:
                 #     return arg
                 fake_tensor: torch._subclasses.fake_tensor.FakeTensor = arg.meta["val"]
-                real_tensor = torch.rand(fake_tensor.size(), dtype=fake_tensor.dtype, device=fake_tensor.device)
+                real_tensor = torch.empty(fake_tensor.size(), dtype=fake_tensor.dtype, device=fake_tensor.device)
+                real_tensor = real_tensor.as_strided(fake_tensor.size(), fake_tensor.stride())
                 return real_tensor
 
             flat_args = [realify_fake_tensor(arg) for arg in fx_node.args]

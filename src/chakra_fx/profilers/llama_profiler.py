@@ -4,11 +4,12 @@ from typing import List
 import torch
 import yaml
 from torch.distributed._tensor import DTensor
-from torchtitan.config_manager import ActivationCheckpoint, JobConfig, Training
+from torchtitan.config_manager import ActivationCheckpoint, JobConfig, Training, Model, Float8
 from torchtitan.distributed.parallel_dims import ParallelDims
 from torchtitan.experiments.simple_fsdp import SimpleFSDPTransformer
 from torchtitan.experiments.simple_fsdp.parallelize import parallelize_llama
 from torchtitan.models.llama3.model.args import TransformerModelArgs
+from torchtitan.protocols.model_converter import build_model_converters
 
 from src.chakra_fx.profilers.model_profiler import ModelProfiler
 
@@ -134,9 +135,19 @@ class LlamaProfiler(ModelProfiler):
             cp=dim_parallelizations.get("cp", 1),
             world_size=world_size,
         )
+        enable_fp8 = data.get("float8", {})
+        if enable_fp8:
+            print("Use FP8")
+            job_config.float8 = Float8(
+                enable_fsdp_float8_all_gather=True,
+                precompute_float8_dynamic_scale_for_fsdp=True,
+                force_recompute_fp8_weight_in_bwd=True,
+                filter_fqns=["output"]
+            )
+            job_config.model.converters = ["float8"]
 
-        parallelized_model = parallelize_llama(model, parallel_dims, job_config)
-        return parallelized_model
+        model_converters = build_model_converters(job_config, parallel_dims)
+        model_converters.convert(model)
 
         parallelized_model = parallelize_llama(model, parallel_dims, job_config)
         return parallelized_model
