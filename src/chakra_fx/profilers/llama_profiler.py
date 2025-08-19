@@ -75,10 +75,12 @@ class LlamaProfiler(ModelProfiler):
             n_kv_heads=8,
             rope_theta=500000,
         )
+        # model_config = llama3_configs["8B"]
         model_config.vocab_size = tokenizer_n_words
         model_config.max_seq_len = 2048  # job_config.training.seq_len
         model_config.norm_type = "layernorm"  # job_config.model.norm_type
-        model = SimpleFSDPTransformer(model_config).to("cuda:0")
+        model = SimpleFSDPTransformer(model_config)
+        model.to("cuda:0")
 
         print("Parallelizing model")
         job_config = JobConfig(
@@ -126,7 +128,7 @@ class LlamaProfiler(ModelProfiler):
         parallel_dims = ParallelDims(
             dp_replicate=dim_parallelizations.get("dp_replicate", 1),
             dp_shard=dim_parallelizations.get("dp_shard", 1),
-            tp=dim_parallelizations["tp"],
+            tp=dim_parallelizations.get("tp", 1),
             pp=dim_parallelizations.get("pp", 1),
             ep=dim_parallelizations.get("ep", 1),
             cp=dim_parallelizations.get("cp", 1),
@@ -136,6 +138,8 @@ class LlamaProfiler(ModelProfiler):
         parallelized_model = parallelize_llama(model, parallel_dims, job_config)
         return parallelized_model
 
+        parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+        return parallelized_model
     def loss_fn(self, pred, labels):
         # TODO(ruisizhang123): temporary fix to enable async TP for full model compile
         if isinstance(pred, DTensor):

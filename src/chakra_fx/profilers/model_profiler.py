@@ -44,12 +44,12 @@ class ModelProfiler:
         self.sample_label = sample_label
         return
 
-    def __custom_pytorch_compiler(self, gm: torch.fx.GraphModule, _: List[torch.Tensor]):
+    def _custom_pytorch_compiler(self, gm: torch.fx.GraphModule, _: List[torch.Tensor]):
         self.fxgraph_handler(gm, self)
         self.subgraph_idx += 1
         return gm.forward
 
-    def __custom_aten_compiler(self, gm: torch.fx.GraphModule, _: List[torch.Tensor]):
+    def _custom_aten_compiler(self, gm: torch.fx.GraphModule, _: List[torch.Tensor]):
         self.fxgraph_handler(gm, self)
         self.subgraph_idx += 1
         print("****Exit Custom Compiler****")
@@ -58,12 +58,13 @@ class ModelProfiler:
     def compile_model(self):
         if self.run_custom_backend:
             if self.use_pytorch_ir:
-                compiled_model = torch.compile(self.model, backend=self.__custom_pytorch_compiler)
+                compiled_model = torch.compile(self.model, backend=self._custom_pytorch_compiler, dynamic=True, fullgraph=True)
             else:
                 compiled_model = torch.compile(
                     self.model,
-                    backend=aot_autograd(fw_compiler=self.__custom_aten_compiler),
+                    backend=aot_autograd(fw_compiler=self._custom_aten_compiler),
                     fullgraph=True,
+                    dynamic=True
                 )
         else:
             compiled_model = torch.compile(self.model)
