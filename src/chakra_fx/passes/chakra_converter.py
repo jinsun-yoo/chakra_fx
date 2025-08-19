@@ -1,4 +1,5 @@
 import os
+import csv
 
 import torch
 import torch._inductor.fx_utils as fx_utils
@@ -109,7 +110,9 @@ class ChakraConverter:
         # Filld only when an FX Node has been converted to a Chakra Node.
         self.fxname_chakraid_map = {}
 
-    def create_chakra_node(self, node_name: str, node_type: ChakraNodeType) -> ChakraNode:
+    def create_chakra_node(
+        self, node_name: str, node_type: ChakraNodeType
+    ) -> ChakraNode:
         """Generate a new ChakraNode with a unique ID."""
         node = ChakraNode()
         node.id = self.chakra_node_id
@@ -124,13 +127,17 @@ class ChakraConverter:
         comm_size = 0
         comm_type = c10d_chakra_map[op_name]
         if "val" not in fx_node.meta or not isinstance(fx_node.meta["val"], FakeTensor):
-            print(f"Sanity check: {node_debug_id_str(fx_node)} is c10d, but fake output is not found")
+            print(
+                f"Sanity check: {node_debug_id_str(fx_node)} is c10d, but fake output is not found"
+            )
             exit()
 
         import torch.distributed.distributed_c10d as c10d
 
         process_group_name = fx_node.args[-1]
-        process_group_ranks = c10d.get_process_group_ranks(c10d._resolve_process_group(process_group_name))
+        process_group_ranks = c10d.get_process_group_ranks(
+            c10d._resolve_process_group(process_group_name)
+        )
         num_process_groups = len(c10d._world.pg_names)
 
         # Use FakeTensor, which is included in the FX Graph as a fake input, to determine communication size
@@ -146,14 +153,22 @@ class ChakraConverter:
 
         chakra_node = self.create_chakra_node(node_name, COMM_COLL_NODE)
         chakra_node.attr.append(ChakraAttr(name="is_cpu_op", bool_val=False))
-        chakra_node.attr.append(ChakraAttr(name="comm_type", int64_val=c10d_chakra_map[op_name]))
+        chakra_node.attr.append(
+            ChakraAttr(name="comm_type", int64_val=c10d_chakra_map[op_name])
+        )
         chakra_node.attr.append(ChakraAttr(name="comm_size", int64_val=comm_size))
 
         # The ProcessGroup related attribute name and values follow the proposal in the MLC Chakra WG meeting of 2024-09-09.
         # The actual attribute names may change in the future.
-        chakra_node.attr.append(ChakraAttr(name="pg_name", string_val=process_group_name))
-        chakra_node.attr.append(ChakraAttr(name="group_size", int64_val=len(process_group_ranks)))
-        chakra_node.attr.append(ChakraAttr(name="group_count", int64_val=num_process_groups))
+        chakra_node.attr.append(
+            ChakraAttr(name="pg_name", string_val=process_group_name)
+        )
+        chakra_node.attr.append(
+            ChakraAttr(name="group_size", int64_val=len(process_group_ranks))
+        )
+        chakra_node.attr.append(
+            ChakraAttr(name="group_count", int64_val=num_process_groups)
+        )
         pg_ranks_protobuf = Int64List()
         pg_ranks_protobuf.values.extend(process_group_ranks)
         chakra_node.attr.append(ChakraAttr(name="ranks", int64_list=pg_ranks_protobuf))
@@ -183,12 +198,14 @@ class ChakraConverter:
             fx_node.target(*args, **kwargs)
             return flop_counter_mode.get_total_flops(), True
 
-    def estimate_tensor_size(self, fx_node: fx.Node) -> int:
+    def estimate_tensor_size(self, fx_node: fx.Node) -> tuple:
         success, args, kwargs = fx_utils.get_fake_args_kwargs(fx_node)
         if not success:
             if os.environ["RANK"] == "0":
-                print(f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}")
-            return 0
+                print(
+                    f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}"
+                )
+            return 0, (0, 0), (0, 0)
 
         # Assumption: The first two arguments are the input tensors.
         a = args[0].size()
@@ -197,11 +214,16 @@ class ChakraConverter:
         if fx_node.target._overloadpacket != torch.ops.aten.mm and fx_node.target._overloadpacket != torch.ops.aten._scaled_mm:
             a = args[1].size()
             b = args[2].size()
-        numbytes_per_element = 4
-        estimated_tensor_size = 2 * numbytes_per_element * (a[0] * a[1] + b[0] * b[1] + a[0] * b[1])
+        numbytes_per_element = 4  # FP32
+        estimated_tensor_size = (
+            2 * numbytes_per_element * (a[0] * a[1] + b[0] * b[1] + a[0] * b[1])
+        )
         if os.environ["RANK"] == "0":
-            print(f"Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} result {estimated_tensor_size}")
-        return estimated_tensor_size
+            print(
+                f"Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} result {estimated_tensor_size}"
+            )
+
+        return estimated_tensor_size, a, b
 
     # Measure the duration of a compute operation by running it on actual GPU.
     # This is possible because we have 1) the operation and 2) the symbolic shape of the input tensors (i.e. FakeTensor).
@@ -252,40 +274,70 @@ class ChakraConverter:
             end_cuda_event.record(torch.cuda.current_stream())
             end_cpu_measured = time.time()
             torch.cuda.synchronize()
-            cpu_time = (end_cpu_measured - start_cpu_measured) * 1_000_000  # Second to microsecond
+            cpu_time = (
+                end_cpu_measured - start_cpu_measured
+            ) * 1_000_000  # Second to microsecond
             if os.environ["RANK"] == "0":
                 print(
                     f"For fx node {fx_node.name}, duration measured by CPU is {cpu_time}, duration measured by CUDA Events is {start_cuda_event.elapsed_time(end_cuda_event)}"
                 )
-            total_duration_cuda_event = start_cuda_event.elapsed_time(end_cuda_event) * 1000  # Millisecond to microsecond
+            total_duration_cuda_event = (
+                start_cuda_event.elapsed_time(end_cuda_event) * 1000
+            )  # Millisecond to microsecond
             mean_duration_cuda_event = int(total_duration_cuda_event / num_iters)
         return mean_duration_cuda_event
+
+    from typing import Tuple
+
+    def _profile_comp_node(
+        self, fx_node: fx.Node
+    ) -> Tuple[int, int, torch.Size, torch.Size, int]:
+        estimated_flops, can_get_real_optarg = self.estimate_flop_count(fx_node)
+
+        estimated_tensor_size = 0
+        a_shape = torch.Size()
+        b_shape = torch.Size()
+        estimated_duration = 0
+
+        if can_get_real_optarg:
+            estimated_tensor_size, a_shape, b_shape = self.estimate_tensor_size(fx_node)
+            estimated_duration = self.measure_duration_microsecond(fx_node)
+
+        return (
+            estimated_flops,
+            estimated_tensor_size,
+            a_shape,
+            b_shape,
+            estimated_duration,
+        )
 
     # Create a Compute Chakra Node from an FX Node.
     # We need to add three attributes:
     # num_ops: number of flops, used for roofline analysis.
     # tensor_size: size of the input tensors, used for roofline analysis.
     # duration_micros: duration of the operation, used for replay.
+    # def create_comp_node(self, fx_node: fx.Node) -> tuple[ChakraNode, tuple, tuple, float]:
     def create_comp_node(self, fx_node: fx.Node) -> ChakraNode:
-        node_name = fx_node.name
-        estimated_flops, can_get_real_optarg = self.estimate_flop_count(fx_node)
-        estimated_tensor_size = 0
-        estimated_duration = 0
-        if can_get_real_optarg:
-            estimated_tensor_size = self.estimate_tensor_size(fx_node)
-            estimated_duration = self.measure_duration_microsecond(fx_node)
+        flops, tensor_size, _, _, duration = self._profile_comp_node(fx_node)
 
+        node_name = fx_node.name
         chakra_node = self.create_chakra_node(node_name, COMP_NODE)
+
+        # is_cpu = "cpu" in str(fx_node.meta.get('tensor_meta', [{}])[0].get('device', 'cuda'))
+
         chakra_node.attr.append(ChakraAttr(name="is_cpu_op", bool_val=False))
-        chakra_node.attr.append(ChakraAttr(name="num_ops", int64_val=estimated_flops))
-        chakra_node.attr.append(ChakraAttr(name="tensor_size", uint64_val=estimated_tensor_size))
-        chakra_node.duration_micros = estimated_duration
+        chakra_node.attr.append(ChakraAttr(name="num_ops", int64_val=flops))
+        chakra_node.attr.append(ChakraAttr(name="tensor_size", uint64_val=tensor_size))
+        chakra_node.duration_micros = duration
+
         return chakra_node
 
     def record_fx_node(self, fx_node: fx.Node):
         if fx_node.name in self.fxnode_name_lookup_map:
             # Sanity check. This is VERY unlikely.
-            print(f"{node_debug_id_str(fx_node)} Already has a node with the same name!")
+            print(
+                f"{node_debug_id_str(fx_node)} Already has a node with the same name!"
+            )
         self.fxnode_name_lookup_map[fx_node.name] = fx_node
 
     def add_to_chakra_graph(self, chakra_node: ChakraNode, fx_node: fx.Node):
@@ -302,7 +354,10 @@ class ChakraConverter:
         upstream_search_queue = fx_node.all_input_nodes
         while len(upstream_search_queue) > 0:
             upstream_candidate = upstream_search_queue.pop()
-            if upstream_candidate.name == "root" or upstream_candidate.op == "placeholder":
+            if (
+                upstream_candidate.name == "root"
+                or upstream_candidate.op == "placeholder"
+            ):
                 continue
             upstream_name = upstream_candidate.name
             # Sanity check.
@@ -320,13 +375,17 @@ class ChakraConverter:
                 upstream_search_queue.append(next_upstream)
         return
 
-    def process_fx_node(self, fx_node: fx.Node):
+    def process_fx_node(self, fx_node: fx.node, csv_writer=None):
         # Record node info in internal lookup tables.
         self.record_fx_node(fx_node)
 
         # The following conditions check if the FX Node is worth converting to a Chakra Node.
         # Skip nodes that are 1) placeholders 2) insignificant compute
-        if fx_node.name == "root" or fx_node.op in ["placeholder", "output"] or "getitem" in fx_node.name:
+        if (
+            fx_node.name == "root"
+            or fx_node.op in ["placeholder", "output"]
+            or "getitem" in fx_node.name
+        ):
             return
         # At this point, all remaining nodes should target the type OpOverload
         # OpOverload is a PyTorch wrapper for ATen/c10d operators, defined in torch/_ops.py
@@ -343,24 +402,43 @@ class ChakraConverter:
 
         # Convert to Chakra node.
         # Check if it should be converted to a COMP or a COMM node.
+        chakra_node = None
         if is_comm_node(fx_node):
             chakra_node = self.create_comm_node(fx_node)
         elif is_comp_node(fx_node):
+            _, _, a_shape, b_shape, duration = self._profile_comp_node(fx_node)
+
             chakra_node = self.create_comp_node(fx_node)
+
+            if os.environ.get("RANK") == "0" and duration != 0 and csv_writer:
+                a_shape_str = str(tuple(a_shape))
+                b_shape_str = str(tuple(b_shape))
+                csv_writer.writerow([fx_node.name, a_shape_str, b_shape_str, duration])
         else:
-            print(f"{node_debug_id_str(fx_node)} is neither c10d or aten")
+            print(
+                f"Node '{fx_node.name}' is neither a communication nor a computation node. Skipping."
+            )
             return
 
         # Add the upstream dependency to the created chakra node.
-        self.add_upstream_dependency(chakra_node, fx_node)
-        self.add_to_chakra_graph(chakra_node, fx_node)
+        if chakra_node:
+            self.add_upstream_dependency(chakra_node, fx_node)
+            self.add_to_chakra_graph(chakra_node, fx_node)
 
     def convert_to_chakra(self, gm: fx.GraphModule):
         with open(self.filename, "wb") as et:
             self.et_file = et
             encode_message(et, GlobalMetadata(version="0.0.4"))
-            for fx_node in gm.graph.nodes:
-                self.process_fx_node(fx_node)
+            csv_path = "/workspace/chakra_fx/gemm_collected.csv"
+            file_previously_existed = os.path.exists(csv_path)
+            with open(csv_path, "a", newline="") as csv_file:
+                writer = csv.writer(csv_file)
+                if not file_previously_existed:
+                    writer.writerow(["node_name", "a_shape", "b_shape", "duration"])
+                for fx_node in gm.graph.nodes:
+                    self.process_fx_node(fx_node, writer)
+            # for fx_node in gm.graph.nodes:
+            #     self.process_fx_node(fx_node)
 
     # def lookup_duration(self, fx_node: fx.Node) -> int:  # noqa: C901. TODO: Make logger print only for rank=0. (Remove the branches = code complexity)
     #     success, args, kwargs = fx_utils.get_fake_args_kwargs(fx_node)

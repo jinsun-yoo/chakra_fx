@@ -11,7 +11,7 @@ docker run -d --rm \
 	--ulimit memlock=-1 \
 	--ulimit stack=6710886 \
 	-v $SCRIPT_DIR:/workspace/chakra_fx \
-	chakra_fx:latest \
+	zheng/chakra_fx:0817 \
 	tail -f /dev/null
 
 docker exec -it chakra_fx /bin/bash
