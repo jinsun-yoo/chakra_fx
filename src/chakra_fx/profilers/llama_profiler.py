@@ -9,7 +9,10 @@ from torchtitan.distributed.parallel_dims import ParallelDims
 from torchtitan.experiments.simple_fsdp import SimpleFSDPTransformer
 from torchtitan.experiments.simple_fsdp.parallelize import parallelize_llama
 from torchtitan.models.llama3.model.args import TransformerModelArgs
+from torchtitan.models.llama3 import llama3_configs, pipeline_llama
 from torchtitan.protocols.model_converter import build_model_converters
+from functorch.compile import make_boxed_func
+from torch._dynamo.backends.common import aot_autograd
 
 from src.chakra_fx.profilers.model_profiler import ModelProfiler
 
@@ -68,6 +71,9 @@ class LlamaProfiler(ModelProfiler):
         print("start llama profiler")
         self.name = "llama"
         tokenizer_n_words = 12_288
+        self.pp_enabled = False
+
+        self._poll_start(f"{exp_tag}/syncfile.txt")
 
         if sequential_generation:
             print("Start polling")
@@ -75,16 +81,17 @@ class LlamaProfiler(ModelProfiler):
 
         print("Creating Model")
         model_config = TransformerModelArgs(
-            dim=256,
+            dim=64,
             n_layers=2,
-            n_heads=8,
-            n_kv_heads=8,
+            n_heads=16,
+            n_kv_heads=16,
             rope_theta=500000,
         )
         # model_config = llama3_configs["8B"]
         model_config.vocab_size = tokenizer_n_words
         model_config.max_seq_len = 2048  # job_config.training.seq_len
         model_config.norm_type = "layernorm"  # job_config.model.norm_type
+        self.model_config = model_config
         model = SimpleFSDPTransformer(model_config)
         model.to("cuda:0")
 
@@ -93,6 +100,8 @@ class LlamaProfiler(ModelProfiler):
             training=Training(compile=False, seq_len=sequence_length, mixed_precision_param="float32", mixed_precision_reduce="float32"),
             activation_checkpoint=ActivationCheckpoint(mode="none"),
         )
+        # torch._inductor.config.reorder_for_peak_memory = False
+
         if dse_config_filepath is not None:
             parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
         else:
@@ -107,6 +116,11 @@ class LlamaProfiler(ModelProfiler):
                 world_size=world_size,
             )
             parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+
+        # model.to_empty(device="cuda:0")
+        # with torch.no_grad():
+        #     model.init_weights(buffer_device="cuda:0")
+        # model.train()
 
         print("finish applying parallelization")
 
@@ -155,10 +169,85 @@ class LlamaProfiler(ModelProfiler):
         model_converters = build_model_converters(job_config, parallel_dims)
         model_converters.convert(model)
 
-        parallelized_model = parallelize_llama(model, parallel_dims, job_config)
-        return parallelized_model
+        if parallel_dims.pp != 1 :
+            self.pp_enabled = True
+            # apply both PT-D Pipeline Parallel and SPMD-style PT-D techniques
+            (
+                self.pp_schedule,
+                self.model_parts,
+                self.pp_has_first_stage,
+                self.pp_has_last_stage,
+            ) = pipeline_llama(
+                model,
+                parallel_dims,
+                job_config,
+                "cuda:0",
+                self.model_config,
+                parallelize_llama,
+                self.loss_fn,
+            )
+            # when PP is enabled, `model` obj is no longer used after this point,
+            # model_parts is used instead
+            del model
+            for m in self.model_parts:
+                m.to_empty(device="cuda:0")
+                # with torch.no_grad():
+                #     m.init_weights(buffer_device="cuda:0")
+                m.train()
+            return self.model_parts[0]
+        else:
+            parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+            return parallelized_model
+
     def loss_fn(self, pred, labels):
         # TODO(ruisizhang123): temporary fix to enable async TP for full model compile
         if isinstance(pred, DTensor):
             pred._local_tensor = pred._local_tensor.contiguous()
         return torch.nn.functional.cross_entropy(pred.flatten(0, 1), labels.flatten(0, 1))
+
+    def run_fwbw_pass(self):
+        if self.pp_enabled:
+            self.compile_model()
+            targets, losses = (
+                (self.sample_label, []) if self.pp_has_last_stage else (None, None)
+            )
+            if self.pp_has_first_stage:
+                self.pp_schedule.step(
+                    self.sample_input, target=targets, losses=losses, input_batch=self.sample_input
+                )
+            else:
+                self.pp_schedule.step(
+                    target=targets, losses=losses, input_batch=self.sample_input
+                )
+        else:
+            self.compile_model()
+            output = self.model(self.sample_input)
+            torch.cuda.synchronize()
+            loss = self.loss_fn(output, self.sample_label)
+
+            del output
+            loss.backward()
+            torch.cuda.synchronize()
+
+    def compile_model(self):
+
+        torch._dynamo.config.compiled_autograd = True
+        if self.pp_enabled:
+            compiled_microbatch = torch.compile(self.pp_schedule._step_microbatches, backend=self._custom_pytorch_compiler)
+            self.pp_schedule._step_microbatches = compiled_microbatch
+            # compiled_model = torch.compile(self.pp_schedule._stage.submod, backend=self._custom_aten_compiler)
+            # self.pp_schedule._stage.submod = compiled_model
+            return
+        if self.run_custom_backend:
+            if self.use_pytorch_ir:
+                compiled_model = torch.compile(self.model, dynamic=True, fullgraph=True, backend=self._custom_pytorch_compiler)
+            else:
+                compiled_model = torch.compile(
+                    self.model,
+                    backend=aot_autograd(fw_compiler=self._custom_aten_compiler),
+                    fullgraph=True,
+                    dynamic=True,
+                )
+        else:
+            compiled_model = torch.compile(self.model)
+        self.model = compiled_model
