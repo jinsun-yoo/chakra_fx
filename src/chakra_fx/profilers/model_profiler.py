@@ -18,10 +18,14 @@ class ModelProfiler:
         fxgraph_actions: List[str],
         run_custom_backend_all_rank: bool,
         use_pytorch_ir: bool = False,
+        sequential_generation: bool=False,
     ):
         self.rank = int(os.environ.get("RANK", 0))
         self.size = int(os.environ.get("WORLD_SIZE", 1))
         self.local_rank = int(os.environ.get("LOCAL_RANK", 0))
+        self.exp_tag = exp_tag
+        self.filename = f"{exp_tag}/syncfile.txt"
+        self.sequential_generation = sequential_generation
 
         # If true, work on PyTorch FX Graph, if false, work on aten FX Graph
         self.use_pytorch_ir = use_pytorch_ir
@@ -43,6 +47,38 @@ class ModelProfiler:
         self.sample_input = sample_input
         self.sample_label = sample_label
         return
+
+    def _poll_start(self, filename):
+        import time
+
+        self.filename = filename
+        self.rank = int(os.environ.get("RANK", 0))
+        if self.rank == 0:
+            if os.path.exists(self.filename):
+                os.remove(self.filename)
+            with open(self.filename, "w") as f:
+                f.write("start\n")
+            return
+
+        while True:
+            prev_rank = self.rank - 1
+            # Sanity check. Skip rank 0.
+            if prev_rank < 0:
+                break
+            if not os.path.exists(self.filename):
+                time.sleep(1)
+                continue
+            with open(self.filename, "r") as f:
+                if f"Rank {prev_rank} done." in f.read():
+                    print(f"Rank {prev_rank} done. Proceeding with rank {self.rank}.")
+                    break
+            time.sleep(1)
+
+    def _signal_end(self):
+        if not self.sequential_generation:
+            return
+        with open(self.filename, "a") as f:
+            f.write(f"Rank {self.rank} done.\n")
 
     def _custom_pytorch_compiler(self, gm: torch.fx.GraphModule, _: List[torch.Tensor]):
         self.fxgraph_handler(gm, self)

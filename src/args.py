@@ -60,6 +60,11 @@ def parse_args():
         required=False,
         help="[IGNORE FOR NOW] Filepath of the DSE configuration",
     )
+    parser.add_argument(
+        "--sequential_generation",
+        action="store_true",
+        help="If set to true, the processes will generate graphs one by one. For cases where all procs cannot fit in memory.",
+    )
     args = parser.parse_args()
 
     args.action_list = args.fxgraph_actions.split(",")

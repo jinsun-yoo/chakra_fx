@@ -63,10 +63,15 @@ class LlamaProfiler(ModelProfiler):
         use_pytorch_ir: bool = False,
         dse_config_filepath: str = None,
         job_config_filepath: str = None,
+        sequential_generation: bool = False
     ):
         print("start llama profiler")
         self.name = "llama"
         tokenizer_n_words = 12_288
+
+        if sequential_generation:
+            print("Start polling")
+            self._poll_start(f"{exp_tag}/syncfile.txt")
 
         print("Creating Model")
         model_config = TransformerModelArgs(
@@ -116,6 +121,7 @@ class LlamaProfiler(ModelProfiler):
             fxgraph_actions,
             run_custom_backend_all_rank,
             use_pytorch_ir,
+            sequential_generation=sequential_generation
         )
 
     def apply_configuration(self, model, dse_config_filepath: str, job_config: JobConfig):

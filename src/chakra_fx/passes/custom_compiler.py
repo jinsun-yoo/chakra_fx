@@ -57,6 +57,7 @@ def build_custom_backend_compiler(action_list: List[str], exp_tag: str, profiler
         # The assumption is that the custom compiler is called only once (i.e. there will be no graph break)
         # profiler._signal_end()
         if called_before:
+            profiler._signal_end()
             destroy_process_group()
             exit()
         called_before = True

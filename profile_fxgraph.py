@@ -24,6 +24,7 @@ if __name__ == "__main__":
                 fxgraph_actions=args.action_list,
                 run_custom_backend_all_rank=args.custom_backend_all_rank,
                 dse_config_filepath=args.dse_config_filepath,
+                sequential_generation=args.sequential_generation,
             )
         case "simple":
             from src.chakra_fx.profilers.simple_profiler import SimpleModelProfiler
