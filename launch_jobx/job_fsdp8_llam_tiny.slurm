@@ -5,7 +5,7 @@
 #SBATCH -q embers
 #SBATCH --gres=gpu:RTX_6000:4
 #SBATCH --mem=256000
-#SBATCH --ntasks-per-node=32
+#SBATCH --ntasks-per-node=24
 #SBATCH --time=02:00:00
 #SBATCH -o logs/%x_%j.out
 #SBATCH -e logs/%x_%j.err
