@@ -1,0 +1,40 @@
+[Step 1] Running test with use_cache=0 (Baseline)...
+
+==================== Test Result ====================
+Compiling Time: 2.8299 s
+Conversion to Chakra Time:   0.2362 s
+=========================================================
+==================== Test Result ====================
+Compiling Time: 3.0850 s
+Conversion to Chakra Time:   0.8283 s
+=========================================================-----------------------------------------------------------
+[Step 2] Running test with use_cache=1 (First Run - Cache Generation)...
+
+==================== Test Result ====================
+Compiling Time: 2.7699 s
+Conversion to Chakra Time:   0.1924 s
+=========================================================
+==================== Test Result ====================
+Compiling Time: 2.9802 s
+Conversion to Chakra Time:   0.1421 s
+=========================================================-----------------------------------------------------------
+[Step 3] Running test with use_cache=1 (Second Run - With Cache Hit)...
+
+==================== Test Result ====================
+Compiling Time: 2.6757 s
+Conversion to Chakra Time:   0.0362 s
+=========================================================
+==================== Test Result ====================
+Compiling Time: 2.7319 s
+Conversion to Chakra Time:   0.0477 s
+=========================================================-----------------------------------------------------------
+[Step 4] Running test with use_cache=2 (Skip Measurement)...
+
+==================== Test Result ====================
+Compiling Time: 2.7448 s
+Conversion to Chakra Time:   0.0339 s
+=========================================================
+==================== Test Result ====================
+Compiling Time: 2.7989 s
+Conversion to Chakra Time:   0.0424 s
+====================================================================================================================

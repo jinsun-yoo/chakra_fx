@@ -9,14 +9,14 @@ from torch.utils.flop_counter import FlopCounterMode
 
 # This is the entrypoint to ChakraConverter's convert_to_chakra function.
 # Simply take the FXGraph and pass it to the ChakraConverter.
-def convert_save_chakra_graph(gm: torch.fx.GraphModule, dirname: str, filename: str, subgraph_idx: int):
+def convert_save_chakra_graph(gm: torch.fx.GraphModule, dirname: str, filename: str, subgraph_idx: int, use_cache: int):
     if not os.path.exists(f"{dirname}"):
         print(f"Output path {dirname} does not exist!")
         exit()
 
     from src.chakra_fx.passes.chakra_converter import ChakraConverter
 
-    chakra_converter = ChakraConverter(filename, subgraph_idx, dirname)
+    chakra_converter = ChakraConverter(filename, subgraph_idx, dirname, use_cache)
     chakra_converter.convert_to_chakra(gm)
 
 

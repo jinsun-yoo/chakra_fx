@@ -18,14 +18,14 @@ if TYPE_CHECKING:
     from src.chakra_fx.profilers.model_profiler import ModelProfiler
 
 
-def _handle_action(action: str, gm: torch.fx.GraphModule, exp_tag: str, profiler: "ModelProfiler", called_before: bool):
+def _handle_action(action: str, gm: torch.fx.GraphModule, exp_tag: str, profiler: "ModelProfiler", called_before: bool, use_cache: int):
     """Handle a single action from the action list."""
     match action:
         case "chakra":
             filename = "trace"
             if called_before:
                 filename = "trace_bw"
-            convert_save_chakra_graph(gm, exp_tag, filename, 0)
+            convert_save_chakra_graph(gm, exp_tag, filename, 0, use_cache)
         case "just":
             just_hello(gm, 0)
         case "pdf":
@@ -56,7 +56,7 @@ def build_custom_backend_compiler(action_list: List[str], exp_tag: str, profiler
     def custom_backend_compiler(gm: torch.fx.GraphModule, _: List[torch.Tensor]):
         global called_before
         for action in action_list:
-            _handle_action(action, gm, exp_tag, profiler, called_before)
+            _handle_action(action, gm, exp_tag, profiler, called_before, profiler.use_cache)
         # The assumption is that the custom compiler is called only once (i.e. there will be no graph break)
         # profiler._signal_end()
         if called_before:
