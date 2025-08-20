@@ -4,8 +4,8 @@ from typing import List
 import torch
 import yaml
 from torch.distributed._tensor import DTensor
-from torchtitan.config_manager import ActivationCheckpoint, JobConfig, Training, Model, Float8
-from torchtitan.distributed.parallel_dims import ParallelDims
+from torchtitan.config.job_config import ActivationCheckpoint, JobConfig, Training, Model, Float8
+from torchtitan.distributed import ParallelDims
 from torchtitan.experiments.simple_fsdp import SimpleFSDPTransformer
 from torchtitan.experiments.simple_fsdp.parallelize import parallelize_llama
 from torchtitan.models.llama3.model.args import TransformerModelArgs
