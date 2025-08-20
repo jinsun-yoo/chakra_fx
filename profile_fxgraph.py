@@ -2,6 +2,16 @@ from torch.distributed import destroy_process_group
 
 from src.args import parse_args
 
+import os
+import torch
+
+rank = int(os.environ.get("RANK", 0))  # torchrun sets RANK automatically
+
+if rank == 0:
+    # import pdb; pdb.set_trace()  # stop only rank 0
+    pass
+
+
 """
     Usage: torchrun \
         --nproc-per-node=8 \
@@ -15,7 +25,7 @@ if __name__ == "__main__":
     "Choose which profiler to use"
     model_name = args.model
     match model_name:
-        case "llama":
+        case "llama" | "llama_tiny" | "llama_small" | "llama_7b" | "llama_3b" | "llama_1b":
             from src.chakra_fx.profilers.llama_profiler import LlamaProfiler
 
             profiler = LlamaProfiler(
@@ -25,6 +35,7 @@ if __name__ == "__main__":
                 run_custom_backend_all_rank=args.custom_backend_all_rank,
                 dse_config_filepath=args.dse_config_filepath,
                 sequential_generation=args.sequential_generation,
+                model_type=model_name
             )
         case "simple":
             from src.chakra_fx.profilers.simple_profiler import SimpleModelProfiler
@@ -70,5 +81,7 @@ if __name__ == "__main__":
         profiler.run_nsys_workload()
     elif args.job == "eager":
         profiler.run_eager_fwbw_pass()
+    elif args.job == "eager_kineto":
+        profiler.run_eager_fwbw_kineto_pass()
 
     destroy_process_group()

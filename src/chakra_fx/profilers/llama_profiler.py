@@ -14,8 +14,8 @@ from torchtitan.protocols.model_converter import build_model_converters
 from src.chakra_fx.profilers.model_profiler import ModelProfiler
 
 num_iters = 10
-batch_size = 8
-sequence_length = 2048
+batch_size = 32
+sequence_length = 256
 dtype = torch.bfloat16
 
 
@@ -63,30 +63,86 @@ class LlamaProfiler(ModelProfiler):
         use_pytorch_ir: bool = False,
         dse_config_filepath: str = None,
         job_config_filepath: str = None,
+        model_type: str = None
         sequential_generation: bool = False
     ):
         print("start llama profiler")
         self.name = "llama"
-        tokenizer_n_words = 12_288
+        tokenizer_n_words = 4096
+        # tokenizer_n_words = 128256
 
         if sequential_generation:
             print("Start polling")
             self._poll_start(f"{exp_tag}/syncfile.txt")
 
         print("Creating Model")
-        model_config = TransformerModelArgs(
+        legacy_llama = TransformerModelArgs(
             dim=256,
             n_layers=2,
             n_heads=8,
             n_kv_heads=8,
             rope_theta=500000,
         )
-        # model_config = llama3_configs["8B"]
+        llama7b = TransformerModelArgs(
+            dim=4096,
+            n_layers=32,
+            n_heads=32,
+            n_kv_heads=8,
+            ffn_dim_multiplier=3.5,
+            rope_theta=500000,
+        )
+        llama3b = TransformerModelArgs(
+            dim=3072,
+            n_layers=28,
+            n_heads=24,
+            n_kv_heads=8,
+            ffn_dim_multiplier=2.6,
+            rope_theta=500000,
+        )
+        llama1b = TransformerModelArgs(
+            dim=2048,
+            n_layers=16,
+            n_heads=32,
+            n_kv_heads=8,
+            ffn_dim_multiplier=4,
+            rope_theta=500000,
+        )
+        llama_small = TransformerModelArgs(
+            dim=2048,
+            n_layers=4,
+            n_heads=32,
+            n_kv_heads=8,
+            ffn_dim_multiplier=4,
+            rope_theta=500000,
+        )
+        llama_tiny = TransformerModelArgs(
+            dim=512,
+            n_layers=4,
+            n_heads=32,
+            n_kv_heads=8,
+            ffn_dim_multiplier=4,
+            rope_theta=500000,
+        )
+        model_type_key_map_config = {
+            "llama": legacy_llama,
+            "llama_tiny": llama_tiny,
+            "llama_small": llama_small,
+            "llama_7b": llama7b,
+            "llama_3b": llama3b,
+            "llama_1b": llama1b
+        }
+        if model_type is None:
+            model_type = "llama"
+        model_config = model_type_key_map_config[model_type]
         model_config.vocab_size = tokenizer_n_words
         model_config.max_seq_len = 2048  # job_config.training.seq_len
         model_config.norm_type = "layernorm"  # job_config.model.norm_type
+        local_rank = os.environ["LOCAL_RANK"]
         model = SimpleFSDPTransformer(model_config)
-        model.to("cuda:0")
+        if job in {"eager", "eager_kineto"}:
+            model = model.to(f"cuda:{local_rank}")
+        else:
+            model = mode.to(f"cuda:0")
 
         print("Parallelizing model")
         job_config = JobConfig(

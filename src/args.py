@@ -41,9 +41,10 @@ def parse_args():
             "  fwbw: Run a single forward-backward pass on a sample input.\n"
             "  postexec_chakra: Collect the post-execution Chakra graph.\n"
             "  eager: Run a single forward-backward pass on a sample input, but using eager mode.\n"
+            "  eager_kineto: Run a single forward-backward pass on a sample input, using eager mode, and collect kineto trace.\n"
             "  nsys: Run the model under nsys profiler."
         ),
-        choices=["fw", "fwbw", "postexec_chakra", "eager", "nsys"],
+        choices=["fw", "fwbw", "postexec_chakra", "eager", "eager_kineto", "nsys"],
     )
     parser.add_argument(
         "--model",
@@ -51,7 +52,7 @@ def parse_args():
         default="llama",
         required=False,
         help="""Choose which model to work on. Each model has its own profiler under src/chakra_fx/profilers.""",
-        choices=["llama", "simple", "nanogpt", "resnet18"],
+        # choices=["llama", "simple", "nanogpt", "resnet18"],
     )
     parser.add_argument(
         "--dse_config_filepath",

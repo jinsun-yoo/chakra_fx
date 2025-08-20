@@ -4,6 +4,7 @@ from typing import List
 import torch.fx
 from functorch.compile import make_boxed_func
 from torch._dynamo.backends.common import aot_autograd
+from torch.profiler import profile, record_function, ProfilerActivity
 
 from src.chakra_fx.passes.custom_compiler import build_custom_backend_compiler
 
@@ -46,6 +47,7 @@ class ModelProfiler:
         self.model = model
         self.sample_input = sample_input
         self.sample_label = sample_label
+        self.exp_tag = exp_tag
         return
 
     def _poll_start(self, filename):
@@ -92,6 +94,7 @@ class ModelProfiler:
         return make_boxed_func(gm.forward)
 
     def compile_model(self):
+        self.model.to("cuda:0")
         if self.run_custom_backend:
             if self.use_pytorch_ir:
                 compiled_model = torch.compile(self.model, backend=self._custom_pytorch_compiler, dynamic=True, fullgraph=True)
@@ -121,11 +124,43 @@ class ModelProfiler:
         self.compile_model()
         self.model(self.sample_input)
 
-    def run_eager_fwbw_pass(self):
+    def run_eager_fwbw_kineto_pass(self):
+        local_rank = int(os.environ["LOCAL_RANK"])
+        rank = int(os.environ["RANK"])
+        device = torch.device(f"cuda:{local_rank}")
+        self.model.to(device)
+        self.sample_input = self.sample_input.to(device)
+
         output = self.model(self.sample_input)
         torch.cuda.synchronize()
         output.sum().backward()
-        torch.cuda.synchronize()
+
+    def run_eager_fwbw_kineto_pass(self):
+        local_rank = int(os.environ["LOCAL_RANK"])
+        rank = int(os.environ["RANK"])
+        device = torch.device(f"cuda:{local_rank}")
+        self.model.to(device)
+        self.sample_input = self.sample_input.to(device)
+        os.makedirs(f"./{self.exp_tag}/", exist_ok=True)
+        os.makedirs(f"./{self.exp_tag}/kineto_trace_rank{rank}", exist_ok=True)
+
+        # Setup profiler
+        with profile(
+            activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA],
+            record_shapes=True,            # record tensor shapes
+            profile_memory=True,           # track memory usage
+            with_stack=True,               # optional: show call stack
+            with_flops=True,               # optional: compute FLOPs
+            on_trace_ready=torch.profiler.tensorboard_trace_handler(f"./{self.exp_tag}/kineto_trace_rank{rank}")
+        ) as prof:
+
+            # Forward + backward under profiler
+            with record_function("model_fw_pass"):
+                output = self.model(self.sample_input)
+                torch.cuda.synchronize()
+            with record_function("model_bw_pass"):
+                output.sum().backward()
+                torch.cuda.synchronize()
 
     def collect_postexecution_graph(self, dirname: str, name: str):
         from torch.profiler import ExecutionTraceObserver, profile
