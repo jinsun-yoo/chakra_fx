@@ -5,7 +5,7 @@
 #SBATCH -q embers
 #SBATCH --gres=gpu:RTX_6000:4
 #SBATCH --mem=256000
-#SBATCH --ntasks-per-node=1
+#SBATCH --ntasks-per-node=32
 #SBATCH --time=02:00:00
 #SBATCH -o logs/%x_%j.out
 #SBATCH -e logs/%x_%j.err
@@ -39,3 +39,18 @@ srun --ntasks=$SLURM_NNODES --ntasks-per-node=1 \
     --job eager_kineto \
     --model llama_tiny \
     --dse_config_filepath configs/llama_fsdp/llama_FSDP_8.yml
+
+srun --nodes=1 --ntasks=1 --ntasks-per-node=1 \
+  torchrun \
+  --nnodes=1 \
+  --nproc_per_node=8 \
+  --rdzv_backend=c10d \
+  --rdzv_endpoint=$MASTER_ADDR:$MASTER_PORT \
+  --rdzv_id=$SLURM_JOB_ID \
+  profile_fxgraph.py \
+    --fxgraph_actions chakra \
+    --exp_tag fsdp8_llamatiny \
+    --job fwbw \
+    --model llama_tiny \
+    --dse_config_filepath configs/llama_fsdp/llama_FSDP_8.yml
+    
