@@ -9,7 +9,7 @@ class Timer:
     def mark(self, name):
         """记录一个名为name的时间点"""
         self._timestamps[name] = time.perf_counter()
-        print(f"[Timer] Marked: {name}")
+        print(f"[Timer] Marked: {name}       {self._timestamps[name]}")
 
     def duration(self, start_name, end_name):
         """计算两个时间点之间的时长"""
@@ -26,16 +26,13 @@ class Timer:
 
             # Duration 2: 程序结束 - D开始
             duration2 = self.duration("program_end", "D_start")
-            result_path = "/workspace/chakra_fx/test_result"
 
-            text_to_write = f"\n==================== Test Result ====================\nCompiling Time: {abs(duration1):.4f} s\nConversion to Chakra Time:   {abs(duration2):.4f} s\n========================================================="
-            with open(result_path, "a", encoding="utf-8") as f:
-                f.write(text_to_write)
-
-            print("\n==================== Test Result ====================")
-            print(f"Compiling Time: {abs(duration1):.4f} s")
-            print(f"Conversion to Chakra Time:   {abs(duration2):.4f} s")
+            print("\n==================== 测量结果 (类版本) ====================")
+            print(f"从函数 B 开始到函数 D 开始的耗时: {abs(duration1):.4f} 秒")
+            print(f"从函数 D 开始到程序结束的耗时:   {abs(duration2):.4f} 秒")
             print("=========================================================")
+            print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!{self._timestamps['D_start']}")
+            print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!{self._timestamps['program_end']}")
 
         except (KeyError, TypeError):
             print("无法计算结果，缺少必要的时间标记。")

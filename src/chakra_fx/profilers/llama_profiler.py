@@ -4,7 +4,13 @@ from typing import List
 import torch
 import yaml
 from torch.distributed._tensor import DTensor
-from torchtitan.config_manager import ActivationCheckpoint, JobConfig, Training, Model, Float8
+from torchtitan.config_manager import (
+    ActivationCheckpoint,
+    JobConfig,
+    Training,
+    Model,
+    Float8,
+)
 from torchtitan.distributed.parallel_dims import ParallelDims
 from torchtitan.experiments.simple_fsdp import SimpleFSDPTransformer
 from torchtitan.experiments.simple_fsdp.parallelize import parallelize_llama
@@ -77,12 +83,10 @@ class LlamaProfiler(ModelProfiler):
 
         print("Creating Model")
         model_config = TransformerModelArgs(
-            dim=4096,
-            n_layers=32,
-            n_heads=32,
+            dim=256,
+            n_layers=2,
+            n_heads=8,
             n_kv_heads=8,
-            ffn_dim_multiplier=1.3,
-            multiple_of=1024,
             rope_theta=500000,
         )
         # model_config = llama3_configs["8B"]
@@ -143,7 +147,7 @@ class LlamaProfiler(ModelProfiler):
             run_custom_backend_all_rank,
             use_pytorch_ir,
             sequential_generation=sequential_generation,
-            use_cache,
+            use_cache=use_cache,
         )
 
     def apply_configuration(
@@ -172,7 +176,7 @@ class LlamaProfiler(ModelProfiler):
                 enable_fsdp_float8_all_gather=True,
                 precompute_float8_dynamic_scale_for_fsdp=True,
                 force_recompute_fp8_weight_in_bwd=True,
-                filter_fqns=["output"]
+                filter_fqns=["output"],
             )
             job_config.model.converters = ["float8"]
 
@@ -181,6 +185,7 @@ class LlamaProfiler(ModelProfiler):
 
         parallelized_model = parallelize_llama(model, parallel_dims, job_config)
         return parallelized_model
+
     def loss_fn(self, pred, labels):
         # TODO(ruisizhang123): temporary fix to enable async TP for full model compile
         if isinstance(pred, DTensor):

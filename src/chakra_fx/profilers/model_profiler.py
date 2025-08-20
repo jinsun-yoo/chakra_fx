@@ -1,5 +1,6 @@
 import os
 from typing import List
+import json
 
 import torch.fx
 from functorch.compile import make_boxed_func
@@ -19,7 +20,7 @@ class ModelProfiler:
         fxgraph_actions: List[str],
         run_custom_backend_all_rank: bool,
         use_pytorch_ir: bool = False,
-        sequential_generation: bool=False,
+        sequential_generation: bool = False,
         use_cache: int = 0,
     ):
         self.rank = int(os.environ.get("RANK", 0))
@@ -99,7 +100,12 @@ class ModelProfiler:
     def compile_model(self):
         if self.run_custom_backend:
             if self.use_pytorch_ir:
-                compiled_model = torch.compile(self.model, backend=self._custom_pytorch_compiler, dynamic=True, fullgraph=True)
+                compiled_model = torch.compile(
+                    self.model,
+                    backend=self._custom_pytorch_compiler,
+                    dynamic=True,
+                    fullgraph=True,
+                )
             else:
                 compiled_model = torch.compile(
                     self.model,

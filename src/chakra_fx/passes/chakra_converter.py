@@ -7,6 +7,7 @@ import torch
 import torch._inductor.fx_utils as fx_utils
 import torch._subclasses.fake_tensor
 import torch.distributed as dist
+from torch.distributed import destroy_process_group
 import torch.fx as fx
 from chakra.schema.protobuf.et_def_pb2 import (
     ALL_GATHER,
@@ -170,11 +171,14 @@ class ChakraConverter:
 
         import torch.distributed.distributed_c10d as c10d
 
+        comm_group = {}
+
         process_group_name = fx_node.args[-1]
         process_group_ranks = c10d.get_process_group_ranks(
             c10d._resolve_process_group(process_group_name)
         )
         num_process_groups = len(c10d._world.pg_names)
+        comm_group.setdefault(str(process_group_name), process_group_ranks)
 
         # Use FakeTensor, which is included in the FX Graph as a fake input, to determine communication size
         comm_tensor: FakeTensor = fx_node.meta["val"]
@@ -247,7 +251,10 @@ class ChakraConverter:
         a = args[0].size()
         b = args[1].size()
 
-        if fx_node.target._overloadpacket != torch.ops.aten.mm and fx_node.target._overloadpacket != torch.ops.aten._scaled_mm:
+        if (
+            fx_node.target._overloadpacket != torch.ops.aten.mm
+            and fx_node.target._overloadpacket != torch.ops.aten._scaled_mm
+        ):
             a = args[1].size()
             b = args[2].size()
         numbytes_per_element = 4  # FP32
@@ -296,8 +303,12 @@ class ChakraConverter:
                 #     size_value_resolved = int(size_value)
                 #     size_array.append(size_value_resolved)
                 # faketensor_size = torch.Size(size_array)
-                real_tensor = torch.empty(faketensor_size, dtype=fake_tensor.dtype, device=fake_tensor.device)
-                real_tensor = real_tensor.as_strided(faketensor_size, fake_tensor.stride())
+                real_tensor = torch.empty(
+                    faketensor_size, dtype=fake_tensor.dtype, device=fake_tensor.device
+                )
+                real_tensor = real_tensor.as_strided(
+                    faketensor_size, fake_tensor.stride()
+                )
                 return real_tensor
 
             flat_args = [realify_fake_tensor(arg) for arg in fx_node.args]
@@ -515,5 +526,7 @@ class ChakraConverter:
             if os.environ.get("RANK") == "0":
                 timer.mark("program_end")
                 timer.display_results()
+            destroy_process_group()
+            exit()
 
     # --- [END MODIFIED] ---
