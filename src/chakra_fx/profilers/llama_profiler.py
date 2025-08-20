@@ -12,6 +12,7 @@ from torchtitan.models.llama3.model.args import TransformerModelArgs
 from torchtitan.protocols.model_converter import build_model_converters
 
 from src.chakra_fx.profilers.model_profiler import ModelProfiler
+from src.chakra_fx.utils.time_recorder import timer
 
 num_iters = 10
 batch_size = 8
@@ -63,7 +64,8 @@ class LlamaProfiler(ModelProfiler):
         use_pytorch_ir: bool = False,
         dse_config_filepath: str = None,
         job_config_filepath: str = None,
-        sequential_generation: bool = False
+        sequential_generation: bool = False,
+        use_cache: int = 0,
     ):
         print("start llama profiler")
         self.name = "llama"
@@ -75,10 +77,12 @@ class LlamaProfiler(ModelProfiler):
 
         print("Creating Model")
         model_config = TransformerModelArgs(
-            dim=256,
-            n_layers=2,
-            n_heads=8,
+            dim=4096,
+            n_layers=32,
+            n_heads=32,
             n_kv_heads=8,
+            ffn_dim_multiplier=1.3,
+            multiple_of=1024,
             rope_theta=500000,
         )
         # model_config = llama3_configs["8B"]
@@ -90,11 +94,18 @@ class LlamaProfiler(ModelProfiler):
 
         print("Parallelizing model")
         job_config = JobConfig(
-            training=Training(compile=False, seq_len=sequence_length, mixed_precision_param="float32", mixed_precision_reduce="float32"),
+            training=Training(
+                compile=False,
+                seq_len=sequence_length,
+                mixed_precision_param="float32",
+                mixed_precision_reduce="float32",
+            ),
             activation_checkpoint=ActivationCheckpoint(mode="none"),
         )
         if dse_config_filepath is not None:
-            parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
+            parallelized_model = self.apply_configuration(
+                model, dse_config_filepath, job_config
+            )
         else:
             world_size = int(os.environ["WORLD_SIZE"])
             parallel_dims = ParallelDims(
@@ -110,8 +121,18 @@ class LlamaProfiler(ModelProfiler):
 
         print("finish applying parallelization")
 
-        sample_input = torch.randint(high=tokenizer_n_words, size=(batch_size, sequence_length), dtype=torch.int64, device="cuda:0")
-        sample_label = torch.randint(high=tokenizer_n_words, size=(batch_size, sequence_length), dtype=torch.int64, device="cuda:0")
+        sample_input = torch.randint(
+            high=tokenizer_n_words,
+            size=(batch_size, sequence_length),
+            dtype=torch.int64,
+            device="cuda:0",
+        )
+        sample_label = torch.randint(
+            high=tokenizer_n_words,
+            size=(batch_size, sequence_length),
+            dtype=torch.int64,
+            device="cuda:0",
+        )
 
         super().__init__(
             parallelized_model,
@@ -121,10 +142,13 @@ class LlamaProfiler(ModelProfiler):
             fxgraph_actions,
             run_custom_backend_all_rank,
             use_pytorch_ir,
-            sequential_generation=sequential_generation
+            sequential_generation=sequential_generation,
+            use_cache,
         )
 
-    def apply_configuration(self, model, dse_config_filepath: str, job_config: JobConfig):
+    def apply_configuration(
+        self, model, dse_config_filepath: str, job_config: JobConfig
+    ):
         with open(dse_config_filepath, "r") as file:
             data = yaml.safe_load(file)
         if data is None:
@@ -161,4 +185,6 @@ class LlamaProfiler(ModelProfiler):
         # TODO(ruisizhang123): temporary fix to enable async TP for full model compile
         if isinstance(pred, DTensor):
             pred._local_tensor = pred._local_tensor.contiguous()
-        return torch.nn.functional.cross_entropy(pred.flatten(0, 1), labels.flatten(0, 1))
+        return torch.nn.functional.cross_entropy(
+            pred.flatten(0, 1), labels.flatten(0, 1)
+        )

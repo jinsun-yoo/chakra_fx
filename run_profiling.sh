@@ -11,7 +11,7 @@ set -e
 
 
 if [ -f "$OUTPUT_CSV" ]; then
-    echo "deleting: $OUTPUT_CSV"
+    echo "Deleting: $OUTPUT_CSV"
     rm -f "$OUTPUT_CSV"
 fi
 
