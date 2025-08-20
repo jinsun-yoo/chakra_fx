@@ -5,11 +5,22 @@ import torch
 from torch.distributed.distributed_c10d import _world
 from torch.fx.passes.graph_drawer import FxGraphDrawer
 from torch.utils.flop_counter import FlopCounterMode
+import torch.distributed as dist
+
+
+def sync_and_exit():
+    pass
+    # if dist.is_initialized():
+    # dist.barrier()
+    # dist.destory_process_group()
+    # sys.exit(0)
 
 
 # This is the entrypoint to ChakraConverter's convert_to_chakra function.
 # Simply take the FXGraph and pass it to the ChakraConverter.
-def convert_save_chakra_graph(gm: torch.fx.GraphModule, dirname: str, filename: str, subgraph_idx: int):
+def convert_save_chakra_graph(
+    gm: torch.fx.GraphModule, dirname: str, filename: str, subgraph_idx: int
+):
     if not os.path.exists(f"{dirname}"):
         print(f"Output path {dirname} does not exist!")
         exit()
@@ -18,6 +29,7 @@ def convert_save_chakra_graph(gm: torch.fx.GraphModule, dirname: str, filename: 
 
     chakra_converter = ChakraConverter(filename, subgraph_idx, dirname)
     chakra_converter.convert_to_chakra(gm)
+    sync_and_exit()
 
 
 # Generates a dot file for this subgraph.
@@ -27,18 +39,24 @@ def convert_save_chakra_graph(gm: torch.fx.GraphModule, dirname: str, filename: 
 def save_dotfile(gm: torch.fx.GraphModule, dirname: str, name: str, subgraph_idx: int):
     rank = os.environ["RANK"]
     g = FxGraphDrawer(gm, "graph")
-    g.get_dot_graph().write_dot(f"{dirname}/{name}_subgraph_{subgraph_idx}_rank_{rank}.dot")
+    g.get_dot_graph().write_dot(
+        f"{dirname}/{name}_subgraph_{subgraph_idx}_rank_{rank}.dot"
+    )
 
 
 # Generates a pdf file for this subgraph.
 def save_pdffile(gm: torch.fx.GraphModule, dirname: str, name: str, subgraph_idx: int):
     rank = os.environ["RANK"]
     g = FxGraphDrawer(gm, "graph")
-    g.get_dot_graph().write_pdf(f"{dirname}/{name}_subgraph_{subgraph_idx}_rank_{rank}.pdf")
+    g.get_dot_graph().write_pdf(
+        f"{dirname}/{name}_subgraph_{subgraph_idx}_rank_{rank}.pdf"
+    )
 
 
 # Uses torch.export to save the FX graph to a folder.
-def save_fxgraph_module(gm: torch.fx.GraphModule, dirname: str, name: str, subgraph_idx: int):
+def save_fxgraph_module(
+    gm: torch.fx.GraphModule, dirname: str, name: str, subgraph_idx: int
+):
     rank = os.environ["RANK"]
     gm.to_folder(f"{dirname}/{name}_subgraph_{subgraph_idx}_rank_{rank}")
 
@@ -51,7 +69,9 @@ def print_tabular_graph(gm: torch.fx.GraphModule):
 
 # For aten graphs, save a histogram of target operators in a csv file. Ignores 'placeholder' ops.
 # For now, all subgraphs append to one csv file. subgraphs are split by 'output' in the csv file
-def get_aten_histogram(gm: torch.fx.GraphModule, name: str, subgraph_idx: int, rank: int):
+def get_aten_histogram(
+    gm: torch.fx.GraphModule, name: str, subgraph_idx: int, rank: int
+):
     ops_map = dict()
     for node in gm.graph.nodes:
         if node.op == "placeholder":
@@ -81,7 +101,9 @@ def get_operation_count(gm: torch.fx.GraphModule):
 # Simple function to check if backend has been called
 def just_hello(_: torch.fx.GraphModule, subgraph_idx: int):
     rank = os.environ["RANK"]
-    print(f"backend compiler has been called at rank {rank} for subgraph {subgraph_idx}")
+    print(
+        f"backend compiler has been called at rank {rank} for subgraph {subgraph_idx}"
+    )
     print(_world.pg_group_ranks)
     print("printed group rank")
     return

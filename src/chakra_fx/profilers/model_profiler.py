@@ -43,7 +43,9 @@ class ModelProfiler:
 
         # TODO: WHen parsing FXGraph, should not specify rank.
         # TODO: But when parsing chakra trace, SHOULD specify rank.
-        self.fxgraph_handler = build_custom_backend_compiler(fxgraph_actions, exp_tag, self)
+        self.fxgraph_handler = build_custom_backend_compiler(
+            fxgraph_actions, exp_tag, self
+        )
         self.model = model
         self.sample_input = sample_input
         self.sample_label = sample_label
@@ -94,7 +96,7 @@ class ModelProfiler:
         return make_boxed_func(gm.forward)
 
     def compile_model(self):
-        self.model.to("cuda:0")
+        # self.model.to("cuda:0")
         if self.run_custom_backend:
             if self.use_pytorch_ir:
                 compiled_model = torch.compile(self.model, backend=self._custom_pytorch_compiler, dynamic=True, fullgraph=True)
@@ -103,6 +105,7 @@ class ModelProfiler:
                     self.model,
                     backend=aot_autograd(fw_compiler=self._custom_aten_compiler),
                     fullgraph=True,
+                    dynamic=True,
                 )
         else:
             compiled_model = torch.compile(self.model)
@@ -119,10 +122,12 @@ class ModelProfiler:
         del output
         loss.backward()
         torch.cuda.synchronize()
+        sync_and_exit()
 
     def run_fw_pass(self):
         self.compile_model()
         self.model(self.sample_input)
+        sync_and_exit()
 
     def run_eager_fwbw_kineto_pass(self):
         local_rank = int(os.environ["LOCAL_RANK"])
@@ -147,11 +152,13 @@ class ModelProfiler:
         # Setup profiler
         with profile(
             activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA],
-            record_shapes=True,            # record tensor shapes
-            profile_memory=True,           # track memory usage
-            with_stack=True,               # optional: show call stack
-            with_flops=True,               # optional: compute FLOPs
-            on_trace_ready=torch.profiler.tensorboard_trace_handler(f"./{self.exp_tag}/kineto_trace_rank{rank}")
+            record_shapes=True,  # record tensor shapes
+            profile_memory=True,  # track memory usage
+            with_stack=True,  # optional: show call stack
+            with_flops=True,  # optional: compute FLOPs
+            on_trace_ready=torch.profiler.tensorboard_trace_handler(
+                f"./{self.exp_tag}/kineto_trace_rank{rank}"
+            ),
         ) as prof:
 
             # Forward + backward under profiler
@@ -201,7 +208,9 @@ class ModelProfiler:
         et.stop()
         et.unregister_callback()
 
-    def run_nsys_workload(self):  # noqa: C901. Ignore complaints about code being too complex.
+    def run_nsys_workload(
+        self,
+    ):  # noqa: C901. Ignore complaints about code being too complex.
         if "COMPILE" in os.environ and os.environ["COMPILE"] == "True":
             print("compile model")
             self.model = torch.compile(self.model)

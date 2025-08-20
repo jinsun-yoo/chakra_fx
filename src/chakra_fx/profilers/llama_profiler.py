@@ -63,7 +63,7 @@ class LlamaProfiler(ModelProfiler):
         use_pytorch_ir: bool = False,
         dse_config_filepath: str = None,
         job_config_filepath: str = None,
-        model_type: str = None
+        model_type: str = None, 
         sequential_generation: bool = False
     ):
         print("start llama profiler")
@@ -139,10 +139,11 @@ class LlamaProfiler(ModelProfiler):
         model_config.norm_type = "layernorm"  # job_config.model.norm_type
         local_rank = os.environ["LOCAL_RANK"]
         model = SimpleFSDPTransformer(model_config)
-        if job in {"eager", "eager_kineto"}:
-            model = model.to(f"cuda:{local_rank}")
-        else:
-            model = mode.to(f"cuda:0")
+        # if job in {"eager", "eager_kineto"}:
+        #     model = model.to(f"cuda:{local_rank}")
+        # else:
+        #     pass
+            # model = model.to(f"cuda:0")
 
         print("Parallelizing model")
         job_config = JobConfig(

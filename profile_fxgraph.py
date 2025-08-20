@@ -6,6 +6,7 @@ import os
 import torch
 
 rank = int(os.environ.get("RANK", 0))  # torchrun sets RANK automatically
+local_rank = int(os.environ.get("LOCAL_RANK", 0))
 
 if rank == 0:
     # import pdb; pdb.set_trace()  # stop only rank 0
@@ -21,6 +22,12 @@ if rank == 0:
 
 if __name__ == "__main__":
     args = parse_args()
+    if args.job in {"postexec_chakra", "nsys", "eager", "eager_kineto"}:
+        torch.cuda.set_device(local_rank)
+        print(f"Rank {os.environ.get('RANK')} local_rank {local_rank} -> GPU {torch.cuda.current_device()}")
+    else:
+        pass
+        # torch.cuda.set_device(0)
 
     "Choose which profiler to use"
     model_name = args.model

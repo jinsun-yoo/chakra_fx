@@ -109,7 +109,9 @@ class ChakraConverter:
         # Filld only when an FX Node has been converted to a Chakra Node.
         self.fxname_chakraid_map = {}
 
-    def create_chakra_node(self, node_name: str, node_type: ChakraNodeType) -> ChakraNode:
+    def create_chakra_node(
+        self, node_name: str, node_type: ChakraNodeType
+    ) -> ChakraNode:
         """Generate a new ChakraNode with a unique ID."""
         node = ChakraNode()
         node.id = self.chakra_node_id
@@ -124,13 +126,17 @@ class ChakraConverter:
         comm_size = 0
         comm_type = c10d_chakra_map[op_name]
         if "val" not in fx_node.meta or not isinstance(fx_node.meta["val"], FakeTensor):
-            print(f"Sanity check: {node_debug_id_str(fx_node)} is c10d, but fake output is not found")
+            print(
+                f"Sanity check: {node_debug_id_str(fx_node)} is c10d, but fake output is not found"
+            )
             exit()
 
         import torch.distributed.distributed_c10d as c10d
 
         process_group_name = fx_node.args[-1]
-        process_group_ranks = c10d.get_process_group_ranks(c10d._resolve_process_group(process_group_name))
+        process_group_ranks = c10d.get_process_group_ranks(
+            c10d._resolve_process_group(process_group_name)
+        )
         num_process_groups = len(c10d._world.pg_names)
 
         # Use FakeTensor, which is included in the FX Graph as a fake input, to determine communication size
@@ -146,14 +152,22 @@ class ChakraConverter:
 
         chakra_node = self.create_chakra_node(node_name, COMM_COLL_NODE)
         chakra_node.attr.append(ChakraAttr(name="is_cpu_op", bool_val=False))
-        chakra_node.attr.append(ChakraAttr(name="comm_type", int64_val=c10d_chakra_map[op_name]))
+        chakra_node.attr.append(
+            ChakraAttr(name="comm_type", int64_val=c10d_chakra_map[op_name])
+        )
         chakra_node.attr.append(ChakraAttr(name="comm_size", int64_val=comm_size))
 
         # The ProcessGroup related attribute name and values follow the proposal in the MLC Chakra WG meeting of 2024-09-09.
         # The actual attribute names may change in the future.
-        chakra_node.attr.append(ChakraAttr(name="pg_name", string_val=process_group_name))
-        chakra_node.attr.append(ChakraAttr(name="group_size", int64_val=len(process_group_ranks)))
-        chakra_node.attr.append(ChakraAttr(name="group_count", int64_val=num_process_groups))
+        chakra_node.attr.append(
+            ChakraAttr(name="pg_name", string_val=process_group_name)
+        )
+        chakra_node.attr.append(
+            ChakraAttr(name="group_size", int64_val=len(process_group_ranks))
+        )
+        chakra_node.attr.append(
+            ChakraAttr(name="group_count", int64_val=num_process_groups)
+        )
         pg_ranks_protobuf = Int64List()
         pg_ranks_protobuf.values.extend(process_group_ranks)
         chakra_node.attr.append(ChakraAttr(name="ranks", int64_list=pg_ranks_protobuf))
@@ -187,7 +201,9 @@ class ChakraConverter:
         success, args, kwargs = fx_utils.get_fake_args_kwargs(fx_node)
         if not success:
             if os.environ["RANK"] == "0":
-                print(f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}")
+                print(
+                    f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}"
+                )
             return 0
 
         # Assumption: The first two arguments are the input tensors.
@@ -198,9 +214,13 @@ class ChakraConverter:
             a = args[1].size()
             b = args[2].size()
         numbytes_per_element = 4
-        estimated_tensor_size = 2 * numbytes_per_element * (a[0] * a[1] + b[0] * b[1] + a[0] * b[1])
+        estimated_tensor_size = (
+            2 * numbytes_per_element * (a[0] * a[1] + b[0] * b[1] + a[0] * b[1])
+        )
         if os.environ["RANK"] == "0":
-            print(f"Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} result {estimated_tensor_size}")
+            print(
+                f"Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} result {estimated_tensor_size}"
+            )
         return estimated_tensor_size
 
     # Measure the duration of a compute operation by running it on actual GPU.
@@ -216,16 +236,11 @@ class ChakraConverter:
                 # if type(arg) is fx.Node:
                 #     return arg
                 fake_tensor: torch._subclasses.fake_tensor.FakeTensor = arg.meta["val"]
-                faketensor_size = fake_tensor.size()
-                # [NOTE]: Abandon the change below. Errs with TP, DTensor. For now, modify PT code to force lowering, at 'graph_compile.py'
-                # torch.compile(dynamic=True) needed to trigger AOT lowering (avoid lazy lowering)
-                # size_array = []
-                # for size_value in fake_tensor.size():
-                #     size_value_resolved = int(size_value)
-                #     size_array.append(size_value_resolved)
-                # faketensor_size = torch.Size(size_array)
-                real_tensor = torch.empty(faketensor_size, dtype=fake_tensor.dtype, device=fake_tensor.device)
-                real_tensor = real_tensor.as_strided(faketensor_size, fake_tensor.stride())
+                sizes = [int(d) for d in fake_tensor.size()]
+                real_tensor = torch.rand(
+                    sizes, dtype=fake_tensor.dtype, device=fake_tensor.device
+                )
+                # real_tensor = torch.rand(fake_tensor.size(), dtype=fake_tensor.dtype, device=fake_tensor.device)
                 return real_tensor
 
             flat_args = [realify_fake_tensor(arg) for arg in fx_node.args]
@@ -252,12 +267,16 @@ class ChakraConverter:
             end_cuda_event.record(torch.cuda.current_stream())
             end_cpu_measured = time.time()
             torch.cuda.synchronize()
-            cpu_time = (end_cpu_measured - start_cpu_measured) * 1_000_000  # Second to microsecond
+            cpu_time = (
+                end_cpu_measured - start_cpu_measured
+            ) * 1_000_000  # Second to microsecond
             if os.environ["RANK"] == "0":
                 print(
                     f"For fx node {fx_node.name}, duration measured by CPU is {cpu_time}, duration measured by CUDA Events is {start_cuda_event.elapsed_time(end_cuda_event)}"
                 )
-            total_duration_cuda_event = start_cuda_event.elapsed_time(end_cuda_event) * 1000  # Millisecond to microsecond
+            total_duration_cuda_event = (
+                start_cuda_event.elapsed_time(end_cuda_event) * 1000
+            )  # Millisecond to microsecond
             mean_duration_cuda_event = int(total_duration_cuda_event / num_iters)
         return mean_duration_cuda_event
 
@@ -278,14 +297,18 @@ class ChakraConverter:
         chakra_node = self.create_chakra_node(node_name, COMP_NODE)
         chakra_node.attr.append(ChakraAttr(name="is_cpu_op", bool_val=False))
         chakra_node.attr.append(ChakraAttr(name="num_ops", int64_val=estimated_flops))
-        chakra_node.attr.append(ChakraAttr(name="tensor_size", uint64_val=estimated_tensor_size))
+        chakra_node.attr.append(
+            ChakraAttr(name="tensor_size", uint64_val=estimated_tensor_size)
+        )
         chakra_node.duration_micros = estimated_duration
         return chakra_node
 
     def record_fx_node(self, fx_node: fx.Node):
         if fx_node.name in self.fxnode_name_lookup_map:
             # Sanity check. This is VERY unlikely.
-            print(f"{node_debug_id_str(fx_node)} Already has a node with the same name!")
+            print(
+                f"{node_debug_id_str(fx_node)} Already has a node with the same name!"
+            )
         self.fxnode_name_lookup_map[fx_node.name] = fx_node
 
     def add_to_chakra_graph(self, chakra_node: ChakraNode, fx_node: fx.Node):
@@ -302,7 +325,10 @@ class ChakraConverter:
         upstream_search_queue = fx_node.all_input_nodes
         while len(upstream_search_queue) > 0:
             upstream_candidate = upstream_search_queue.pop()
-            if upstream_candidate.name == "root" or upstream_candidate.op == "placeholder":
+            if (
+                upstream_candidate.name == "root"
+                or upstream_candidate.op == "placeholder"
+            ):
                 continue
             upstream_name = upstream_candidate.name
             # Sanity check.
@@ -326,7 +352,11 @@ class ChakraConverter:
 
         # The following conditions check if the FX Node is worth converting to a Chakra Node.
         # Skip nodes that are 1) placeholders 2) insignificant compute
-        if fx_node.name == "root" or fx_node.op in ["placeholder", "output"] or "getitem" in fx_node.name:
+        if (
+            fx_node.name == "root"
+            or fx_node.op in ["placeholder", "output"]
+            or "getitem" in fx_node.name
+        ):
             return
         # At this point, all remaining nodes should target the type OpOverload
         # OpOverload is a PyTorch wrapper for ATen/c10d operators, defined in torch/_ops.py
