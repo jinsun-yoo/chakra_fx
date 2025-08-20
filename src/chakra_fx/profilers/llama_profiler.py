@@ -104,6 +104,7 @@ class LlamaProfiler(ModelProfiler):
                 pp=1,
                 ep=1,
                 cp=1,
+                etp=1,
                 world_size=world_size,
             )
             parallelized_model = parallelize_llama(model, parallel_dims, job_config)
@@ -139,6 +140,7 @@ class LlamaProfiler(ModelProfiler):
             pp=dim_parallelizations.get("pp", 1),
             ep=dim_parallelizations.get("ep", 1),
             cp=dim_parallelizations.get("cp", 1),
+            etp=dim_parallelizations.get("etp", 1),
             world_size=world_size,
         )
         enable_fp8 = data.get("float8", {})

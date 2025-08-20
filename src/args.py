@@ -51,7 +51,7 @@ def parse_args():
         default="llama",
         required=False,
         help="""Choose which model to work on. Each model has its own profiler under src/chakra_fx/profilers.""",
-        choices=["llama", "simple", "nanogpt", "resnet18"],
+        choices=["deepseek", "llama", "simple", "nanogpt", "resnet18"],
     )
     parser.add_argument(
         "--dse_config_filepath",

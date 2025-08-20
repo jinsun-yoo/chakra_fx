@@ -15,6 +15,16 @@ if __name__ == "__main__":
     "Choose which profiler to use"
     model_name = args.model
     match model_name:
+        case "deepseek":
+            from src.chakra_fx.profilers.deepseek_profiler import DeepseekProfiler
+            profiler = DeepseekProfiler(
+                job=args.job,
+                exp_tag=args.exp_tag,
+                fxgraph_actions=args.fxgraph_actions,
+                run_custom_backend_all_rank=args.custom_backend_all_rank,
+                dse_config_filepath=args.dse_config_filepath,
+                sequential_generation=args.sequential_generation
+            )
         case "llama":
             from src.chakra_fx.profilers.llama_profiler import LlamaProfiler
 
