@@ -7,3 +7,4 @@ __pycache__
 *.csv
 *.dot
 2024*
+launch_jobx/logs
