@@ -29,7 +29,7 @@ def convert_save_chakra_graph(
 
     chakra_converter = ChakraConverter(filename, subgraph_idx, dirname)
     chakra_converter.convert_to_chakra(gm)
-    sync_and_exit()
+    # sync_and_exit()
 
 
 # Generates a dot file for this subgraph.

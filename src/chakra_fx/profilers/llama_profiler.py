@@ -139,11 +139,12 @@ class LlamaProfiler(ModelProfiler):
         model_config.norm_type = "layernorm"  # job_config.model.norm_type
         local_rank = os.environ["LOCAL_RANK"]
         model = SimpleFSDPTransformer(model_config)
-        # if job in {"eager", "eager_kineto"}:
-        #     model = model.to(f"cuda:{local_rank}")
-        # else:
-        #     pass
-            # model = model.to(f"cuda:0")
+        if job in {"eager", "eager_kineto"}:
+            pass
+            # model = model.to(f"cuda:{local_rank}")
+        else:
+            # pass
+            model.to(f"cuda:0")
 
         print("Parallelizing model")
         job_config = JobConfig(

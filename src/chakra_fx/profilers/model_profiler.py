@@ -105,7 +105,6 @@ class ModelProfiler:
                     self.model,
                     backend=aot_autograd(fw_compiler=self._custom_aten_compiler),
                     fullgraph=True,
-                    dynamic=True,
                 )
         else:
             compiled_model = torch.compile(self.model)
@@ -122,12 +121,10 @@ class ModelProfiler:
         del output
         loss.backward()
         torch.cuda.synchronize()
-        sync_and_exit()
 
     def run_fw_pass(self):
         self.compile_model()
         self.model(self.sample_input)
-        sync_and_exit()
 
     def run_eager_fwbw_kineto_pass(self):
         local_rank = int(os.environ["LOCAL_RANK"])

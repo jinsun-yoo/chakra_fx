@@ -1,0 +1,671 @@
+
+CondaError: Run 'conda init' before 'conda deactivate'
+
+W0820 00:01:34.612000 1556405 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] 
+W0820 00:01:34.612000 1556405 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:01:34.612000 1556405 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0820 00:01:34.612000 1556405 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:01:34.742000 1771891 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] 
+W0820 00:01:34.742000 1771891 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:01:34.742000 1771891 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0820 00:01:34.742000 1771891 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:02:09.951000 1556808 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] 
+W0820 00:02:09.951000 1556808 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:02:09.951000 1556808 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0820 00:02:09.951000 1556808 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+[rank2]: Traceback (most recent call last):
+[rank2]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 38, in <module>
+[rank2]:     profiler = LlamaProfiler(
+[rank2]:         job=args.job,
+[rank2]:     ...<5 lines>...
+[rank2]:         model_type=model_name
+[rank2]:     )
+[rank2]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 155, in __init__
+[rank2]:     parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
+[rank2]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 216, in apply_configuration
+[rank2]:     parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+[rank2]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/parallelize.py", line 92, in parallelize_llama
+[rank2]:     model = data_parallel(
+[rank2]:         model,
+[rank2]:     ...<4 lines>...
+[rank2]:         tp_mesh=tp_mesh if parallel_dims.tp_enabled else None,
+[rank2]:     )
+[rank2]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/simple_fsdp.py", line 303, in data_parallel
+[rank2]:     distribute_tensor_func(p, device_mesh, param_sharding)
+[rank2]:     ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_api.py", line 779, in distribute_tensor
+[rank2]:     local_tensor = placement._replicate_tensor(
+[rank2]:         local_tensor, device_mesh, idx, src_data_rank
+[rank2]:     )
+[rank2]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/placement_types.py", line 650, in _replicate_tensor
+[rank2]:     mesh_broadcast(tensor, mesh, mesh_dim=mesh_dim, group_src=src_data_rank)
+[rank2]:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_collective_utils.py", line 167, in mesh_broadcast
+[rank2]:     return broadcast(tensor, group=dim_group, async_op=async_op, group_src=group_src)
+[rank2]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/c10d_logger.py", line 81, in wrapper
+[rank2]:     return func(*args, **kwargs)
+[rank2]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/distributed_c10d.py", line 2826, in broadcast
+[rank2]:     work = group.broadcast([tensor], opts)
+[rank2]: torch.distributed.DistBackendError: NCCL error in: /pytorch/torch/csrc/distributed/c10d/NCCLUtils.cpp:94, invalid usage (run with NCCL_DEBUG=WARN for details), NCCL version 2.27.5
+[rank2]: ncclInvalidUsage: This usually reflects invalid usage of NCCL library.
+[rank2]: Last error:
+[rank2]: Duplicate GPU detected : rank 2 and rank 0 both on CUDA device a000
+[rank8]: Traceback (most recent call last):
+[rank8]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 38, in <module>
+[rank8]:     profiler = LlamaProfiler(
+[rank8]:         job=args.job,
+[rank8]:     ...<5 lines>...
+[rank8]:         model_type=model_name
+[rank8]:     )
+[rank8]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 155, in __init__
+[rank8]:     parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
+[rank8]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 216, in apply_configuration
+[rank8]:     parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/parallelize.py", line 92, in parallelize_llama
+[rank8]:     model = data_parallel(
+[rank8]:         model,
+[rank8]:     ...<4 lines>...
+[rank8]:         tp_mesh=tp_mesh if parallel_dims.tp_enabled else None,
+[rank8]:     )
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/simple_fsdp.py", line 303, in data_parallel
+[rank8]:     distribute_tensor_func(p, device_mesh, param_sharding)
+[rank8]:     ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_api.py", line 779, in distribute_tensor
+[rank8]:     local_tensor = placement._replicate_tensor(
+[rank8]:         local_tensor, device_mesh, idx, src_data_rank
+[rank8]:     )
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/placement_types.py", line 650, in _replicate_tensor
+[rank8]:     mesh_broadcast(tensor, mesh, mesh_dim=mesh_dim, group_src=src_data_rank)
+[rank8]:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_collective_utils.py", line 167, in mesh_broadcast
+[rank8]:     return broadcast(tensor, group=dim_group, async_op=async_op, group_src=group_src)
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/c10d_logger.py", line 81, in wrapper
+[rank8]:     return func(*args, **kwargs)
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/distributed_c10d.py", line 2826, in broadcast
+[rank8]:     work = group.broadcast([tensor], opts)
+[rank8]: torch.distributed.DistBackendError: NCCL error in: /pytorch/torch/csrc/distributed/c10d/NCCLUtils.cpp:94, invalid usage (run with NCCL_DEBUG=WARN for details), NCCL version 2.27.5
+[rank8]: ncclInvalidUsage: This usually reflects invalid usage of NCCL library.
+[rank8]: Last error:
+[rank8]: Duplicate GPU detected : rank 8 and rank 0 both on CUDA device a000
+[rank13]: Traceback (most recent call last):
+[rank13]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 38, in <module>
+[rank13]:     profiler = LlamaProfiler(
+[rank13]:         job=args.job,
+[rank13]:     ...<5 lines>...
+[rank13]:         model_type=model_name
+[rank13]:     )
+[rank13]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 155, in __init__
+[rank13]:     parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
+[rank13]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 216, in apply_configuration
+[rank13]:     parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+[rank13]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/parallelize.py", line 92, in parallelize_llama
+[rank13]:     model = data_parallel(
+[rank13]:         model,
+[rank13]:     ...<4 lines>...
+[rank13]:         tp_mesh=tp_mesh if parallel_dims.tp_enabled else None,
+[rank13]:     )
+[rank13]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/simple_fsdp.py", line 303, in data_parallel
+[rank13]:     distribute_tensor_func(p, device_mesh, param_sharding)
+[rank13]:     ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank13]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_api.py", line 779, in distribute_tensor
+[rank13]:     local_tensor = placement._replicate_tensor(
+[rank13]:         local_tensor, device_mesh, idx, src_data_rank
+[rank13]:     )
+[rank13]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/placement_types.py", line 650, in _replicate_tensor
+[rank13]:     mesh_broadcast(tensor, mesh, mesh_dim=mesh_dim, group_src=src_data_rank)
+[rank13]:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank13]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_collective_utils.py", line 167, in mesh_broadcast
+[rank13]:     return broadcast(tensor, group=dim_group, async_op=async_op, group_src=group_src)
+[rank13]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/c10d_logger.py", line 81, in wrapper
+[rank13]:     return func(*args, **kwargs)
+[rank13]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/distributed_c10d.py", line 2826, in broadcast
+[rank13]:     work = group.broadcast([tensor], opts)
+[rank13]: torch.distributed.DistBackendError: NCCL error in: /pytorch/torch/csrc/distributed/c10d/NCCLUtils.cpp:94, invalid usage (run with NCCL_DEBUG=WARN for details), NCCL version 2.27.5
+[rank13]: ncclInvalidUsage: This usually reflects invalid usage of NCCL library.
+[rank13]: Last error:
+[rank13]: Duplicate GPU detected : rank 13 and rank 0 both on CUDA device a000
+[rank5]: Traceback (most recent call last):
+[rank5]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 38, in <module>
+[rank5]:     profiler = LlamaProfiler(
+[rank5]:         job=args.job,
+[rank5]:     ...<5 lines>...
+[rank5]:         model_type=model_name
+[rank5]:     )
+[rank5]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 155, in __init__
+[rank5]:     parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
+[rank5]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 216, in apply_configuration
+[rank5]:     parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+[rank5]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/parallelize.py", line 92, in parallelize_llama
+[rank5]:     model = data_parallel(
+[rank5]:         model,
+[rank5]:     ...<4 lines>...
+[rank5]:         tp_mesh=tp_mesh if parallel_dims.tp_enabled else None,
+[rank5]:     )
+[rank5]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/simple_fsdp.py", line 303, in data_parallel
+[rank5]:     distribute_tensor_func(p, device_mesh, param_sharding)
+[rank5]:     ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank5]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_api.py", line 779, in distribute_tensor
+[rank5]:     local_tensor = placement._replicate_tensor(
+[rank5]:         local_tensor, device_mesh, idx, src_data_rank
+[rank5]:     )
+[rank5]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/placement_types.py", line 650, in _replicate_tensor
+[rank5]:     mesh_broadcast(tensor, mesh, mesh_dim=mesh_dim, group_src=src_data_rank)
+[rank5]:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank5]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_collective_utils.py", line 167, in mesh_broadcast
+[rank5]:     return broadcast(tensor, group=dim_group, async_op=async_op, group_src=group_src)
+[rank5]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/c10d_logger.py", line 81, in wrapper
+[rank5]:     return func(*args, **kwargs)
+[rank5]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/distributed_c10d.py", line 2826, in broadcast
+[rank5]:     work = group.broadcast([tensor], opts)
+[rank5]: torch.distributed.DistBackendError: NCCL error in: /pytorch/torch/csrc/distributed/c10d/NCCLUtils.cpp:94, invalid usage (run with NCCL_DEBUG=WARN for details), NCCL version 2.27.5
+[rank5]: ncclInvalidUsage: This usually reflects invalid usage of NCCL library.
+[rank5]: Last error:
+[rank5]: Duplicate GPU detected : rank 5 and rank 0 both on CUDA device a000
+[rank7]: Traceback (most recent call last):
+[rank7]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 38, in <module>
+[rank7]:     profiler = LlamaProfiler(
+[rank7]:         job=args.job,
+[rank7]:     ...<5 lines>...
+[rank7]:         model_type=model_name
+[rank7]:     )
+[rank7]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 155, in __init__
+[rank7]:     parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
+[rank7]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 216, in apply_configuration
+[rank7]:     parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+[rank7]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/parallelize.py", line 92, in parallelize_llama
+[rank7]:     model = data_parallel(
+[rank7]:         model,
+[rank7]:     ...<4 lines>...
+[rank7]:         tp_mesh=tp_mesh if parallel_dims.tp_enabled else None,
+[rank7]:     )
+[rank7]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/simple_fsdp.py", line 303, in data_parallel
+[rank7]:     distribute_tensor_func(p, device_mesh, param_sharding)
+[rank7]:     ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank7]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_api.py", line 779, in distribute_tensor
+[rank7]:     local_tensor = placement._replicate_tensor(
+[rank7]:         local_tensor, device_mesh, idx, src_data_rank
+[rank7]:     )
+[rank7]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/placement_types.py", line 650, in _replicate_tensor
+[rank7]:     mesh_broadcast(tensor, mesh, mesh_dim=mesh_dim, group_src=src_data_rank)
+[rank7]:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank7]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_collective_utils.py", line 167, in mesh_broadcast
+[rank7]:     return broadcast(tensor, group=dim_group, async_op=async_op, group_src=group_src)
+[rank7]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/c10d_logger.py", line 81, in wrapper
+[rank7]:     return func(*args, **kwargs)
+[rank7]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/distributed_c10d.py", line 2826, in broadcast
+[rank7]:     work = group.broadcast([tensor], opts)
+[rank7]: torch.distributed.DistBackendError: NCCL error in: /pytorch/torch/csrc/distributed/c10d/NCCLUtils.cpp:94, invalid usage (run with NCCL_DEBUG=WARN for details), NCCL version 2.27.5
+[rank7]: ncclInvalidUsage: This usually reflects invalid usage of NCCL library.
+[rank7]: Last error:
+[rank7]: Duplicate GPU detected : rank 7 and rank 0 both on CUDA device a000
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 38, in <module>
+[rank0]:     profiler = LlamaProfiler(
+[rank0]:         job=args.job,
+[rank0]:     ...<5 lines>...
+[rank0]:         model_type=model_name
+[rank0]:     )
+[rank0]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 155, in __init__
+[rank0]:     parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
+[rank0]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 216, in apply_configuration
+[rank0]:     parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/parallelize.py", line 92, in parallelize_llama
+[rank0]:     model = data_parallel(
+[rank0]:         model,
+[rank0]:     ...<4 lines>...
+[rank0]:         tp_mesh=tp_mesh if parallel_dims.tp_enabled else None,
+[rank0]:     )
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/simple_fsdp.py", line 303, in data_parallel
+[rank0]:     distribute_tensor_func(p, device_mesh, param_sharding)
+[rank0]:     ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_api.py", line 779, in distribute_tensor
+[rank0]:     local_tensor = placement._replicate_tensor(
+[rank0]:         local_tensor, device_mesh, idx, src_data_rank
+[rank0]:     )
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/placement_types.py", line 650, in _replicate_tensor
+[rank0]:     mesh_broadcast(tensor, mesh, mesh_dim=mesh_dim, group_src=src_data_rank)
+[rank0]:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_collective_utils.py", line 167, in mesh_broadcast
+[rank0]:     return broadcast(tensor, group=dim_group, async_op=async_op, group_src=group_src)
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/c10d_logger.py", line 81, in wrapper
+[rank0]:     return func(*args, **kwargs)
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/distributed_c10d.py", line 2826, in broadcast
+[rank0]:     work = group.broadcast([tensor], opts)
+[rank0]: torch.distributed.DistBackendError: NCCL error in: /pytorch/torch/csrc/distributed/c10d/NCCLUtils.cpp:94, invalid usage (run with NCCL_DEBUG=WARN for details), NCCL version 2.27.5
+[rank0]: ncclInvalidUsage: This usually reflects invalid usage of NCCL library.
+[rank0]: Last error:
+[rank0]: Duplicate GPU detected : rank 0 and rank 1 both on CUDA device a000
+[rank12]: Traceback (most recent call last):
+[rank12]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 38, in <module>
+[rank12]:     profiler = LlamaProfiler(
+[rank12]:         job=args.job,
+[rank12]:     ...<5 lines>...
+[rank12]:         model_type=model_name
+[rank12]:     )
+[rank12]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 155, in __init__
+[rank12]:     parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
+[rank12]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 216, in apply_configuration
+[rank12]:     parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+[rank12]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/parallelize.py", line 92, in parallelize_llama
+[rank12]:     model = data_parallel(
+[rank12]:         model,
+[rank12]:     ...<4 lines>...
+[rank12]:         tp_mesh=tp_mesh if parallel_dims.tp_enabled else None,
+[rank12]:     )
+[rank12]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/simple_fsdp.py", line 303, in data_parallel
+[rank12]:     distribute_tensor_func(p, device_mesh, param_sharding)
+[rank12]:     ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank12]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_api.py", line 779, in distribute_tensor
+[rank12]:     local_tensor = placement._replicate_tensor(
+[rank12]:         local_tensor, device_mesh, idx, src_data_rank
+[rank12]:     )
+[rank12]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/placement_types.py", line 650, in _replicate_tensor
+[rank12]:     mesh_broadcast(tensor, mesh, mesh_dim=mesh_dim, group_src=src_data_rank)
+[rank12]:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank12]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_collective_utils.py", line 167, in mesh_broadcast
+[rank12]:     return broadcast(tensor, group=dim_group, async_op=async_op, group_src=group_src)
+[rank12]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/c10d_logger.py", line 81, in wrapper
+[rank12]:     return func(*args, **kwargs)
+[rank12]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/distributed_c10d.py", line 2826, in broadcast
+[rank12]:     work = group.broadcast([tensor], opts)
+[rank12]: torch.distributed.DistBackendError: NCCL error in: /pytorch/torch/csrc/distributed/c10d/NCCLUtils.cpp:94, invalid usage (run with NCCL_DEBUG=WARN for details), NCCL version 2.27.5
+[rank12]: ncclInvalidUsage: This usually reflects invalid usage of NCCL library.
+[rank12]: Last error:
+[rank12]: Duplicate GPU detected : rank 12 and rank 0 both on CUDA device a000
+[rank10]: Traceback (most recent call last):
+[rank10]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 38, in <module>
+[rank10]:     profiler = LlamaProfiler(
+[rank10]:         job=args.job,
+[rank10]:     ...<5 lines>...
+[rank10]:         model_type=model_name
+[rank10]:     )
+[rank10]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 155, in __init__
+[rank10]:     parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
+[rank10]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 216, in apply_configuration
+[rank10]:     parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+[rank10]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/parallelize.py", line 92, in parallelize_llama
+[rank10]:     model = data_parallel(
+[rank10]:         model,
+[rank10]:     ...<4 lines>...
+[rank10]:         tp_mesh=tp_mesh if parallel_dims.tp_enabled else None,
+[rank10]:     )
+[rank10]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/simple_fsdp.py", line 303, in data_parallel
+[rank10]:     distribute_tensor_func(p, device_mesh, param_sharding)
+[rank10]:     ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank10]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_api.py", line 779, in distribute_tensor
+[rank10]:     local_tensor = placement._replicate_tensor(
+[rank10]:         local_tensor, device_mesh, idx, src_data_rank
+[rank10]:     )
+[rank10]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/placement_types.py", line 650, in _replicate_tensor
+[rank10]:     mesh_broadcast(tensor, mesh, mesh_dim=mesh_dim, group_src=src_data_rank)
+[rank10]:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank10]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_collective_utils.py", line 167, in mesh_broadcast
+[rank10]:     return broadcast(tensor, group=dim_group, async_op=async_op, group_src=group_src)
+[rank10]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/c10d_logger.py", line 81, in wrapper
+[rank10]:     return func(*args, **kwargs)
+[rank10]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/distributed_c10d.py", line 2826, in broadcast
+[rank10]:     work = group.broadcast([tensor], opts)
+[rank10]: torch.distributed.DistBackendError: NCCL error in: /pytorch/torch/csrc/distributed/c10d/NCCLUtils.cpp:94, invalid usage (run with NCCL_DEBUG=WARN for details), NCCL version 2.27.5
+[rank10]: ncclInvalidUsage: This usually reflects invalid usage of NCCL library.
+[rank10]: Last error:
+[rank10]: Duplicate GPU detected : rank 10 and rank 0 both on CUDA device a000
+[rank4]: Traceback (most recent call last):
+[rank4]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 38, in <module>
+[rank4]:     profiler = LlamaProfiler(
+[rank4]:         job=args.job,
+[rank4]:     ...<5 lines>...
+[rank4]:         model_type=model_name
+[rank4]:     )
+[rank4]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 155, in __init__
+[rank4]:     parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
+[rank4]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 216, in apply_configuration
+[rank4]:     parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+[rank4]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/parallelize.py", line 92, in parallelize_llama
+[rank4]:     model = data_parallel(
+[rank4]:         model,
+[rank4]:     ...<4 lines>...
+[rank4]:         tp_mesh=tp_mesh if parallel_dims.tp_enabled else None,
+[rank4]:     )
+[rank4]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/simple_fsdp.py", line 303, in data_parallel
+[rank4]:     distribute_tensor_func(p, device_mesh, param_sharding)
+[rank4]:     ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank4]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_api.py", line 779, in distribute_tensor
+[rank4]:     local_tensor = placement._replicate_tensor(
+[rank4]:         local_tensor, device_mesh, idx, src_data_rank
+[rank4]:     )
+[rank4]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/placement_types.py", line 650, in _replicate_tensor
+[rank4]:     mesh_broadcast(tensor, mesh, mesh_dim=mesh_dim, group_src=src_data_rank)
+[rank4]:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank4]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_collective_utils.py", line 167, in mesh_broadcast
+[rank4]:     return broadcast(tensor, group=dim_group, async_op=async_op, group_src=group_src)
+[rank4]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/c10d_logger.py", line 81, in wrapper
+[rank4]:     return func(*args, **kwargs)
+[rank4]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/distributed_c10d.py", line 2826, in broadcast
+[rank4]:     work = group.broadcast([tensor], opts)
+[rank4]: torch.distributed.DistBackendError: NCCL error in: /pytorch/torch/csrc/distributed/c10d/NCCLUtils.cpp:94, invalid usage (run with NCCL_DEBUG=WARN for details), NCCL version 2.27.5
+[rank4]: ncclInvalidUsage: This usually reflects invalid usage of NCCL library.
+[rank4]: Last error:
+[rank4]: Duplicate GPU detected : rank 4 and rank 0 both on CUDA device a000
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 38, in <module>
+[rank1]:     profiler = LlamaProfiler(
+[rank1]:         job=args.job,
+[rank1]:     ...<5 lines>...
+[rank1]:         model_type=model_name
+[rank1]:     )
+[rank1]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 155, in __init__
+[rank1]:     parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
+[rank1]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 216, in apply_configuration
+[rank1]:     parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+[rank1]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/parallelize.py", line 92, in parallelize_llama
+[rank1]:     model = data_parallel(
+[rank1]:         model,
+[rank1]:     ...<4 lines>...
+[rank1]:         tp_mesh=tp_mesh if parallel_dims.tp_enabled else None,
+[rank1]:     )
+[rank1]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/simple_fsdp.py", line 303, in data_parallel
+[rank1]:     distribute_tensor_func(p, device_mesh, param_sharding)
+[rank1]:     ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_api.py", line 779, in distribute_tensor
+[rank1]:     local_tensor = placement._replicate_tensor(
+[rank1]:         local_tensor, device_mesh, idx, src_data_rank
+[rank1]:     )
+[rank1]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/placement_types.py", line 650, in _replicate_tensor
+[rank1]:     mesh_broadcast(tensor, mesh, mesh_dim=mesh_dim, group_src=src_data_rank)
+[rank1]:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_collective_utils.py", line 167, in mesh_broadcast
+[rank1]:     return broadcast(tensor, group=dim_group, async_op=async_op, group_src=group_src)
+[rank1]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/c10d_logger.py", line 81, in wrapper
+[rank1]:     return func(*args, **kwargs)
+[rank1]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/distributed_c10d.py", line 2826, in broadcast
+[rank1]:     work = group.broadcast([tensor], opts)
+[rank1]: torch.distributed.DistBackendError: NCCL error in: /pytorch/torch/csrc/distributed/c10d/NCCLUtils.cpp:94, invalid usage (run with NCCL_DEBUG=WARN for details), NCCL version 2.27.5
+[rank1]: ncclInvalidUsage: This usually reflects invalid usage of NCCL library.
+[rank1]: Last error:
+[rank1]: Duplicate GPU detected : rank 1 and rank 0 both on CUDA device a000
+[rank14]: Traceback (most recent call last):
+[rank14]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 38, in <module>
+[rank14]:     profiler = LlamaProfiler(
+[rank14]:         job=args.job,
+[rank14]:     ...<5 lines>...
+[rank14]:         model_type=model_name
+[rank14]:     )
+[rank14]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 155, in __init__
+[rank14]:     parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
+[rank14]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 216, in apply_configuration
+[rank14]:     parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+[rank14]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/parallelize.py", line 92, in parallelize_llama
+[rank14]:     model = data_parallel(
+[rank14]:         model,
+[rank14]:     ...<4 lines>...
+[rank14]:         tp_mesh=tp_mesh if parallel_dims.tp_enabled else None,
+[rank14]:     )
+[rank14]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/simple_fsdp.py", line 303, in data_parallel
+[rank14]:     distribute_tensor_func(p, device_mesh, param_sharding)
+[rank14]:     ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank14]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_api.py", line 779, in distribute_tensor
+[rank14]:     local_tensor = placement._replicate_tensor(
+[rank14]:         local_tensor, device_mesh, idx, src_data_rank
+[rank14]:     )
+[rank14]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/placement_types.py", line 650, in _replicate_tensor
+[rank14]:     mesh_broadcast(tensor, mesh, mesh_dim=mesh_dim, group_src=src_data_rank)
+[rank14]:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank14]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_collective_utils.py", line 167, in mesh_broadcast
+[rank14]:     return broadcast(tensor, group=dim_group, async_op=async_op, group_src=group_src)
+[rank14]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/c10d_logger.py", line 81, in wrapper
+[rank14]:     return func(*args, **kwargs)
+[rank14]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/distributed_c10d.py", line 2826, in broadcast
+[rank14]:     work = group.broadcast([tensor], opts)
+[rank14]: torch.distributed.DistBackendError: NCCL error in: /pytorch/torch/csrc/distributed/c10d/NCCLUtils.cpp:94, invalid usage (run with NCCL_DEBUG=WARN for details), NCCL version 2.27.5
+[rank14]: ncclInvalidUsage: This usually reflects invalid usage of NCCL library.
+[rank14]: Last error:
+[rank14]: Duplicate GPU detected : rank 14 and rank 0 both on CUDA device a000
+[rank6]: Traceback (most recent call last):
+[rank6]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 38, in <module>
+[rank6]:     profiler = LlamaProfiler(
+[rank6]:         job=args.job,
+[rank6]:     ...<5 lines>...
+[rank6]:         model_type=model_name
+[rank6]:     )
+[rank6]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 155, in __init__
+[rank6]:     parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
+[rank6]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 216, in apply_configuration
+[rank6]:     parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+[rank6]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/parallelize.py", line 92, in parallelize_llama
+[rank6]:     model = data_parallel(
+[rank6]:         model,
+[rank6]:     ...<4 lines>...
+[rank6]:         tp_mesh=tp_mesh if parallel_dims.tp_enabled else None,
+[rank6]:     )
+[rank6]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/simple_fsdp.py", line 303, in data_parallel
+[rank6]:     distribute_tensor_func(p, device_mesh, param_sharding)
+[rank6]:     ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank6]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_api.py", line 779, in distribute_tensor
+[rank6]:     local_tensor = placement._replicate_tensor(
+[rank6]:         local_tensor, device_mesh, idx, src_data_rank
+[rank6]:     )
+[rank6]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/placement_types.py", line 650, in _replicate_tensor
+[rank6]:     mesh_broadcast(tensor, mesh, mesh_dim=mesh_dim, group_src=src_data_rank)
+[rank6]:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank6]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_collective_utils.py", line 167, in mesh_broadcast
+[rank6]:     return broadcast(tensor, group=dim_group, async_op=async_op, group_src=group_src)
+[rank6]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/c10d_logger.py", line 81, in wrapper
+[rank6]:     return func(*args, **kwargs)
+[rank6]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/distributed_c10d.py", line 2826, in broadcast
+[rank6]:     work = group.broadcast([tensor], opts)
+[rank6]: torch.distributed.DistBackendError: NCCL error in: /pytorch/torch/csrc/distributed/c10d/NCCLUtils.cpp:94, invalid usage (run with NCCL_DEBUG=WARN for details), NCCL version 2.27.5
+[rank6]: ncclInvalidUsage: This usually reflects invalid usage of NCCL library.
+[rank6]: Last error:
+[rank6]: Duplicate GPU detected : rank 6 and rank 0 both on CUDA device a000
+[rank15]: Traceback (most recent call last):
+[rank15]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 38, in <module>
+[rank15]:     profiler = LlamaProfiler(
+[rank15]:         job=args.job,
+[rank15]:     ...<5 lines>...
+[rank15]:         model_type=model_name
+[rank15]:     )
+[rank15]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 155, in __init__
+[rank15]:     parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
+[rank15]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 216, in apply_configuration
+[rank15]:     parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+[rank15]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/parallelize.py", line 92, in parallelize_llama
+[rank15]:     model = data_parallel(
+[rank15]:         model,
+[rank15]:     ...<4 lines>...
+[rank15]:         tp_mesh=tp_mesh if parallel_dims.tp_enabled else None,
+[rank15]:     )
+[rank15]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/simple_fsdp.py", line 303, in data_parallel
+[rank15]:     distribute_tensor_func(p, device_mesh, param_sharding)
+[rank15]:     ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank15]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_api.py", line 779, in distribute_tensor
+[rank15]:     local_tensor = placement._replicate_tensor(
+[rank15]:         local_tensor, device_mesh, idx, src_data_rank
+[rank15]:     )
+[rank15]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/placement_types.py", line 650, in _replicate_tensor
+[rank15]:     mesh_broadcast(tensor, mesh, mesh_dim=mesh_dim, group_src=src_data_rank)
+[rank15]:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank15]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_collective_utils.py", line 167, in mesh_broadcast
+[rank15]:     return broadcast(tensor, group=dim_group, async_op=async_op, group_src=group_src)
+[rank15]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/c10d_logger.py", line 81, in wrapper
+[rank15]:     return func(*args, **kwargs)
+[rank15]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/distributed_c10d.py", line 2826, in broadcast
+[rank15]:     work = group.broadcast([tensor], opts)
+[rank15]: torch.distributed.DistBackendError: NCCL error in: /pytorch/torch/csrc/distributed/c10d/NCCLUtils.cpp:94, invalid usage (run with NCCL_DEBUG=WARN for details), NCCL version 2.27.5
+[rank15]: ncclInvalidUsage: This usually reflects invalid usage of NCCL library.
+[rank15]: Last error:
+[rank15]: Duplicate GPU detected : rank 15 and rank 0 both on CUDA device a000
+[rank11]: Traceback (most recent call last):
+[rank11]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 38, in <module>
+[rank11]:     profiler = LlamaProfiler(
+[rank11]:         job=args.job,
+[rank11]:     ...<5 lines>...
+[rank11]:         model_type=model_name
+[rank11]:     )
+[rank11]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 155, in __init__
+[rank11]:     parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
+[rank11]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 216, in apply_configuration
+[rank11]:     parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+[rank11]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/parallelize.py", line 92, in parallelize_llama
+[rank11]:     model = data_parallel(
+[rank11]:         model,
+[rank11]:     ...<4 lines>...
+[rank11]:         tp_mesh=tp_mesh if parallel_dims.tp_enabled else None,
+[rank11]:     )
+[rank11]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/simple_fsdp.py", line 303, in data_parallel
+[rank11]:     distribute_tensor_func(p, device_mesh, param_sharding)
+[rank11]:     ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank11]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_api.py", line 779, in distribute_tensor
+[rank11]:     local_tensor = placement._replicate_tensor(
+[rank11]:         local_tensor, device_mesh, idx, src_data_rank
+[rank11]:     )
+[rank11]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/placement_types.py", line 650, in _replicate_tensor
+[rank11]:     mesh_broadcast(tensor, mesh, mesh_dim=mesh_dim, group_src=src_data_rank)
+[rank11]:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank11]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_collective_utils.py", line 167, in mesh_broadcast
+[rank11]:     return broadcast(tensor, group=dim_group, async_op=async_op, group_src=group_src)
+[rank11]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/c10d_logger.py", line 81, in wrapper
+[rank11]:     return func(*args, **kwargs)
+[rank11]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/distributed_c10d.py", line 2826, in broadcast
+[rank11]:     work = group.broadcast([tensor], opts)
+[rank11]: torch.distributed.DistBackendError: NCCL error in: /pytorch/torch/csrc/distributed/c10d/NCCLUtils.cpp:94, invalid usage (run with NCCL_DEBUG=WARN for details), NCCL version 2.27.5
+[rank11]: ncclInvalidUsage: This usually reflects invalid usage of NCCL library.
+[rank11]: Last error:
+[rank11]: Duplicate GPU detected : rank 11 and rank 0 both on CUDA device a000
+[rank9]: Traceback (most recent call last):
+[rank9]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 38, in <module>
+[rank9]:     profiler = LlamaProfiler(
+[rank9]:         job=args.job,
+[rank9]:     ...<5 lines>...
+[rank9]:         model_type=model_name
+[rank9]:     )
+[rank9]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 155, in __init__
+[rank9]:     parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
+[rank9]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 216, in apply_configuration
+[rank9]:     parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+[rank9]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/parallelize.py", line 92, in parallelize_llama
+[rank9]:     model = data_parallel(
+[rank9]:         model,
+[rank9]:     ...<4 lines>...
+[rank9]:         tp_mesh=tp_mesh if parallel_dims.tp_enabled else None,
+[rank9]:     )
+[rank9]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/simple_fsdp.py", line 303, in data_parallel
+[rank9]:     distribute_tensor_func(p, device_mesh, param_sharding)
+[rank9]:     ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank9]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_api.py", line 779, in distribute_tensor
+[rank9]:     local_tensor = placement._replicate_tensor(
+[rank9]:         local_tensor, device_mesh, idx, src_data_rank
+[rank9]:     )
+[rank9]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/placement_types.py", line 650, in _replicate_tensor
+[rank9]:     mesh_broadcast(tensor, mesh, mesh_dim=mesh_dim, group_src=src_data_rank)
+[rank9]:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank9]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_collective_utils.py", line 167, in mesh_broadcast
+[rank9]:     return broadcast(tensor, group=dim_group, async_op=async_op, group_src=group_src)
+[rank9]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/c10d_logger.py", line 81, in wrapper
+[rank9]:     return func(*args, **kwargs)
+[rank9]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/distributed_c10d.py", line 2826, in broadcast
+[rank9]:     work = group.broadcast([tensor], opts)
+[rank9]: torch.distributed.DistBackendError: NCCL error in: /pytorch/torch/csrc/distributed/c10d/NCCLUtils.cpp:94, invalid usage (run with NCCL_DEBUG=WARN for details), NCCL version 2.27.5
+[rank9]: ncclInvalidUsage: This usually reflects invalid usage of NCCL library.
+[rank9]: Last error:
+[rank9]: Duplicate GPU detected : rank 9 and rank 0 both on CUDA device a000
+[rank3]: Traceback (most recent call last):
+[rank3]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 38, in <module>
+[rank3]:     profiler = LlamaProfiler(
+[rank3]:         job=args.job,
+[rank3]:     ...<5 lines>...
+[rank3]:         model_type=model_name
+[rank3]:     )
+[rank3]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 155, in __init__
+[rank3]:     parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
+[rank3]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/llama_profiler.py", line 216, in apply_configuration
+[rank3]:     parallelized_model = parallelize_llama(model, parallel_dims, job_config)
+[rank3]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/parallelize.py", line 92, in parallelize_llama
+[rank3]:     model = data_parallel(
+[rank3]:         model,
+[rank3]:     ...<4 lines>...
+[rank3]:         tp_mesh=tp_mesh if parallel_dims.tp_enabled else None,
+[rank3]:     )
+[rank3]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/experiments/simple_fsdp/simple_fsdp.py", line 303, in data_parallel
+[rank3]:     distribute_tensor_func(p, device_mesh, param_sharding)
+[rank3]:     ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_api.py", line 779, in distribute_tensor
+[rank3]:     local_tensor = placement._replicate_tensor(
+[rank3]:         local_tensor, device_mesh, idx, src_data_rank
+[rank3]:     )
+[rank3]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/placement_types.py", line 650, in _replicate_tensor
+[rank3]:     mesh_broadcast(tensor, mesh, mesh_dim=mesh_dim, group_src=src_data_rank)
+[rank3]:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/tensor/_collective_utils.py", line 167, in mesh_broadcast
+[rank3]:     return broadcast(tensor, group=dim_group, async_op=async_op, group_src=group_src)
+[rank3]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/c10d_logger.py", line 81, in wrapper
+[rank3]:     return func(*args, **kwargs)
+[rank3]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/distributed_c10d.py", line 2826, in broadcast
+[rank3]:     work = group.broadcast([tensor], opts)
+[rank3]: torch.distributed.DistBackendError: NCCL error in: /pytorch/torch/csrc/distributed/c10d/NCCLUtils.cpp:94, invalid usage (run with NCCL_DEBUG=WARN for details), NCCL version 2.27.5
+[rank3]: ncclInvalidUsage: This usually reflects invalid usage of NCCL library.
+[rank3]: Last error:
+[rank3]: Duplicate GPU detected : rank 3 and rank 0 both on CUDA device a000
+[rank0]:[W820 00:02:39.034103729 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank8]:[W820 00:02:39.115362591 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+W0820 00:02:39.631000 1556808 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1556868 closing signal SIGTERM
+W0820 00:02:39.632000 1556808 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1556869 closing signal SIGTERM
+W0820 00:02:39.632000 1556808 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1556871 closing signal SIGTERM
+W0820 00:02:39.632000 1556808 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1556872 closing signal SIGTERM
+W0820 00:02:39.633000 1556808 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1556874 closing signal SIGTERM
+W0820 00:02:39.633000 1556808 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1556875 closing signal SIGTERM
+W0820 00:02:39.634000 1556808 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1556876 closing signal SIGTERM
+W0820 00:02:39.634000 1556808 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1556877 closing signal SIGTERM
+W0820 00:02:39.634000 1556808 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1556878 closing signal SIGTERM
+W0820 00:02:39.635000 1556808 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1556879 closing signal SIGTERM
+W0820 00:02:39.635000 1556808 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1556880 closing signal SIGTERM
+W0820 00:02:39.635000 1556808 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1556881 closing signal SIGTERM
+W0820 00:02:39.636000 1556808 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1556882 closing signal SIGTERM
+W0820 00:02:39.636000 1556808 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1556883 closing signal SIGTERM
+E0820 00:02:41.343000 1556808 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:882] failed (exitcode: 1) local_rank: 2 (pid: 1556870) of binary: /home/hice1/cman8/conda_env/chakra_fx/bin/python
+Traceback (most recent call last):
+  File "/home/hice1/cman8/conda_env/chakra_fx/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 936, in main
+    run(args)
+    ~~~^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 927, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 159, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 296, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+profile_fxgraph.py FAILED
+------------------------------------------------------------
+Failures:
+[1]:
+  time      : 2025-08-20_00:02:39
+  host      : atl1-1-03-010-20-0.pace.gatech.edu
+  rank      : 5 (local_rank: 5)
+  exitcode  : 1 (pid: 1556873)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-08-20_00:02:39
+  host      : atl1-1-03-010-20-0.pace.gatech.edu
+  rank      : 2 (local_rank: 2)
+  exitcode  : 1 (pid: 1556870)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+srun: error: atl1-1-03-010-20-0: task 0: Exited with exit code 1

@@ -1,0 +1,184 @@
+---------------------------------------
+Begin Slurm Prolog: Aug-20-2025 00:01:27
+Job ID:    2755244
+User ID:   cman8
+Account:   ece
+Job name:  dp16_llama_small
+Partition: coe-gpu
+QOS:       coe-ice
+---------------------------------------
+MASTER_ADDR=atl1-1-03-010-20-0 NNODES=2 NPROC_PER_NODE=8
+Rank 9 local_rank 1 -> GPU 1
+Rank 8 local_rank 0 -> GPU 0
+Rank 0 local_rank 0 -> GPU 0
+Rank 1 local_rank 1 -> GPU 1
+Rank 15 local_rank 7 -> GPU 7
+Rank 13 local_rank 5 -> GPU 5
+Rank 14 local_rank 6 -> GPU 6
+Rank 10 local_rank 2 -> GPU 2
+Rank 11 local_rank 3 -> GPU 3
+Rank 12 local_rank 4 -> GPU 4
+Rank 4 local_rank 4 -> GPU 4
+Rank 5 local_rank 5 -> GPU 5
+Rank 2 local_rank 2 -> GPU 2
+Rank 7 local_rank 7 -> GPU 7
+Rank 6 local_rank 6 -> GPU 6
+Rank 3 local_rank 3 -> GPU 3
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+NCCL version 2.27.5+cuda12.9
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+start llama profiler
+Creating Model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+NCCL version 2.27.5+cuda12.9
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+
+[2025-08-20 00:02:38] atl1-1-03-010-20-0:1556870:1557021 [0] init.cc:737 NCCL WARN Duplicate GPU detected : rank 2 and rank 0 both on CUDA device a000
+
+[2025-08-20 00:02:38] atl1-1-03-010-20-0:1556880:1557036 [0] init.cc:737 NCCL WARN Duplicate GPU detected : rank 12 and rank 0 both on CUDA device a000
+
+[2025-08-20 00:02:38] atl1-1-03-010-20-0:1556882:1557017 [0] init.cc:737 NCCL WARN Duplicate GPU detected : rank 14 and rank 0 both on CUDA device a000
+
+[2025-08-20 00:02:38] atl1-1-03-010-20-0:1556868:1557018 [0] init.cc:737 NCCL WARN Duplicate GPU detected : rank 0 and rank 1 both on CUDA device a000
+
+[2025-08-20 00:02:38] atl1-1-03-010-20-0:1556883:1557044 [0] init.cc:737 NCCL WARN Duplicate GPU detected : rank 15 and rank 0 both on CUDA device a000
+
+[2025-08-20 00:02:38] atl1-1-03-010-20-0:1556869:1557019 [0] init.cc:737 NCCL WARN Duplicate GPU detected : rank 1 and rank 0 both on CUDA device a000
+
+[2025-08-20 00:02:38] atl1-1-03-010-20-0:1556879:1557025 [0] init.cc:737 NCCL WARN Duplicate GPU detected : rank 11 and rank 0 both on CUDA device a000
+
+[2025-08-20 00:02:38] atl1-1-03-010-20-0:1556881:1557020 [0] init.cc:737 NCCL WARN Duplicate GPU detected : rank 13 and rank 0 both on CUDA device a000
+
+[2025-08-20 00:02:38] atl1-1-03-010-20-0:1556878:1557022 [0] init.cc:737 NCCL WARN Duplicate GPU detected : rank 10 and rank 0 both on CUDA device a000
+
+[2025-08-20 00:02:38] atl1-1-03-010-20-0:1556871:1557016 [0] init.cc:737 NCCL WARN Duplicate GPU detected : rank 3 and rank 0 both on CUDA device a000
+
+[2025-08-20 00:02:38] atl1-1-03-010-20-0:1556872:1557015 [0] init.cc:737 NCCL WARN Duplicate GPU detected : rank 4 and rank 0 both on CUDA device a000
+
+[2025-08-20 00:02:38] atl1-1-03-010-20-0:1556877:1557040 [0] init.cc:737 NCCL WARN Duplicate GPU detected : rank 9 and rank 0 both on CUDA device a000
+
+[2025-08-20 00:02:38] atl1-1-03-010-20-0:1556876:1557056 [0] init.cc:737 NCCL WARN Duplicate GPU detected : rank 8 and rank 0 both on CUDA device a000
+
+[2025-08-20 00:02:38] atl1-1-03-010-20-0:1556873:1557041 [0] init.cc:737 NCCL WARN Duplicate GPU detected : rank 5 and rank 0 both on CUDA device a000
+
+[2025-08-20 00:02:38] atl1-1-03-010-20-0:1556874:1557033 [0] init.cc:737 NCCL WARN Duplicate GPU detected : rank 6 and rank 0 both on CUDA device a000
+
+[2025-08-20 00:02:38] atl1-1-03-010-20-0:1556875:1557039 [0] init.cc:737 NCCL WARN Duplicate GPU detected : rank 7 and rank 0 both on CUDA device a000
+---------------------------------------
+Begin Slurm Epilog: Aug-20-2025 00:02:42
+Job ID:        2755244
+User ID:       cman8
+Account:       ece
+Job name:      dp16_llama_small
+Resources:     cpu=48,gres/gpu:h100=16,mem=500G,node=2
+Rsrc Used:     cput=01:00:00,vmem=0,walltime=00:01:15,mem=40260K,energy_used=0
+Partition:     coe-gpu
+QOS:           coe-ice
+Nodes:         atl1-1-03-010-20-0,atl1-1-03-010-25-0
+---------------------------------------
