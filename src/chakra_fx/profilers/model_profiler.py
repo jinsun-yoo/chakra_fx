@@ -8,6 +8,7 @@ from torch._dynamo.backends.common import aot_autograd
 
 from src.chakra_fx.passes.chakra_converter import ChakraConverter
 from src.chakra_fx.passes.custom_compiler import build_custom_backend_compiler
+from src.chakra_fx.utils.time_recorder import timer
 
 
 class ModelProfiler:
@@ -23,6 +24,7 @@ class ModelProfiler:
         sequential_generation: bool = False,
         combine_fx_subgraphs: bool = False,
         graph_passes: List[str] = None,
+        use_cache: int = 0,
     ):
         self.rank = int(os.environ.get("RANK", 0))
         self.size = int(os.environ.get("WORLD_SIZE", 1))
@@ -30,6 +32,7 @@ class ModelProfiler:
         self.exp_tag = exp_tag
         self.filename = f"{exp_tag}/syncfile.txt"
         self.sequential_generation = sequential_generation
+        self.use_cache = use_cache
 
         # If true, work on PyTorch FX Graph, if false, work on aten FX Graph
         self.use_pytorch_ir = use_pytorch_ir
@@ -54,6 +57,7 @@ class ModelProfiler:
         self.chakra_converter = ChakraConverter(
             name=self.name,
             dir_name=exp_tag,
+            use_cache=use_cache,
             combine_fx_subgraphs=combine_fx_subgraphs,
             graph_passes=graph_passes,
         )
@@ -125,6 +129,8 @@ class ModelProfiler:
 
     def run_fwbw_pass(self):
         self.compile_model()
+        if os.environ.get("RANK") == "0":
+            timer.mark("B_start")
         output = self.model(self.sample_input)
         self.chakra_converter.finalize()
         exit()

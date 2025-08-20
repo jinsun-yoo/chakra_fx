@@ -94,6 +94,13 @@ def parse_args():
         help="""Comma delimited string of graph passes to perform on FX graph before chakra conversion.
         E.g., 'bucket' to perform FSDP bucketing pass.""",
     )
+    parser.add_argument(
+        "--use_cache",
+        type=int,
+        default=0,
+        required=False,
+        help="Use the existing lookup table or not",
+    )
     args = parser.parse_args()
 
     args.action_list = args.fxgraph_actions.split(",")

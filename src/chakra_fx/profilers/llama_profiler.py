@@ -69,6 +69,7 @@ class LlamaProfiler(ModelProfiler):
         combine_fx_subgraphs: bool = False,
         llama_config: str = "debugmodel",
         graph_passes: List[str] = None,
+        use_cache: int = 0,
     ):
         rank = int(os.environ.get("RANK", -1))
         if rank == 0:
@@ -166,6 +167,7 @@ class LlamaProfiler(ModelProfiler):
             sequential_generation=sequential_generation,
             combine_fx_subgraphs=combine_fx_subgraphs,
             graph_passes=graph_passes,
+            use_cache=use_cache,
         )
 
     def apply_configuration(self, model, dse_config_filepath: str, job_config: JobConfig):
