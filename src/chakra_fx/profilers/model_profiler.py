@@ -27,6 +27,7 @@ class ModelProfiler:
         self.exp_tag = exp_tag
         self.filename = f"{exp_tag}/syncfile.txt"
         self.sequential_generation = sequential_generation
+        os.makedirs(f"{exp_tag}", exist_ok=True)
 
         # If true, work on PyTorch FX Graph, if false, work on aten FX Graph
         self.use_pytorch_ir = use_pytorch_ir
@@ -130,7 +131,7 @@ class ModelProfiler:
         local_rank = int(os.environ["LOCAL_RANK"])
         rank = int(os.environ["RANK"])
         device = torch.device(f"cuda:{local_rank}")
-        self.model.to(device)
+        self.model.to_empty(device=device)
         self.sample_input = self.sample_input.to(device)
 
         output = self.model(self.sample_input)
@@ -141,7 +142,7 @@ class ModelProfiler:
         local_rank = int(os.environ["LOCAL_RANK"])
         rank = int(os.environ["RANK"])
         device = torch.device(f"cuda:{local_rank}")
-        self.model.to(device)
+        self.model.to_empty(device=device)
         self.sample_input = self.sample_input.to(device)
         os.makedirs(f"./{self.exp_tag}/", exist_ok=True)
         os.makedirs(f"./{self.exp_tag}/kineto_trace_rank{rank}", exist_ok=True)

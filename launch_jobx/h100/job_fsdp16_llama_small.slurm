@@ -4,7 +4,7 @@
 #SBATCH --gres=gpu:H100:8
 #SBATCH --mem=256000
 #SBATCH --ntasks-per-node=24
-#SBATCH --time=00:15:00
+#SBATCH --time=00:14:00
 #SBATCH -o logs/fsdp16_llama_small.%j.out
 #SBATCH -e logs/fsdp16_llama_small.%j.err
 
@@ -27,7 +27,4 @@ cd /home/hice1/cman8/code/chakra_fx
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 
 srun --ntasks=$SLURM_NNODES --ntasks-per-node=1   torchrun   --nnodes=$SLURM_NNODES   --nproc_per_node=$NPROC_PER_NODE   --rdzv_backend=c10d   --rdzv_endpoint=$MASTER_ADDR:$MASTER_PORT   --rdzv_id=$SLURM_JOB_ID   profile_fxgraph.py     --fxgraph_actions chakra     --exp_tag fsdp16_llama_small     --job eager_kineto     --model llama_small     --dse_config_filepath configs/llama_fsdp/llama_FSDP_16.yml
-
-export CUDA_VISIBLE_DEVICES=0
-srun --nodes=1 --ntasks=1 --ntasks-per-node=1   torchrun   --nnodes=1   --nproc_per_node=16   --rdzv_backend=c10d   --rdzv_endpoint=$MASTER_ADDR:$MASTER_PORT   --rdzv_id=$SLURM_JOB_ID   profile_fxgraph.py     --fxgraph_actions chakra     --exp_tag fsdp16_llama_small     --job fwbw     --model llama_small     --dse_config_filepath configs/llama_fsdp/llama_FSDP_16.yml
     

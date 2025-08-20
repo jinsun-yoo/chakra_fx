@@ -138,13 +138,15 @@ class LlamaProfiler(ModelProfiler):
         model_config.max_seq_len = 2048  # job_config.training.seq_len
         model_config.norm_type = "layernorm"  # job_config.model.norm_type
         local_rank = os.environ["LOCAL_RANK"]
-        model = SimpleFSDPTransformer(model_config)
+        rank = os.environ["RANK"]
+        with torch.device("meta"):
+            model = SimpleFSDPTransformer(model_config)
         if job in {"eager", "eager_kineto"}:
             pass
             # model = model.to(f"cuda:{local_rank}")
         else:
-            # pass
-            model.to(f"cuda:0")
+            pass
+            # model.to(f"cuda:0")
 
         print("Parallelizing model")
         job_config = JobConfig(
@@ -167,6 +169,12 @@ class LlamaProfiler(ModelProfiler):
             parallelized_model = parallelize_llama(model, parallel_dims, job_config)
 
         print("finish applying parallelization")
+        if job in {"eager", "eager_kineto"}:
+            pass
+            # model = model.to(f"cuda:{local_rank}")
+        else:
+            pass
+            model.to_empty(device=f"cuda:0")
 
         sample_input = torch.randint(high=tokenizer_n_words, size=(batch_size, sequence_length), dtype=torch.int64, device="cuda:0")
         sample_label = torch.randint(high=tokenizer_n_words, size=(batch_size, sequence_length), dtype=torch.int64, device="cuda:0")

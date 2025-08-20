@@ -1,0 +1,103 @@
+---------------------------------------
+Begin Slurm Prolog: Aug-20-2025 00:25:29
+Job ID:    2755329
+User ID:   cman8
+Account:   ece
+Job name:  dp16_llama_tiny
+Partition: coe-gpu
+QOS:       coe-ice
+---------------------------------------
+MASTER_ADDR=atl1-1-03-012-13-0 NNODES=2 NPROC_PER_NODE=8
+Rank 3 local_rank 3 -> GPU 3
+Rank 7 local_rank 7 -> GPU 7
+Rank 4 local_rank 4 -> GPU 4
+Rank 2 local_rank 2 -> GPU 2
+Rank 1 local_rank 1 -> GPU 1
+Rank 5 local_rank 5 -> GPU 5
+Rank 6 local_rank 6 -> GPU 6
+Rank 0 local_rank 0 -> GPU 0
+Rank 15 local_rank 7 -> GPU 7
+Rank 11 local_rank 3 -> GPU 3
+Rank 13 local_rank 5 -> GPU 5
+Rank 12 local_rank 4 -> GPU 4
+Rank 8 local_rank 0 -> GPU 0
+Rank 9 local_rank 1 -> GPU 1
+Rank 10 local_rank 2 -> GPU 2
+Rank 14 local_rank 6 -> GPU 6
+start llama profilerstart llama profilerstart llama profilerstart llama profilerstart llama profiler
+
+start llama profiler
+
+
+Creating ModelCreating Modelstart llama profiler
+
+
+Creating ModelCreating Model
+Creating Model
+
+Creating Model
+
+Creating Model
+start llama profilerstart llama profilerstart llama profilerstart llama profiler
+
+
+
+Creating ModelCreating Model
+Creating Modelstart llama profilerCreating Model
+
+
+start llama profiler
+
+Creating Model
+start llama profilerCreating Model
+
+Creating Model
+start llama profiler
+start llama profiler
+Creating Model
+Creating Model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+Parallelizing model
+NCCL version 2.27.5+cuda12.9
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+finish applying parallelization
+---------------------------------------
+Begin Slurm Epilog: Aug-20-2025 00:26:47
+Job ID:        2755329
+User ID:       cman8
+Account:       ece
+Job name:      dp16_llama_tiny
+Resources:     cpu=48,gres/gpu:h100=16,mem=500G,node=2
+Rsrc Used:     cput=01:02:24,vmem=0,walltime=00:01:18,mem=39880K,energy_used=0
+Partition:     coe-gpu
+QOS:           coe-ice
+Nodes:         atl1-1-03-012-13-0,atl1-1-03-012-18-0
+---------------------------------------

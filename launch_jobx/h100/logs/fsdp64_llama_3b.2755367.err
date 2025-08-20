@@ -1,0 +1,699 @@
+
+CondaError: Run 'conda init' before 'conda deactivate'
+
+W0820 00:48:04.301000 806273 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] 
+W0820 00:48:04.301000 806273 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:48:04.301000 806273 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0820 00:48:04.301000 806273 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:48:04.304000 774737 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] 
+W0820 00:48:04.304000 774737 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:48:04.304000 774737 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0820 00:48:04.304000 774737 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:48:04.308000 977051 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] 
+W0820 00:48:04.308000 977051 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:48:04.308000 977051 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0820 00:48:04.308000 977051 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:48:04.313000 1007500 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] 
+W0820 00:48:04.313000 1007500 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:48:04.313000 1007500 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0820 00:48:04.313000 1007500 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:48:04.318000 1409358 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] 
+W0820 00:48:04.318000 1409358 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:48:04.318000 1409358 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0820 00:48:04.318000 1409358 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:48:04.318000 1137945 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] 
+W0820 00:48:04.318000 1137945 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:48:04.318000 1137945 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0820 00:48:04.318000 1137945 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:48:04.335000 1000191 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] 
+W0820 00:48:04.335000 1000191 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:48:04.335000 1000191 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0820 00:48:04.335000 1000191 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:48:04.398000 1120494 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] 
+W0820 00:48:04.398000 1120494 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:48:04.398000 1120494 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0820 00:48:04.398000 1120494 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+[rank48]: Traceback (most recent call last):
+[rank48]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank48]:     profiler.run_eager_fwbw_kineto_pass()
+[rank48]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank48]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank48]:     output = self.model(self.sample_input)
+[rank48]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank48]:     return self._call_impl(*args, **kwargs)
+[rank48]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank48]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank48]:     return forward_call(*args, **kwargs)
+[rank48]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank48]:     h = layer(h, self.freqs_cis)
+[rank48]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank48]:     return self._call_impl(*args, **kwargs)
+[rank48]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank48]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank48]:     return forward_call(*args, **kwargs)
+[rank48]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 301, in forward
+[rank48]:     out = h + self.feed_forward(self.ffn_norm(h))
+[rank48]:               ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+[rank48]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank48]:     return self._call_impl(*args, **kwargs)
+[rank48]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank48]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank48]:     return forward_call(*args, **kwargs)
+[rank48]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 237, in forward
+[rank48]:     return self.w2(F.silu(self.w1(x)) * self.w3(x))
+[rank48]:                    ~~~~~~^^^^^^^^^^^^
+[rank48]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2371, in silu
+[rank48]:     return torch._C._nn.silu(input)
+[rank48]:            ~~~~~~~~~~~~~~~~~^^^^^^^
+[rank48]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 672.00 MiB. GPU 0 has a total capacity of 79.18 GiB of which 225.44 MiB is free. Process 977129 has 536.00 MiB memory in use. Process 977132 has 536.00 MiB memory in use. Process 977134 has 536.00 MiB memory in use. Including non-PyTorch memory, this process has 75.24 GiB memory in use. Process 977135 has 536.00 MiB memory in use. Process 977133 has 536.00 MiB memory in use. Process 977130 has 536.00 MiB memory in use. Process 977131 has 536.00 MiB memory in use. Of the allocated memory 73.68 GiB is allocated by PyTorch, and 154.30 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank0]:     profiler.run_eager_fwbw_kineto_pass()
+[rank0]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank0]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank0]:     output = self.model(self.sample_input)
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank0]:     h = layer(h, self.freqs_cis)
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 301, in forward
+[rank0]:     out = h + self.feed_forward(self.ffn_norm(h))
+[rank0]:               ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 237, in forward
+[rank0]:     return self.w2(F.silu(self.w1(x)) * self.w3(x))
+[rank0]:                    ~~~~~~^^^^^^^^^^^^
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2371, in silu
+[rank0]:     return torch._C._nn.silu(input)
+[rank0]:            ~~~~~~~~~~~~~~~~~^^^^^^^
+[rank0]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 672.00 MiB. GPU 0 has a total capacity of 79.18 GiB of which 213.44 MiB is free. Including non-PyTorch memory, this process has 75.25 GiB memory in use. Process 774818 has 536.00 MiB memory in use. Process 774822 has 536.00 MiB memory in use. Process 774816 has 536.00 MiB memory in use. Process 774821 has 536.00 MiB memory in use. Process 774819 has 536.00 MiB memory in use. Process 774817 has 536.00 MiB memory in use. Process 774820 has 536.00 MiB memory in use. Of the allocated memory 73.68 GiB is allocated by PyTorch, and 154.30 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[rank24]: Traceback (most recent call last):
+[rank24]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank24]:     profiler.run_eager_fwbw_kineto_pass()
+[rank24]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank24]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank24]:     output = self.model(self.sample_input)
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank24]:     return self._call_impl(*args, **kwargs)
+[rank24]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank24]:     return forward_call(*args, **kwargs)
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank24]:     h = layer(h, self.freqs_cis)
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank24]:     return self._call_impl(*args, **kwargs)
+[rank24]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank24]:     return forward_call(*args, **kwargs)
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 301, in forward
+[rank24]:     out = h + self.feed_forward(self.ffn_norm(h))
+[rank24]:               ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank24]:     return self._call_impl(*args, **kwargs)
+[rank24]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank24]:     return forward_call(*args, **kwargs)
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 237, in forward
+[rank24]:     return self.w2(F.silu(self.w1(x)) * self.w3(x))
+[rank24]:                    ~~~~~~^^^^^^^^^^^^
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2371, in silu
+[rank24]:     return torch._C._nn.silu(input)
+[rank24]:            ~~~~~~~~~~~~~~~~~^^^^^^^
+[rank24]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 672.00 MiB. GPU 0 has a total capacity of 79.18 GiB of which 225.44 MiB is free. Including non-PyTorch memory, this process has 75.24 GiB memory in use. Process 1007566 has 536.00 MiB memory in use. Process 1007572 has 536.00 MiB memory in use. Process 1007568 has 536.00 MiB memory in use. Process 1007567 has 536.00 MiB memory in use. Process 1007569 has 536.00 MiB memory in use. Process 1007570 has 536.00 MiB memory in use. Process 1007571 has 536.00 MiB memory in use. Of the allocated memory 73.68 GiB is allocated by PyTorch, and 154.30 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[rank8]: Traceback (most recent call last):
+[rank8]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank8]:     profiler.run_eager_fwbw_kineto_pass()
+[rank8]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank8]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank8]:     output = self.model(self.sample_input)
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank8]:     return self._call_impl(*args, **kwargs)
+[rank8]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank8]:     return forward_call(*args, **kwargs)
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank8]:     h = layer(h, self.freqs_cis)
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank8]:     return self._call_impl(*args, **kwargs)
+[rank8]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank8]:     return forward_call(*args, **kwargs)
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 301, in forward
+[rank8]:     out = h + self.feed_forward(self.ffn_norm(h))
+[rank8]:               ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank8]:     return self._call_impl(*args, **kwargs)
+[rank8]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank8]:     return forward_call(*args, **kwargs)
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 237, in forward
+[rank8]:     return self.w2(F.silu(self.w1(x)) * self.w3(x))
+[rank8]:                    ~~~~~~^^^^^^^^^^^^
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2371, in silu
+[rank8]:     return torch._C._nn.silu(input)
+[rank8]:            ~~~~~~~~~~~~~~~~~^^^^^^^
+[rank8]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 672.00 MiB. GPU 0 has a total capacity of 79.18 GiB of which 225.44 MiB is free. Process 1409441 has 536.00 MiB memory in use. Process 1409435 has 536.00 MiB memory in use. Including non-PyTorch memory, this process has 75.24 GiB memory in use. Process 1409436 has 536.00 MiB memory in use. Process 1409437 has 536.00 MiB memory in use. Process 1409439 has 536.00 MiB memory in use. Process 1409440 has 536.00 MiB memory in use. Process 1409438 has 536.00 MiB memory in use. Of the allocated memory 73.68 GiB is allocated by PyTorch, and 154.30 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[rank16]: Traceback (most recent call last):
+[rank16]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank16]:     profiler.run_eager_fwbw_kineto_pass()
+[rank16]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank16]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank16]:     output = self.model(self.sample_input)
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank16]:     return self._call_impl(*args, **kwargs)
+[rank16]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank16]:     return forward_call(*args, **kwargs)
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank16]:     h = layer(h, self.freqs_cis)
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank16]:     return self._call_impl(*args, **kwargs)
+[rank16]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank16]:     return forward_call(*args, **kwargs)
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 301, in forward
+[rank16]:     out = h + self.feed_forward(self.ffn_norm(h))
+[rank16]:               ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank16]:     return self._call_impl(*args, **kwargs)
+[rank16]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank16]:     return forward_call(*args, **kwargs)
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 237, in forward
+[rank16]:     return self.w2(F.silu(self.w1(x)) * self.w3(x))
+[rank16]:                    ~~~~~~^^^^^^^^^^^^
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2371, in silu
+[rank16]:     return torch._C._nn.silu(input)
+[rank16]:            ~~~~~~~~~~~~~~~~~^^^^^^^
+[rank16]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 672.00 MiB. GPU 0 has a total capacity of 79.18 GiB of which 225.44 MiB is free. Process 1000270 has 536.00 MiB memory in use. Including non-PyTorch memory, this process has 75.24 GiB memory in use. Process 1000272 has 536.00 MiB memory in use. Process 1000275 has 536.00 MiB memory in use. Process 1000274 has 536.00 MiB memory in use. Process 1000271 has 536.00 MiB memory in use. Process 1000273 has 536.00 MiB memory in use. Process 1000276 has 536.00 MiB memory in use. Of the allocated memory 73.68 GiB is allocated by PyTorch, and 154.30 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[rank56]: Traceback (most recent call last):
+[rank56]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank56]:     profiler.run_eager_fwbw_kineto_pass()
+[rank56]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank56]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank56]:     output = self.model(self.sample_input)
+[rank56]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank56]:     return self._call_impl(*args, **kwargs)
+[rank56]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank56]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank56]:     return forward_call(*args, **kwargs)
+[rank56]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank56]:     h = layer(h, self.freqs_cis)
+[rank56]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank56]:     return self._call_impl(*args, **kwargs)
+[rank56]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank56]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank56]:     return forward_call(*args, **kwargs)
+[rank56]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 301, in forward
+[rank56]:     out = h + self.feed_forward(self.ffn_norm(h))
+[rank56]:               ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+[rank56]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank56]:     return self._call_impl(*args, **kwargs)
+[rank56]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank56]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank56]:     return forward_call(*args, **kwargs)
+[rank56]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 237, in forward
+[rank56]:     return self.w2(F.silu(self.w1(x)) * self.w3(x))
+[rank56]:                    ~~~~~~^^^^^^^^^^^^
+[rank56]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2371, in silu
+[rank56]:     return torch._C._nn.silu(input)
+[rank56]:            ~~~~~~~~~~~~~~~~~^^^^^^^
+[rank56]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 672.00 MiB. GPU 0 has a total capacity of 79.18 GiB of which 225.44 MiB is free. Process 1138011 has 536.00 MiB memory in use. Including non-PyTorch memory, this process has 75.24 GiB memory in use. Process 1138017 has 536.00 MiB memory in use. Process 1138016 has 536.00 MiB memory in use. Process 1138013 has 536.00 MiB memory in use. Process 1138014 has 536.00 MiB memory in use. Process 1138015 has 536.00 MiB memory in use. Process 1138012 has 536.00 MiB memory in use. Of the allocated memory 73.68 GiB is allocated by PyTorch, and 154.30 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[rank40]: Traceback (most recent call last):
+[rank40]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank40]:     profiler.run_eager_fwbw_kineto_pass()
+[rank40]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank40]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank40]:     output = self.model(self.sample_input)
+[rank40]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank40]:     return self._call_impl(*args, **kwargs)
+[rank40]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank40]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank40]:     return forward_call(*args, **kwargs)
+[rank40]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank40]:     h = layer(h, self.freqs_cis)
+[rank40]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank40]:     return self._call_impl(*args, **kwargs)
+[rank40]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank40]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank40]:     return forward_call(*args, **kwargs)
+[rank40]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 301, in forward
+[rank40]:     out = h + self.feed_forward(self.ffn_norm(h))
+[rank40]:               ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+[rank40]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank40]:     return self._call_impl(*args, **kwargs)
+[rank40]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank40]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank40]:     return forward_call(*args, **kwargs)
+[rank40]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 237, in forward
+[rank40]:     return self.w2(F.silu(self.w1(x)) * self.w3(x))
+[rank40]:                    ~~~~~~^^^^^^^^^^^^
+[rank40]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2371, in silu
+[rank40]:     return torch._C._nn.silu(input)
+[rank40]:            ~~~~~~~~~~~~~~~~~^^^^^^^
+[rank40]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 672.00 MiB. GPU 0 has a total capacity of 79.18 GiB of which 225.44 MiB is free. Process 1120582 has 536.00 MiB memory in use. Process 1120580 has 536.00 MiB memory in use. Including non-PyTorch memory, this process has 75.24 GiB memory in use. Process 1120586 has 536.00 MiB memory in use. Process 1120583 has 536.00 MiB memory in use. Process 1120585 has 536.00 MiB memory in use. Process 1120581 has 536.00 MiB memory in use. Process 1120584 has 536.00 MiB memory in use. Of the allocated memory 73.68 GiB is allocated by PyTorch, and 154.30 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[rank32]: Traceback (most recent call last):
+[rank32]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank32]:     profiler.run_eager_fwbw_kineto_pass()
+[rank32]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank32]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank32]:     output = self.model(self.sample_input)
+[rank32]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank32]:     return self._call_impl(*args, **kwargs)
+[rank32]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank32]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank32]:     return forward_call(*args, **kwargs)
+[rank32]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank32]:     h = layer(h, self.freqs_cis)
+[rank32]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank32]:     return self._call_impl(*args, **kwargs)
+[rank32]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank32]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank32]:     return forward_call(*args, **kwargs)
+[rank32]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 301, in forward
+[rank32]:     out = h + self.feed_forward(self.ffn_norm(h))
+[rank32]:               ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+[rank32]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank32]:     return self._call_impl(*args, **kwargs)
+[rank32]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank32]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank32]:     return forward_call(*args, **kwargs)
+[rank32]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 237, in forward
+[rank32]:     return self.w2(F.silu(self.w1(x)) * self.w3(x))
+[rank32]:                    ~~~~~~^^^^^^^^^^^^
+[rank32]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2371, in silu
+[rank32]:     return torch._C._nn.silu(input)
+[rank32]:            ~~~~~~~~~~~~~~~~~^^^^^^^
+[rank32]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 672.00 MiB. GPU 0 has a total capacity of 79.18 GiB of which 225.44 MiB is free. Process 806343 has 536.00 MiB memory in use. Process 806345 has 536.00 MiB memory in use. Process 806349 has 536.00 MiB memory in use. Process 806344 has 536.00 MiB memory in use. Process 806347 has 536.00 MiB memory in use. Process 806346 has 536.00 MiB memory in use. Including non-PyTorch memory, this process has 75.24 GiB memory in use. Process 806348 has 536.00 MiB memory in use. Of the allocated memory 73.68 GiB is allocated by PyTorch, and 154.30 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[rank48]:[W820 00:50:14.622913458 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank0]:[W820 00:50:14.048511434 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank56]:[W820 00:50:14.683944916 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank8]:[W820 00:50:14.611729228 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank16]:[W820 00:50:14.627724675 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank40]:[W820 00:50:14.666863261 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank24]:[W820 00:50:14.488644714 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank32]:[W820 00:50:15.169933962 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+W0820 00:50:15.591000 1137945 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1138011 closing signal SIGTERM
+W0820 00:50:15.591000 1409358 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1409435 closing signal SIGTERM
+W0820 00:50:15.591000 977051 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 977129 closing signal SIGTERM
+W0820 00:50:15.592000 1137945 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1138012 closing signal SIGTERM
+W0820 00:50:15.592000 977051 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 977130 closing signal SIGTERM
+W0820 00:50:15.592000 1409358 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1409436 closing signal SIGTERM
+W0820 00:50:15.592000 1137945 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1138013 closing signal SIGTERM
+W0820 00:50:15.592000 1409358 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1409437 closing signal SIGTERM
+W0820 00:50:15.592000 977051 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 977131 closing signal SIGTERM
+W0820 00:50:15.593000 977051 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 977132 closing signal SIGTERM
+W0820 00:50:15.592000 1137945 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1138014 closing signal SIGTERM
+W0820 00:50:15.593000 1409358 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1409438 closing signal SIGTERM
+W0820 00:50:15.592000 774737 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 774816 closing signal SIGTERM
+W0820 00:50:15.593000 977051 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 977133 closing signal SIGTERM
+W0820 00:50:15.593000 1137945 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1138015 closing signal SIGTERM
+W0820 00:50:15.593000 1409358 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1409439 closing signal SIGTERM
+W0820 00:50:15.593000 1120494 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1120580 closing signal SIGTERM
+W0820 00:50:15.593000 774737 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 774817 closing signal SIGTERM
+W0820 00:50:15.593000 1409358 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1409440 closing signal SIGTERM
+W0820 00:50:15.593000 1137945 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1138016 closing signal SIGTERM
+W0820 00:50:15.594000 977051 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 977134 closing signal SIGTERM
+W0820 00:50:15.593000 1120494 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1120581 closing signal SIGTERM
+W0820 00:50:15.593000 774737 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 774818 closing signal SIGTERM
+W0820 00:50:15.594000 977051 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 977135 closing signal SIGTERM
+W0820 00:50:15.594000 1137945 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1138017 closing signal SIGTERM
+W0820 00:50:15.594000 1120494 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1120582 closing signal SIGTERM
+W0820 00:50:15.594000 774737 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 774819 closing signal SIGTERM
+W0820 00:50:15.594000 1409358 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1409441 closing signal SIGTERM
+W0820 00:50:15.594000 774737 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 774820 closing signal SIGTERM
+W0820 00:50:15.594000 1120494 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1120583 closing signal SIGTERM
+W0820 00:50:15.595000 774737 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 774821 closing signal SIGTERM
+W0820 00:50:15.595000 1120494 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1120584 closing signal SIGTERM
+W0820 00:50:15.595000 774737 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 774822 closing signal SIGTERM
+W0820 00:50:15.595000 1120494 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1120585 closing signal SIGTERM
+W0820 00:50:15.595000 1120494 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1120586 closing signal SIGTERM
+W0820 00:50:15.688000 1000191 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1000270 closing signal SIGTERM
+W0820 00:50:15.689000 1000191 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1000271 closing signal SIGTERM
+W0820 00:50:15.689000 1000191 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1000272 closing signal SIGTERM
+W0820 00:50:15.690000 1000191 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1000273 closing signal SIGTERM
+W0820 00:50:15.690000 1000191 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1000274 closing signal SIGTERM
+W0820 00:50:15.691000 1000191 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1000275 closing signal SIGTERM
+W0820 00:50:15.691000 1000191 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1000276 closing signal SIGTERM
+W0820 00:50:15.691000 1007500 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1007566 closing signal SIGTERM
+W0820 00:50:15.692000 1007500 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1007567 closing signal SIGTERM
+W0820 00:50:15.692000 1007500 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1007568 closing signal SIGTERM
+W0820 00:50:15.693000 1007500 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1007569 closing signal SIGTERM
+W0820 00:50:15.693000 1007500 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1007570 closing signal SIGTERM
+W0820 00:50:15.694000 1007500 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1007571 closing signal SIGTERM
+W0820 00:50:15.694000 1007500 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1007572 closing signal SIGTERM
+W0820 00:50:16.086000 806273 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 806343 closing signal SIGTERM
+W0820 00:50:16.086000 806273 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 806344 closing signal SIGTERM
+W0820 00:50:16.087000 806273 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 806345 closing signal SIGTERM
+W0820 00:50:16.087000 806273 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 806346 closing signal SIGTERM
+W0820 00:50:16.088000 806273 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 806347 closing signal SIGTERM
+W0820 00:50:16.088000 806273 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 806348 closing signal SIGTERM
+W0820 00:50:16.089000 806273 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 806349 closing signal SIGTERM
+E0820 00:50:17.700000 977051 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:882] failed (exitcode: 1) local_rank: 0 (pid: 977128) of binary: /home/hice1/cman8/conda_env/chakra_fx/bin/python
+Traceback (most recent call last):
+  File "/home/hice1/cman8/conda_env/chakra_fx/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 936, in main
+    run(args)
+    ~~~^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 927, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 159, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 296, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+profile_fxgraph.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-08-20_00:50:15
+  host      : atl1-1-03-013-3-0.pace.gatech.edu
+  rank      : 48 (local_rank: 0)
+  exitcode  : 1 (pid: 977128)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+E0820 00:50:17.724000 1137945 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:882] failed (exitcode: 1) local_rank: 0 (pid: 1138010) of binary: /home/hice1/cman8/conda_env/chakra_fx/bin/python
+E0820 00:50:17.725000 774737 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:882] failed (exitcode: 1) local_rank: 0 (pid: 774815) of binary: /home/hice1/cman8/conda_env/chakra_fx/bin/python
+E0820 00:50:17.725000 1120494 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:882] failed (exitcode: 1) local_rank: 0 (pid: 1120579) of binary: /home/hice1/cman8/conda_env/chakra_fx/bin/python
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/home/hice1/cman8/conda_env/chakra_fx/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 936, in main
+    run(args)
+    ~~~^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 936, in main
+    run(args)
+    ~~~^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 927, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 159, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 296, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 927, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 159, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 296, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+profile_fxgraph.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-08-20_00:50:15
+  host      : atl1-1-03-012-13-0.pace.gatech.edu
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 774815)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+profile_fxgraph.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-08-20_00:50:15
+  host      : atl1-1-03-013-8-0.pace.gatech.edu
+  rank      : 56 (local_rank: 0)
+  exitcode  : 1 (pid: 1138010)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+  File "/home/hice1/cman8/conda_env/chakra_fx/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 936, in main
+    run(args)
+    ~~~^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 927, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 159, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 296, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+profile_fxgraph.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-08-20_00:50:15
+  host      : atl1-1-03-013-13-0.pace.gatech.edu
+  rank      : 40 (local_rank: 0)
+  exitcode  : 1 (pid: 1120579)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+E0820 00:50:17.737000 1409358 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:882] failed (exitcode: 1) local_rank: 0 (pid: 1409434) of binary: /home/hice1/cman8/conda_env/chakra_fx/bin/python
+Traceback (most recent call last):
+  File "/home/hice1/cman8/conda_env/chakra_fx/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 936, in main
+    run(args)
+    ~~~^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 927, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 159, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 296, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+profile_fxgraph.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-08-20_00:50:15
+  host      : atl1-1-03-012-18-0.pace.gatech.edu
+  rank      : 8 (local_rank: 0)
+  exitcode  : 1 (pid: 1409434)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+E0820 00:50:17.837000 1007500 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:882] failed (exitcode: 1) local_rank: 0 (pid: 1007565) of binary: /home/hice1/cman8/conda_env/chakra_fx/bin/python
+Traceback (most recent call last):
+  File "/home/hice1/cman8/conda_env/chakra_fx/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 936, in main
+    run(args)
+    ~~~^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 927, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 159, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 296, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+profile_fxgraph.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-08-20_00:50:15
+  host      : atl1-1-03-012-28-0.pace.gatech.edu
+  rank      : 24 (local_rank: 0)
+  exitcode  : 1 (pid: 1007565)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+E0820 00:50:17.848000 1000191 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:882] failed (exitcode: 1) local_rank: 0 (pid: 1000269) of binary: /home/hice1/cman8/conda_env/chakra_fx/bin/python
+Traceback (most recent call last):
+  File "/home/hice1/cman8/conda_env/chakra_fx/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 936, in main
+    run(args)
+    ~~~^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 927, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 159, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 296, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+profile_fxgraph.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-08-20_00:50:15
+  host      : atl1-1-03-012-23-0.pace.gatech.edu
+  rank      : 16 (local_rank: 0)
+  exitcode  : 1 (pid: 1000269)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+srun: error: atl1-1-03-013-3-0: task 5: Exited with exit code 1
+srun: error: atl1-1-03-013-8-0: task 6: Exited with exit code 1
+srun: error: atl1-1-03-012-13-0: task 1: Exited with exit code 1
+srun: error: atl1-1-03-013-13-0: task 7: Exited with exit code 1
+E0820 00:50:18.245000 806273 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:882] failed (exitcode: 1) local_rank: 0 (pid: 806342) of binary: /home/hice1/cman8/conda_env/chakra_fx/bin/python
+srun: error: atl1-1-03-012-18-0: task 2: Exited with exit code 1
+Traceback (most recent call last):
+  File "/home/hice1/cman8/conda_env/chakra_fx/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 936, in main
+    run(args)
+    ~~~^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 927, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 159, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 296, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+profile_fxgraph.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-08-20_00:50:16
+  host      : atl1-1-03-012-3-0.pace.gatech.edu
+  rank      : 32 (local_rank: 0)
+  exitcode  : 1 (pid: 806342)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+srun: error: atl1-1-03-012-28-0: task 4: Exited with exit code 1
+srun: error: atl1-1-03-012-23-0: task 3: Exited with exit code 1
+srun: error: atl1-1-03-012-3-0: task 0: Exited with exit code 1

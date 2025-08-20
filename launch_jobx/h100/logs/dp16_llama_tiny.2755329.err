@@ -1,0 +1,41 @@
+
+CondaError: Run 'conda init' before 'conda deactivate'
+
+W0820 00:25:36.330000 762626 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] 
+W0820 00:25:36.330000 762626 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:25:36.330000 762626 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0820 00:25:36.330000 762626 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:25:36.354000 1396259 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] 
+W0820 00:25:36.354000 1396259 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:25:36.354000 1396259 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0820 00:25:36.354000 1396259 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+[W820 00:26:46.529518366 TCPStore.cpp:115] [c10d] recvVector failed on SocketImpl(fd=73, addr=[atl1-1-03-012-18-0.pace.gatech.edu]:52094, remote=[atl1-1-03-012-13-0.pace.gatech.edu]:27329): Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+Exception raised from recvBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:682 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x80 (0x1554cd9a6c30 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x5fe9451 (0x15552adc8451 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: <unknown function> + 0x5fe99ed (0x15552adc89ed in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: <unknown function> + 0x5fea0bb (0x15552adc90bb in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: <unknown function> + 0x5feaff7 (0x15552adc9ff7 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: c10d::TCPStore::compareSet(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&) + 0x261 (0x15552adc4b51 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: <unknown function> + 0xc7110d (0x15553a3c410d in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_python.so)
+frame #7: <unknown function> + 0x384772 (0x155539ad7772 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_python.so)
+frame #8: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x59736d]
+frame #9: _PyObject_MakeTpCall + 0x2c4 (0x55ada4 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #10: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x5eb968]
+frame #11: _PyEval_EvalFrameDefault + 0x4e79 (0x5767c9 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #12: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x55d862]
+frame #13: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6d5a0b]
+frame #14: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x694655]
+frame #15: _PyEval_EvalFrameDefault + 0x4e79 (0x5767c9 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #16: PyEval_EvalCode + 0x3b8 (0x68bcb8 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #17: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x62640e]
+frame #18: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6c1e40]
+frame #19: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6c1adb]
+frame #20: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6c190b]
+frame #21: Py_RunMain + 0x377 (0x6bff47 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #22: Py_BytesMain + 0x39 (0x67fa99 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #23: <unknown function> + 0x295d0 (0x1555552295d0 in /lib64/libc.so.6)
+frame #24: __libc_start_main + 0x80 (0x155555229680 in /lib64/libc.so.6)
+frame #25: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x67ecd2]
+
+W0820 00:26:46.579000 1396259 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/rendezvous/dynamic_rendezvous.py:1292] The node 'atl1-1-03-012-18-0.pace.gatech.edu_1396259_0' has failed to shutdown the rendezvous '2755329' due to an error of type RendezvousConnectionError.

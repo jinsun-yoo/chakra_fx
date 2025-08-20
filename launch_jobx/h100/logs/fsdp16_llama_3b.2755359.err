@@ -1,0 +1,275 @@
+
+CondaError: Run 'conda init' before 'conda deactivate'
+
+W0820 00:28:36.500000 967493 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] 
+W0820 00:28:36.500000 967493 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:28:36.500000 967493 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0820 00:28:36.500000 967493 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:28:36.527000 1129227 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] 
+W0820 00:28:36.527000 1129227 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:28:36.527000 1129227 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0820 00:28:36.527000 1129227 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank0]:     profiler.run_eager_fwbw_kineto_pass()
+[rank0]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank0]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank0]:     output = self.model(self.sample_input)
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank0]:     h = layer(h, self.freqs_cis)
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank0]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank0]:         ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[rank0]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 96.00 MiB. GPU 0 has a total capacity of 79.18 GiB of which 81.44 MiB is free. Process 967840 has 536.00 MiB memory in use. Process 967841 has 536.00 MiB memory in use. Process 967836 has 536.00 MiB memory in use. Including non-PyTorch memory, this process has 75.38 GiB memory in use. Process 967837 has 536.00 MiB memory in use. Process 967838 has 536.00 MiB memory in use. Process 967842 has 536.00 MiB memory in use. Process 967839 has 536.00 MiB memory in use. Of the allocated memory 73.79 GiB is allocated by PyTorch, and 167.32 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[rank0]:[W820 00:30:45.641922931 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+W0820 00:30:46.698000 967493 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 967836 closing signal SIGTERM
+W0820 00:30:46.699000 967493 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 967837 closing signal SIGTERM
+W0820 00:30:46.699000 967493 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 967838 closing signal SIGTERM
+W0820 00:30:46.700000 967493 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 967839 closing signal SIGTERM
+W0820 00:30:46.700000 967493 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 967840 closing signal SIGTERM
+W0820 00:30:46.701000 967493 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 967841 closing signal SIGTERM
+W0820 00:30:46.701000 967493 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 967842 closing signal SIGTERM
+E0820 00:30:48.807000 967493 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:882] failed (exitcode: 1) local_rank: 0 (pid: 967835) of binary: /home/hice1/cman8/conda_env/chakra_fx/bin/python
+Traceback (most recent call last):
+  File "/home/hice1/cman8/conda_env/chakra_fx/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 936, in main
+    run(args)
+    ~~~^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 927, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 159, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 296, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+profile_fxgraph.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-08-20_00:30:46
+  host      : atl1-1-03-013-3-0.pace.gatech.edu
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 967835)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+[rank11]:[W820 00:30:49.095562757 TCPStore.cpp:125] [c10d] recvValue failed on SocketImpl(fd=93, addr=[atl1-1-03-013-8-0.pace.gatech.edu]:38724, remote=[atl1-1-03-013-3-0.pace.gatech.edu]:35875): Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+Exception raised from recvBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:682 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x80 (0x1554cd9a6c30 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x5fe9451 (0x15552adc8451 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: <unknown function> + 0x5fea84d (0x15552adc984d in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: <unknown function> + 0x5feb3fa (0x15552adca3fa in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: c10d::TCPStore::check(std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > const&) + 0x31e (0x15552adc511e in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: c10d::ProcessGroupNCCL::HeartbeatMonitor::runLoop() + 0x3c8 (0x1554ce939148 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cuda.so)
+frame #6: <unknown function> + 0xdbbf4 (0x1554b2140bf4 in /storage/ice1/5/1/cman8/conda_env/chakra_fx/bin/../lib/libstdc++.so.6)
+frame #7: <unknown function> + 0x897fa (0x1555552897fa in /lib64/libc.so.6)
+frame #8: <unknown function> + 0x10e820 (0x15555530e820 in /lib64/libc.so.6)
+
+[rank11]:[W820 00:30:49.119042303 ProcessGroupNCCL.cpp:1766] [PG ID 0 PG GUID 0(default_pg) Rank 11] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+[rank9]:[W820 00:30:49.139850397 TCPStore.cpp:125] [c10d] recvValue failed on SocketImpl(fd=93, addr=[atl1-1-03-013-8-0.pace.gatech.edu]:38754, remote=[atl1-1-03-013-3-0.pace.gatech.edu]:35875): Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+Exception raised from recvBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:682 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x80 (0x1554cd9a6c30 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x5fe9451 (0x15552adc8451 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: <unknown function> + 0x5fea84d (0x15552adc984d in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: <unknown function> + 0x5feb3fa (0x15552adca3fa in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: c10d::TCPStore::check(std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > const&) + 0x31e (0x15552adc511e in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: c10d::ProcessGroupNCCL::HeartbeatMonitor::runLoop() + 0x3c8 (0x1554ce939148 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cuda.so)
+frame #6: <unknown function> + 0xdbbf4 (0x1554b2140bf4 in /storage/ice1/5/1/cman8/conda_env/chakra_fx/bin/../lib/libstdc++.so.6)
+frame #7: <unknown function> + 0x897fa (0x1555552897fa in /lib64/libc.so.6)
+frame #8: <unknown function> + 0x10e820 (0x15555530e820 in /lib64/libc.so.6)
+
+[rank9]:[W820 00:30:49.143940928 ProcessGroupNCCL.cpp:1766] [PG ID 0 PG GUID 0(default_pg) Rank 9] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+[rank10]:[W820 00:30:49.187080523 TCPStore.cpp:125] [c10d] recvValue failed on SocketImpl(fd=93, addr=[atl1-1-03-013-8-0.pace.gatech.edu]:38726, remote=[atl1-1-03-013-3-0.pace.gatech.edu]:35875): Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+Exception raised from recvBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:682 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x80 (0x1554cd9a6c30 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x5fe9451 (0x15552adc8451 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: <unknown function> + 0x5fea84d (0x15552adc984d in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: <unknown function> + 0x5feb3fa (0x15552adca3fa in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: c10d::TCPStore::check(std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > const&) + 0x31e (0x15552adc511e in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: c10d::ProcessGroupNCCL::HeartbeatMonitor::runLoop() + 0x3c8 (0x1554ce939148 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cuda.so)
+frame #6: <unknown function> + 0xdbbf4 (0x1554b2140bf4 in /storage/ice1/5/1/cman8/conda_env/chakra_fx/bin/../lib/libstdc++.so.6)
+frame #7: <unknown function> + 0x897fa (0x1555552897fa in /lib64/libc.so.6)
+frame #8: <unknown function> + 0x10e820 (0x15555530e820 in /lib64/libc.so.6)
+
+[rank10]:[W820 00:30:49.190949677 ProcessGroupNCCL.cpp:1766] [PG ID 0 PG GUID 0(default_pg) Rank 10] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+[rank8]:[W820 00:30:49.264116052 TCPStore.cpp:125] [c10d] recvValue failed on SocketImpl(fd=93, addr=[atl1-1-03-013-8-0.pace.gatech.edu]:38736, remote=[atl1-1-03-013-3-0.pace.gatech.edu]:35875): Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+Exception raised from recvBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:682 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x80 (0x1554cd9a6c30 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x5fe9451 (0x15552adc8451 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: <unknown function> + 0x5fea84d (0x15552adc984d in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: <unknown function> + 0x5feb3fa (0x15552adca3fa in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: c10d::TCPStore::check(std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > const&) + 0x31e (0x15552adc511e in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: c10d::ProcessGroupNCCL::HeartbeatMonitor::runLoop() + 0x3c8 (0x1554ce939148 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cuda.so)
+frame #6: <unknown function> + 0xdbbf4 (0x1554b2140bf4 in /storage/ice1/5/1/cman8/conda_env/chakra_fx/bin/../lib/libstdc++.so.6)
+frame #7: <unknown function> + 0x897fa (0x1555552897fa in /lib64/libc.so.6)
+frame #8: <unknown function> + 0x10e820 (0x15555530e820 in /lib64/libc.so.6)
+
+[rank8]:[W820 00:30:49.268115712 ProcessGroupNCCL.cpp:1766] [PG ID 0 PG GUID 0(default_pg) Rank 8] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+srun: error: atl1-1-03-013-3-0: task 0: Exited with exit code 1
+[W820 00:30:49.507267601 TCPStore.cpp:115] [c10d] recvVector failed on SocketImpl(fd=72, addr=[atl1-1-03-013-8-0.pace.gatech.edu]:52118, remote=[atl1-1-03-013-3-0.pace.gatech.edu]:27359): Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+Exception raised from recvBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:682 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x80 (0x1554cd9a6c30 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x5fe9451 (0x15552adc8451 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: <unknown function> + 0x5fe99ed (0x15552adc89ed in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: <unknown function> + 0x5fea0bb (0x15552adc90bb in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: <unknown function> + 0x5feaff7 (0x15552adc9ff7 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: c10d::TCPStore::compareSet(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&) + 0x261 (0x15552adc4b51 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: <unknown function> + 0xc7110d (0x15553a3c410d in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_python.so)
+frame #7: <unknown function> + 0x384772 (0x155539ad7772 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_python.so)
+frame #8: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x59736d]
+frame #9: _PyObject_MakeTpCall + 0x2c4 (0x55ada4 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #10: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x5eb968]
+frame #11: _PyEval_EvalFrameDefault + 0x4e79 (0x5767c9 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #12: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x5eb84c]
+frame #13: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x70c9ab]
+frame #14: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x70c944]
+frame #15: <unknown function> + 0x897fa (0x1555552897fa in /lib64/libc.so.6)
+frame #16: <unknown function> + 0x10e820 (0x15555530e820 in /lib64/libc.so.6)
+
+W0820 00:30:49.421000 1129227 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/rendezvous/dynamic_rendezvous.py:1341] The node 'atl1-1-03-013-8-0.pace.gatech.edu_1129227_0' has failed to send a keep-alive heartbeat to the rendezvous '2755359' due to an error of type RendezvousConnectionError.
+[W820 00:30:49.602309453 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=72, addr=[atl1-1-03-013-8-0.pace.gatech.edu]:52118, remote=[atl1-1-03-013-3-0.pace.gatech.edu]:27359): Broken pipe
+Exception raised from sendBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:653 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x80 (0x1554cd9a6c30 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x5fe9451 (0x15552adc8451 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: <unknown function> + 0x5fe9ce2 (0x15552adc8ce2 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: <unknown function> + 0x5feb7ee (0x15552adca7ee in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: c10d::TCPStore::compareSet(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&) + 0x24b (0x15552adc4b3b in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: <unknown function> + 0xc7110d (0x15553a3c410d in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_python.so)
+frame #6: <unknown function> + 0x384772 (0x155539ad7772 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_python.so)
+frame #7: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x59736d]
+frame #8: _PyObject_MakeTpCall + 0x2c4 (0x55ada4 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #9: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x5eb968]
+frame #10: _PyEval_EvalFrameDefault + 0x4e79 (0x5767c9 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #11: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x55d862]
+frame #12: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6d5a0b]
+frame #13: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x694655]
+frame #14: _PyEval_EvalFrameDefault + 0x4e79 (0x5767c9 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #15: PyEval_EvalCode + 0x3b8 (0x68bcb8 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #16: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x62640e]
+frame #17: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6c1e40]
+frame #18: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6c1adb]
+frame #19: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6c190b]
+frame #20: Py_RunMain + 0x377 (0x6bff47 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #21: Py_BytesMain + 0x39 (0x67fa99 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #22: <unknown function> + 0x295d0 (0x1555552295d0 in /lib64/libc.so.6)
+frame #23: __libc_start_main + 0x80 (0x155555229680 in /lib64/libc.so.6)
+frame #24: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x67ecd2]
+
+W0820 00:30:49.516000 1129227 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1129302 closing signal SIGTERM
+W0820 00:30:49.517000 1129227 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1129303 closing signal SIGTERM
+W0820 00:30:49.517000 1129227 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1129304 closing signal SIGTERM
+W0820 00:30:49.518000 1129227 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1129305 closing signal SIGTERM
+W0820 00:30:49.519000 1129227 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1129306 closing signal SIGTERM
+W0820 00:30:49.519000 1129227 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1129307 closing signal SIGTERM
+W0820 00:30:49.519000 1129227 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1129308 closing signal SIGTERM
+W0820 00:30:49.520000 1129227 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1129309 closing signal SIGTERM
+[W820 00:30:51.944417704 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=72, addr=[atl1-1-03-013-8-0.pace.gatech.edu]:52118, remote=[atl1-1-03-013-3-0.pace.gatech.edu]:27359): Broken pipe
+Exception raised from sendBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:653 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x80 (0x1554cd9a6c30 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x5fe9451 (0x15552adc8451 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: <unknown function> + 0x5fe9ce2 (0x15552adc8ce2 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: <unknown function> + 0x5feb7ee (0x15552adca7ee in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: c10d::TCPStore::compareSet(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&) + 0x24b (0x15552adc4b3b in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: <unknown function> + 0xc7110d (0x15553a3c410d in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_python.so)
+frame #6: <unknown function> + 0x384772 (0x155539ad7772 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_python.so)
+frame #7: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x59736d]
+frame #8: _PyObject_MakeTpCall + 0x2c4 (0x55ada4 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #9: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x5eb968]
+frame #10: _PyEval_EvalFrameDefault + 0x4e79 (0x5767c9 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #11: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x55d862]
+frame #12: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6d5a0b]
+frame #13: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x694655]
+frame #14: _PyEval_EvalFrameDefault + 0x4e79 (0x5767c9 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #15: PyEval_EvalCode + 0x3b8 (0x68bcb8 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #16: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x62640e]
+frame #17: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6c1e40]
+frame #18: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6c1adb]
+frame #19: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6c190b]
+frame #20: Py_RunMain + 0x377 (0x6bff47 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #21: Py_BytesMain + 0x39 (0x67fa99 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #22: <unknown function> + 0x295d0 (0x1555552295d0 in /lib64/libc.so.6)
+frame #23: __libc_start_main + 0x80 (0x155555229680 in /lib64/libc.so.6)
+frame #24: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x67ecd2]
+
+W0820 00:30:51.858000 1129227 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/rendezvous/dynamic_rendezvous.py:1292] The node 'atl1-1-03-013-8-0.pace.gatech.edu_1129227_0' has failed to shutdown the rendezvous '2755359' due to an error of type RendezvousConnectionError.
+Traceback (most recent call last):
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/rendezvous/c10d_rendezvous_backend.py", line 117, in _call_store
+    return getattr(self._store, store_op)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+torch.distributed.DistNetworkError: Broken pipe
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/hice1/cman8/conda_env/chakra_fx/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 936, in main
+    run(args)
+    ~~~^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 927, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 159, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 287, in launch_agent
+    result = agent.run()
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/metrics/api.py", line 138, in wrapper
+    result = f(*args, **kwargs)
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/agent/server/api.py", line 717, in run
+    result = self._invoke_run(role)
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/agent/server/api.py", line 917, in _invoke_run
+    num_nodes_waiting = rdzv_handler.num_nodes_waiting()
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/rendezvous/dynamic_rendezvous.py", line 1263, in num_nodes_waiting
+    self._state_holder.sync()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/rendezvous/dynamic_rendezvous.py", line 423, in sync
+    set_response = self._backend.set_state(state_bits, self._token)
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/rendezvous/c10d_rendezvous_backend.py", line 100, in set_state
+    base64_state: bytes = self._call_store(
+                          ~~~~~~~~~~~~~~~~^
+        "compare_set", self._key, token, base64_state_str
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/rendezvous/c10d_rendezvous_backend.py", line 119, in _call_store
+    raise RendezvousConnectionError(
+        "The connection to the C10d store has failed. See inner exception for details."
+    ) from exc
+torch.distributed.elastic.rendezvous.api.RendezvousConnectionError: The connection to the C10d store has failed. See inner exception for details.
+srun: error: atl1-1-03-013-8-0: task 1: Exited with exit code 1

@@ -4,7 +4,7 @@ slurm_template = """#!/bin/bash
 #SBATCH --gres=%s
 #SBATCH --mem=256000
 #SBATCH --ntasks-per-node=24
-#SBATCH --time=00:15:00
+#SBATCH --time=00:14:00
 #SBATCH -o logs/%s.%%j.out
 #SBATCH -e logs/%s.%%j.err
 
@@ -55,14 +55,10 @@ def generate_slurm(job_name, model, dse_config, num_gpus, num_nodes, gpu_type):
         job_name,
         model,
         dse_config,
-        num_gpus,
-        job_name,
-        model,
-        dse_config,
     )
     return slurm_script
 
-def generate_fx_graph(job_name, model, dse_config, num_gpus, _, _):
+def generate_fx_graph(job_name, model, dse_config, num_gpus, _, _2):
     return fx_graph_template % (num_gpus, job_name, model, dse_config)
 
 
@@ -179,8 +175,8 @@ for dp in configs:
         f.write(slurm_script)
         print(f"Generated {job_name}.slurm")
 
-for dp in configs:
-    with open("torchfx.sh", "w") as f:
+with open("torchfx.sh", "w") as f:
+    for dp in configs:
         fx_graph_script = generate_fx_graph(*dp)
         print(fx_graph_script, file=f)
         print(f"Generated torchfx.sh for {dp[0]}")

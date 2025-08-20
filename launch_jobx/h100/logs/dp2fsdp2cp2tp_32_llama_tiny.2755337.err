@@ -1,0 +1,1462 @@
+
+CondaError: Run 'conda init' before 'conda deactivate'
+
+W0820 00:32:46.757000 969696 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] 
+W0820 00:32:46.757000 969696 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:32:46.757000 969696 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0820 00:32:46.757000 969696 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:32:46.762000 991614 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] 
+W0820 00:32:46.762000 991614 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:32:46.762000 991614 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0820 00:32:46.762000 991614 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:32:46.770000 1400982 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] 
+W0820 00:32:46.770000 1400982 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:32:46.770000 1400982 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0820 00:32:46.770000 1400982 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:32:46.777000 999226 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] 
+W0820 00:32:46.777000 999226 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+W0820 00:32:46.777000 999226 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0820 00:32:46.777000 999226 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py:803] *****************************************
+[rank10]: Traceback (most recent call last):
+[rank10]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank10]:     profiler.run_eager_fwbw_kineto_pass()
+[rank10]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank10]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank10]:     output = self.model(self.sample_input)
+[rank10]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank10]:     return self._call_impl(*args, **kwargs)
+[rank10]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank10]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank10]:     return forward_call(*args, **kwargs)
+[rank10]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank10]:     h = layer(h, self.freqs_cis)
+[rank10]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank10]:     return self._call_impl(*args, **kwargs)
+[rank10]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank10]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank10]:     return forward_call(*args, **kwargs)
+[rank10]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank10]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank10]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank10]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank10]:     return self._call_impl(*args, **kwargs)
+[rank10]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank10]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank10]:     return inner()
+[rank10]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank10]:     result = forward_call(*args, **kwargs)
+[rank10]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank10]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank10]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank10]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank10]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank10]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank10]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank0]:     profiler.run_eager_fwbw_kineto_pass()
+[rank0]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank0]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank0]:     output = self.model(self.sample_input)
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank0]:     h = layer(h, self.freqs_cis)
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank0]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank0]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank0]:     return inner()
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank0]:     result = forward_call(*args, **kwargs)
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank0]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank0]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank0]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank0]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank3]: Traceback (most recent call last):
+[rank3]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank3]:     profiler.run_eager_fwbw_kineto_pass()
+[rank3]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank3]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank3]:     output = self.model(self.sample_input)
+[rank3]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank3]:     return self._call_impl(*args, **kwargs)
+[rank3]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank3]:     return forward_call(*args, **kwargs)
+[rank3]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank3]:     h = layer(h, self.freqs_cis)
+[rank3]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank3]:     return self._call_impl(*args, **kwargs)
+[rank3]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank3]:     return forward_call(*args, **kwargs)
+[rank3]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank3]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank3]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank3]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank3]:     return self._call_impl(*args, **kwargs)
+[rank3]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank3]:     return inner()
+[rank3]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank3]:     result = forward_call(*args, **kwargs)
+[rank3]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank3]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank3]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank3]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank3]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank2]: Traceback (most recent call last):
+[rank2]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank2]:     profiler.run_eager_fwbw_kineto_pass()
+[rank2]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank2]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank2]:     output = self.model(self.sample_input)
+[rank2]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank2]:     return self._call_impl(*args, **kwargs)
+[rank2]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank2]:     return forward_call(*args, **kwargs)
+[rank2]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank2]:     h = layer(h, self.freqs_cis)
+[rank2]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank2]:     return self._call_impl(*args, **kwargs)
+[rank2]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank2]:     return forward_call(*args, **kwargs)
+[rank2]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank2]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank2]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank2]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank2]:     return self._call_impl(*args, **kwargs)
+[rank2]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank2]:     return inner()
+[rank2]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank2]:     result = forward_call(*args, **kwargs)
+[rank2]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank2]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank2]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank2]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank2]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank13]: Traceback (most recent call last):
+[rank13]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank13]:     profiler.run_eager_fwbw_kineto_pass()
+[rank13]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank13]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank13]:     output = self.model(self.sample_input)
+[rank13]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank13]:     return self._call_impl(*args, **kwargs)
+[rank13]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank13]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank13]:     return forward_call(*args, **kwargs)
+[rank13]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank13]:     h = layer(h, self.freqs_cis)
+[rank13]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank13]:     return self._call_impl(*args, **kwargs)
+[rank13]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank13]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank13]:     return forward_call(*args, **kwargs)
+[rank13]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank13]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank13]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank13]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank13]:     return self._call_impl(*args, **kwargs)
+[rank13]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank13]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank13]:     return inner()
+[rank13]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank13]:     result = forward_call(*args, **kwargs)
+[rank13]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank13]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank13]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank13]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank13]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank13]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank13]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank11]: Traceback (most recent call last):
+[rank11]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank11]:     profiler.run_eager_fwbw_kineto_pass()
+[rank11]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank11]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank11]:     output = self.model(self.sample_input)
+[rank11]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank11]:     return self._call_impl(*args, **kwargs)
+[rank11]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank11]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank11]:     return forward_call(*args, **kwargs)
+[rank11]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank11]:     h = layer(h, self.freqs_cis)
+[rank11]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank11]:     return self._call_impl(*args, **kwargs)
+[rank11]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank11]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank11]:     return forward_call(*args, **kwargs)
+[rank11]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank11]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank11]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank11]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank11]:     return self._call_impl(*args, **kwargs)
+[rank11]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank11]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank11]:     return inner()
+[rank11]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank11]:     result = forward_call(*args, **kwargs)
+[rank11]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank11]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank11]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank11]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank11]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank11]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank11]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank1]:     profiler.run_eager_fwbw_kineto_pass()
+[rank1]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank1]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank1]:     output = self.model(self.sample_input)
+[rank1]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank1]:     return self._call_impl(*args, **kwargs)
+[rank1]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank1]:     return forward_call(*args, **kwargs)
+[rank1]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank1]:     h = layer(h, self.freqs_cis)
+[rank1]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank1]:     return self._call_impl(*args, **kwargs)
+[rank1]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank1]:     return forward_call(*args, **kwargs)
+[rank1]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank1]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank1]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank1]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank1]:     return self._call_impl(*args, **kwargs)
+[rank1]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank1]:     return inner()
+[rank1]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank1]:     result = forward_call(*args, **kwargs)
+[rank1]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank1]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank1]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank1]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank1]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank12]: Traceback (most recent call last):
+[rank12]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank12]:     profiler.run_eager_fwbw_kineto_pass()
+[rank12]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank12]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank12]:     output = self.model(self.sample_input)
+[rank12]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank12]:     return self._call_impl(*args, **kwargs)
+[rank12]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank12]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank12]:     return forward_call(*args, **kwargs)
+[rank12]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank12]:     h = layer(h, self.freqs_cis)
+[rank12]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank12]:     return self._call_impl(*args, **kwargs)
+[rank12]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank12]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank12]:     return forward_call(*args, **kwargs)
+[rank12]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank12]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank12]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank12]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank12]:     return self._call_impl(*args, **kwargs)
+[rank12]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank12]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank12]:     return inner()
+[rank12]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank12]:     result = forward_call(*args, **kwargs)
+[rank12]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank12]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank12]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank12]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank12]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank12]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank12]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank7]: Traceback (most recent call last):
+[rank7]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank7]:     profiler.run_eager_fwbw_kineto_pass()
+[rank7]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank7]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank7]:     output = self.model(self.sample_input)
+[rank7]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank7]:     return self._call_impl(*args, **kwargs)
+[rank7]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank7]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank7]:     return forward_call(*args, **kwargs)
+[rank7]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank7]:     h = layer(h, self.freqs_cis)
+[rank7]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank7]:     return self._call_impl(*args, **kwargs)
+[rank7]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank7]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank7]:     return forward_call(*args, **kwargs)
+[rank7]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank7]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank7]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank7]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank7]:     return self._call_impl(*args, **kwargs)
+[rank7]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank7]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank7]:     return inner()
+[rank7]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank7]:     result = forward_call(*args, **kwargs)
+[rank7]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank7]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank7]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank7]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank7]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank7]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank7]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank14]: Traceback (most recent call last):
+[rank14]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank14]:     profiler.run_eager_fwbw_kineto_pass()
+[rank14]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank14]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank14]:     output = self.model(self.sample_input)
+[rank14]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank14]:     return self._call_impl(*args, **kwargs)
+[rank14]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank14]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank14]:     return forward_call(*args, **kwargs)
+[rank14]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank14]:     h = layer(h, self.freqs_cis)
+[rank14]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank14]:     return self._call_impl(*args, **kwargs)
+[rank14]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank14]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank14]:     return forward_call(*args, **kwargs)
+[rank14]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank14]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank14]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank14]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank14]:     return self._call_impl(*args, **kwargs)
+[rank14]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank14]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank14]:     return inner()
+[rank14]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank14]:     result = forward_call(*args, **kwargs)
+[rank14]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank14]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank14]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank14]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank14]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank14]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank14]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank6]: Traceback (most recent call last):
+[rank6]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank6]:     profiler.run_eager_fwbw_kineto_pass()
+[rank6]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank6]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank6]:     output = self.model(self.sample_input)
+[rank6]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank6]:     return self._call_impl(*args, **kwargs)
+[rank6]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank6]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank6]:     return forward_call(*args, **kwargs)
+[rank6]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank6]:     h = layer(h, self.freqs_cis)
+[rank6]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank6]:     return self._call_impl(*args, **kwargs)
+[rank6]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank6]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank6]:     return forward_call(*args, **kwargs)
+[rank6]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank6]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank6]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank6]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank6]:     return self._call_impl(*args, **kwargs)
+[rank6]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank6]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank6]:     return inner()
+[rank6]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank6]:     result = forward_call(*args, **kwargs)
+[rank6]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank6]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank6]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank6]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank6]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank6]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank6]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank15]: Traceback (most recent call last):
+[rank15]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank15]:     profiler.run_eager_fwbw_kineto_pass()
+[rank15]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank15]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank15]:     output = self.model(self.sample_input)
+[rank15]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank15]:     return self._call_impl(*args, **kwargs)
+[rank15]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank15]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank15]:     return forward_call(*args, **kwargs)
+[rank15]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank15]:     h = layer(h, self.freqs_cis)
+[rank15]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank15]:     return self._call_impl(*args, **kwargs)
+[rank15]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank15]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank15]:     return forward_call(*args, **kwargs)
+[rank15]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank15]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank15]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank15]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank15]:     return self._call_impl(*args, **kwargs)
+[rank15]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank15]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank15]:     return inner()
+[rank15]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank15]:     result = forward_call(*args, **kwargs)
+[rank15]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank15]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank15]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank15]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank15]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank15]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank15]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank5]: Traceback (most recent call last):
+[rank5]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank5]:     profiler.run_eager_fwbw_kineto_pass()
+[rank5]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank5]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank5]:     output = self.model(self.sample_input)
+[rank5]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank5]:     return self._call_impl(*args, **kwargs)
+[rank5]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank5]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank5]:     return forward_call(*args, **kwargs)
+[rank5]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank5]:     h = layer(h, self.freqs_cis)
+[rank5]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank5]:     return self._call_impl(*args, **kwargs)
+[rank5]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank5]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank5]:     return forward_call(*args, **kwargs)
+[rank5]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank5]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank5]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank5]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank5]:     return self._call_impl(*args, **kwargs)
+[rank5]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank5]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank5]:     return inner()
+[rank5]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank5]:     result = forward_call(*args, **kwargs)
+[rank5]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank5]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank5]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank9]: Traceback (most recent call last):
+[rank9]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank9]:     profiler.run_eager_fwbw_kineto_pass()
+[rank9]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank9]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank9]:     output = self.model(self.sample_input)
+[rank9]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank9]:     return self._call_impl(*args, **kwargs)
+[rank9]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank9]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank9]:     return forward_call(*args, **kwargs)
+[rank5]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank5]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank5]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank5]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank9]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank9]:     h = layer(h, self.freqs_cis)
+[rank9]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank9]:     return self._call_impl(*args, **kwargs)
+[rank9]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank9]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank9]:     return forward_call(*args, **kwargs)
+[rank9]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank9]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank9]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank9]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank9]:     return self._call_impl(*args, **kwargs)
+[rank9]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank9]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank9]:     return inner()
+[rank9]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank9]:     result = forward_call(*args, **kwargs)
+[rank9]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank9]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank9]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank9]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank9]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank9]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank9]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank8]: Traceback (most recent call last):
+[rank8]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank8]:     profiler.run_eager_fwbw_kineto_pass()
+[rank8]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank8]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank8]:     output = self.model(self.sample_input)
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank8]:     return self._call_impl(*args, **kwargs)
+[rank8]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank8]:     return forward_call(*args, **kwargs)
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank8]:     h = layer(h, self.freqs_cis)
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank8]:     return self._call_impl(*args, **kwargs)
+[rank8]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank8]:     return forward_call(*args, **kwargs)
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank8]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank8]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank8]:     return self._call_impl(*args, **kwargs)
+[rank8]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank8]:     return inner()
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank8]:     result = forward_call(*args, **kwargs)
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank8]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank8]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank8]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank8]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank8]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank8]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank4]: Traceback (most recent call last):
+[rank4]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank4]:     profiler.run_eager_fwbw_kineto_pass()
+[rank4]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank4]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank4]:     output = self.model(self.sample_input)
+[rank4]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank4]:     return self._call_impl(*args, **kwargs)
+[rank4]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank4]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank4]:     return forward_call(*args, **kwargs)
+[rank4]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank4]:     h = layer(h, self.freqs_cis)
+[rank4]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank4]:     return self._call_impl(*args, **kwargs)
+[rank4]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank4]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank4]:     return forward_call(*args, **kwargs)
+[rank4]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank4]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank4]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank4]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank4]:     return self._call_impl(*args, **kwargs)
+[rank4]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank4]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank4]:     return inner()
+[rank4]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank4]:     result = forward_call(*args, **kwargs)
+[rank4]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank4]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank4]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank4]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank4]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank4]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank4]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank26]: Traceback (most recent call last):
+[rank26]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank26]:     profiler.run_eager_fwbw_kineto_pass()
+[rank26]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank26]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank26]:     output = self.model(self.sample_input)
+[rank26]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank26]:     return self._call_impl(*args, **kwargs)
+[rank26]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank26]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank26]:     return forward_call(*args, **kwargs)
+[rank26]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank26]:     h = layer(h, self.freqs_cis)
+[rank26]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank26]:     return self._call_impl(*args, **kwargs)
+[rank26]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank26]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank26]:     return forward_call(*args, **kwargs)
+[rank26]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank26]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank26]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank26]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank26]:     return self._call_impl(*args, **kwargs)
+[rank26]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank26]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank26]:     return inner()
+[rank26]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank26]:     result = forward_call(*args, **kwargs)
+[rank26]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank26]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank26]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank26]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank26]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank26]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank26]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank24]: Traceback (most recent call last):
+[rank24]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank24]:     profiler.run_eager_fwbw_kineto_pass()
+[rank24]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank24]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank24]:     output = self.model(self.sample_input)
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank24]:     return self._call_impl(*args, **kwargs)
+[rank24]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank24]:     return forward_call(*args, **kwargs)
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank24]:     h = layer(h, self.freqs_cis)
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank24]:     return self._call_impl(*args, **kwargs)
+[rank24]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank24]:     return forward_call(*args, **kwargs)
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank24]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank24]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank24]:     return self._call_impl(*args, **kwargs)
+[rank24]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank24]:     return inner()
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank24]:     result = forward_call(*args, **kwargs)
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank24]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank24]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank24]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank24]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank24]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank24]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank17]: Traceback (most recent call last):
+[rank17]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank17]:     profiler.run_eager_fwbw_kineto_pass()
+[rank17]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank17]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank17]:     output = self.model(self.sample_input)
+[rank17]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank17]:     return self._call_impl(*args, **kwargs)
+[rank17]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank17]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank17]:     return forward_call(*args, **kwargs)
+[rank17]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank17]:     h = layer(h, self.freqs_cis)
+[rank17]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank17]:     return self._call_impl(*args, **kwargs)
+[rank17]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank17]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank17]:     return forward_call(*args, **kwargs)
+[rank17]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank17]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank17]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank17]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank17]:     return self._call_impl(*args, **kwargs)
+[rank17]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank17]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank17]:     return inner()
+[rank17]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank17]:     result = forward_call(*args, **kwargs)
+[rank17]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank17]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank17]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank17]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank17]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank17]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank17]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank21]: Traceback (most recent call last):
+[rank21]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank21]:     profiler.run_eager_fwbw_kineto_pass()
+[rank21]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank21]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank21]:     output = self.model(self.sample_input)
+[rank21]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank21]:     return self._call_impl(*args, **kwargs)
+[rank21]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank21]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank21]:     return forward_call(*args, **kwargs)
+[rank21]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank21]:     h = layer(h, self.freqs_cis)
+[rank21]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank21]:     return self._call_impl(*args, **kwargs)
+[rank21]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank21]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank21]:     return forward_call(*args, **kwargs)
+[rank21]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank21]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank21]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank21]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank21]:     return self._call_impl(*args, **kwargs)
+[rank21]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank21]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank21]:     return inner()
+[rank21]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank21]:     result = forward_call(*args, **kwargs)
+[rank21]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank21]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank21]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank21]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank21]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank21]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank21]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank27]: Traceback (most recent call last):
+[rank27]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank27]:     profiler.run_eager_fwbw_kineto_pass()
+[rank27]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank27]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank27]:     output = self.model(self.sample_input)
+[rank27]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank27]:     return self._call_impl(*args, **kwargs)
+[rank27]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank27]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank27]:     return forward_call(*args, **kwargs)
+[rank27]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank27]:     h = layer(h, self.freqs_cis)
+[rank27]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank27]:     return self._call_impl(*args, **kwargs)
+[rank27]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank27]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank27]:     return forward_call(*args, **kwargs)
+[rank27]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank27]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank27]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank27]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank27]:     return self._call_impl(*args, **kwargs)
+[rank27]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank27]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank27]:     return inner()
+[rank27]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank27]:     result = forward_call(*args, **kwargs)
+[rank27]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank27]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank27]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank27]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank27]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank27]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank27]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank18]: Traceback (most recent call last):
+[rank18]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank18]:     profiler.run_eager_fwbw_kineto_pass()
+[rank18]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank18]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank18]:     output = self.model(self.sample_input)
+[rank18]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank18]:     return self._call_impl(*args, **kwargs)
+[rank18]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank18]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank18]:     return forward_call(*args, **kwargs)
+[rank18]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank18]:     h = layer(h, self.freqs_cis)
+[rank18]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank18]:     return self._call_impl(*args, **kwargs)
+[rank18]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank18]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank18]:     return forward_call(*args, **kwargs)
+[rank18]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank18]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank18]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank18]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank18]:     return self._call_impl(*args, **kwargs)
+[rank18]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank18]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank18]:     return inner()
+[rank18]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank18]:     result = forward_call(*args, **kwargs)
+[rank18]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank18]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank18]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank18]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank18]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank18]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank18]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank25]: Traceback (most recent call last):
+[rank25]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank25]:     profiler.run_eager_fwbw_kineto_pass()
+[rank25]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank25]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank25]:     output = self.model(self.sample_input)
+[rank25]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank25]:     return self._call_impl(*args, **kwargs)
+[rank25]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank25]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank25]:     return forward_call(*args, **kwargs)
+[rank25]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank25]:     h = layer(h, self.freqs_cis)
+[rank25]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank25]:     return self._call_impl(*args, **kwargs)
+[rank25]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank25]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank25]:     return forward_call(*args, **kwargs)
+[rank25]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank25]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank25]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank25]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank25]:     return self._call_impl(*args, **kwargs)
+[rank25]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank25]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank25]:     return inner()
+[rank25]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank25]:     result = forward_call(*args, **kwargs)
+[rank25]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank25]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank25]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank25]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank25]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank25]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank25]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank16]: Traceback (most recent call last):
+[rank16]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank16]:     profiler.run_eager_fwbw_kineto_pass()
+[rank16]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank16]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank16]:     output = self.model(self.sample_input)
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank16]:     return self._call_impl(*args, **kwargs)
+[rank16]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank16]:     return forward_call(*args, **kwargs)
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank16]:     h = layer(h, self.freqs_cis)
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank16]:     return self._call_impl(*args, **kwargs)
+[rank16]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank16]:     return forward_call(*args, **kwargs)
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank16]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank16]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank16]:     return self._call_impl(*args, **kwargs)
+[rank16]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank16]:     return inner()
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank16]:     result = forward_call(*args, **kwargs)
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank16]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank16]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank16]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank16]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank16]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank16]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank31]: Traceback (most recent call last):
+[rank31]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank31]:     profiler.run_eager_fwbw_kineto_pass()
+[rank31]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank31]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank31]:     output = self.model(self.sample_input)
+[rank31]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank31]:     return self._call_impl(*args, **kwargs)
+[rank31]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank31]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank31]:     return forward_call(*args, **kwargs)
+[rank31]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank31]:     h = layer(h, self.freqs_cis)
+[rank31]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank31]:     return self._call_impl(*args, **kwargs)
+[rank31]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank31]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank31]:     return forward_call(*args, **kwargs)
+[rank31]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank31]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank31]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank31]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank31]:     return self._call_impl(*args, **kwargs)
+[rank31]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank31]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank31]:     return inner()
+[rank31]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank31]:     result = forward_call(*args, **kwargs)
+[rank31]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank31]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank31]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank31]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank31]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank31]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank31]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank29]: Traceback (most recent call last):
+[rank29]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank29]:     profiler.run_eager_fwbw_kineto_pass()
+[rank29]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank29]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank29]:     output = self.model(self.sample_input)
+[rank29]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank29]:     return self._call_impl(*args, **kwargs)
+[rank29]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank29]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank29]:     return forward_call(*args, **kwargs)
+[rank29]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank29]:     h = layer(h, self.freqs_cis)
+[rank29]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank29]:     return self._call_impl(*args, **kwargs)
+[rank29]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank29]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank29]:     return forward_call(*args, **kwargs)
+[rank29]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank29]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank29]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank29]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank29]:     return self._call_impl(*args, **kwargs)
+[rank29]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank29]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank29]:     return inner()
+[rank29]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank29]:     result = forward_call(*args, **kwargs)
+[rank29]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank29]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank29]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank29]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank29]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank29]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank29]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank19]: Traceback (most recent call last):
+[rank19]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank19]:     profiler.run_eager_fwbw_kineto_pass()
+[rank19]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank19]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank19]:     output = self.model(self.sample_input)
+[rank19]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank19]:     return self._call_impl(*args, **kwargs)
+[rank19]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank19]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank19]:     return forward_call(*args, **kwargs)
+[rank19]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank19]:     h = layer(h, self.freqs_cis)
+[rank19]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank19]:     return self._call_impl(*args, **kwargs)
+[rank19]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank19]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank19]:     return forward_call(*args, **kwargs)
+[rank19]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank19]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank19]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank19]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank19]:     return self._call_impl(*args, **kwargs)
+[rank19]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank19]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank19]:     return inner()
+[rank19]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank19]:     result = forward_call(*args, **kwargs)
+[rank19]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank19]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank19]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank19]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank19]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank19]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank19]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank20]: Traceback (most recent call last):
+[rank20]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank20]:     profiler.run_eager_fwbw_kineto_pass()
+[rank20]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank20]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank20]:     output = self.model(self.sample_input)
+[rank20]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank20]:     return self._call_impl(*args, **kwargs)
+[rank20]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank20]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank20]:     return forward_call(*args, **kwargs)
+[rank20]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank20]:     h = layer(h, self.freqs_cis)
+[rank20]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank20]:     return self._call_impl(*args, **kwargs)
+[rank20]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank20]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank20]:     return forward_call(*args, **kwargs)
+[rank20]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank20]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank20]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank20]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank20]:     return self._call_impl(*args, **kwargs)
+[rank20]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank20]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank20]:     return inner()
+[rank20]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank20]:     result = forward_call(*args, **kwargs)
+[rank20]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank20]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank20]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank20]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank20]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank20]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank20]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank30]: Traceback (most recent call last):
+[rank30]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank30]:     profiler.run_eager_fwbw_kineto_pass()
+[rank30]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank30]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank30]:     output = self.model(self.sample_input)
+[rank30]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank30]:     return self._call_impl(*args, **kwargs)
+[rank30]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank30]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank30]:     return forward_call(*args, **kwargs)
+[rank30]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank30]:     h = layer(h, self.freqs_cis)
+[rank30]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank30]:     return self._call_impl(*args, **kwargs)
+[rank30]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank30]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank30]:     return forward_call(*args, **kwargs)
+[rank30]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank30]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank30]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank30]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank30]:     return self._call_impl(*args, **kwargs)
+[rank30]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank30]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank30]:     return inner()
+[rank30]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank30]:     result = forward_call(*args, **kwargs)
+[rank30]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank30]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank30]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank30]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank30]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank30]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank30]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank28]: Traceback (most recent call last):
+[rank28]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank28]:     profiler.run_eager_fwbw_kineto_pass()
+[rank28]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank28]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank28]:     output = self.model(self.sample_input)
+[rank28]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank28]:     return self._call_impl(*args, **kwargs)
+[rank28]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank28]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank28]:     return forward_call(*args, **kwargs)
+[rank28]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank28]:     h = layer(h, self.freqs_cis)
+[rank28]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank28]:     return self._call_impl(*args, **kwargs)
+[rank28]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank28]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank28]:     return forward_call(*args, **kwargs)
+[rank28]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank28]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank28]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank28]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank28]:     return self._call_impl(*args, **kwargs)
+[rank28]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank28]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank28]:     return inner()
+[rank28]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank28]:     result = forward_call(*args, **kwargs)
+[rank28]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank28]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank28]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank28]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank28]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank28]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank28]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank22]: Traceback (most recent call last):
+[rank22]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank22]:     profiler.run_eager_fwbw_kineto_pass()
+[rank22]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank22]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank22]:     output = self.model(self.sample_input)
+[rank22]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank22]:     return self._call_impl(*args, **kwargs)
+[rank22]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank22]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank22]:     return forward_call(*args, **kwargs)
+[rank22]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank22]:     h = layer(h, self.freqs_cis)
+[rank22]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank22]:     return self._call_impl(*args, **kwargs)
+[rank22]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank22]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank22]:     return forward_call(*args, **kwargs)
+[rank22]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank22]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank22]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank22]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank22]:     return self._call_impl(*args, **kwargs)
+[rank22]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank22]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank22]:     return inner()
+[rank22]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank22]:     result = forward_call(*args, **kwargs)
+[rank22]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank22]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank22]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank22]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank22]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank22]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank22]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank23]: Traceback (most recent call last):
+[rank23]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/profile_fxgraph.py", line 92, in <module>
+[rank23]:     profiler.run_eager_fwbw_kineto_pass()
+[rank23]:     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[rank23]:   File "/storage/ice1/5/1/cman8/shared/chakra_fx/src/chakra_fx/profilers/model_profiler.py", line 164, in run_eager_fwbw_kineto_pass
+[rank23]:     output = self.model(self.sample_input)
+[rank23]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank23]:     return self._call_impl(*args, **kwargs)
+[rank23]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank23]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank23]:     return forward_call(*args, **kwargs)
+[rank23]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 428, in forward
+[rank23]:     h = layer(h, self.freqs_cis)
+[rank23]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank23]:     return self._call_impl(*args, **kwargs)
+[rank23]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank23]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank23]:     return forward_call(*args, **kwargs)
+[rank23]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torchtitan/models/llama3/model/model.py", line 300, in forward
+[rank23]:     h = x + self.attention(self.attention_norm(x), freqs_cis)
+[rank23]:                            ~~~~~~~~~~~~~~~~~~~^^^
+[rank23]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank23]:     return self._call_impl(*args, **kwargs)
+[rank23]:            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+[rank23]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1881, in _call_impl
+[rank23]:     return inner()
+[rank23]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1829, in inner
+[rank23]:     result = forward_call(*args, **kwargs)
+[rank23]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/modules/normalization.py", line 414, in forward
+[rank23]:     return F.rms_norm(x, self.normalized_shape, self.weight, self.eps)
+[rank23]:            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank23]:   File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/nn/functional.py", line 2920, in rms_norm
+[rank23]:     return torch.rms_norm(input, normalized_shape, weight, eps)
+[rank23]:            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank23]: RuntimeError: Expected weight to be of same shape as normalized_shape, but got weight of shape [1024] and normalized_shape = [512]
+[rank8]:[W820 00:33:04.226496711 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank10]:[W820 00:33:04.227126636 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank7]:[W820 00:33:04.228338648 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank1]:[W820 00:33:04.240638477 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank12]:[W820 00:33:04.261387131 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank15]:[W820 00:33:04.261478218 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank13]:[W820 00:33:04.262914216 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank11]:[W820 00:33:04.265734197 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank2]:[W820 00:33:04.279789877 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank6]:[W820 00:33:04.309273065 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank0]:[W820 00:33:04.323572387 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank9]:[W820 00:33:04.359581842 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank14]:[W820 00:33:04.366024937 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank3]:[W820 00:33:04.438805485 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank5]:[W820 00:33:04.443632730 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank4]:[W820 00:33:04.446288565 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank25]:[W820 00:33:04.510935204 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank27]:[W820 00:33:04.511539534 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank26]:[W820 00:33:04.511563887 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank18]:[W820 00:33:04.300569138 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank24]:[W820 00:33:04.553781825 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank21]:[W820 00:33:04.344046068 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank28]:[W820 00:33:04.582545101 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank17]:[W820 00:33:04.380009753 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank16]:[W820 00:33:04.421401575 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank22]:[W820 00:33:04.472991158 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank20]:[W820 00:33:04.474738990 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank19]:[W820 00:33:04.477321358 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank23]:[W820 00:33:04.477649683 ProcessGroupNCCL.cpp:1519] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[rank12]:[W820 00:33:04.915471245 ProcessGroup.cpp:367] Warning: At the time of process termination, there are still 1 unwaited collective calls. Please review your program to ensure that:
+1. c10d_functional.wait_tensor() is invoked on all tensors returned from c10d_functional collective,
+2. c10d_functional.wait_tensor() is invoked on all output tensors of async_op=True torch.distributed collective called under `with allow_inflight_collective_as_graph_input_ctx():`,
+before the output tensors of the collective are used. (function ~WorkRegistry)
+[rank5]:[W820 00:33:05.038271344 ProcessGroup.cpp:367] Warning: At the time of process termination, there are still 1 unwaited collective calls. Please review your program to ensure that:
+1. c10d_functional.wait_tensor() is invoked on all tensors returned from c10d_functional collective,
+2. c10d_functional.wait_tensor() is invoked on all output tensors of async_op=True torch.distributed collective called under `with allow_inflight_collective_as_graph_input_ctx():`,
+before the output tensors of the collective are used. (function ~WorkRegistry)
+[rank21]:[W820 00:33:05.019761917 ProcessGroup.cpp:367] Warning: At the time of process termination, there are still 1 unwaited collective calls. Please review your program to ensure that:
+1. c10d_functional.wait_tensor() is invoked on all tensors returned from c10d_functional collective,
+2. c10d_functional.wait_tensor() is invoked on all output tensors of async_op=True torch.distributed collective called under `with allow_inflight_collective_as_graph_input_ctx():`,
+before the output tensors of the collective are used. (function ~WorkRegistry)
+[rank10]:[W820 00:33:05.244458267 ProcessGroup.cpp:367] Warning: At the time of process termination, there are still 1 unwaited collective calls. Please review your program to ensure that:
+1. c10d_functional.wait_tensor() is invoked on all tensors returned from c10d_functional collective,
+2. c10d_functional.wait_tensor() is invoked on all output tensors of async_op=True torch.distributed collective called under `with allow_inflight_collective_as_graph_input_ctx():`,
+before the output tensors of the collective are used. (function ~WorkRegistry)
+[rank20]:[W820 00:33:05.061496188 ProcessGroup.cpp:367] Warning: At the time of process termination, there are still 1 unwaited collective calls. Please review your program to ensure that:
+1. c10d_functional.wait_tensor() is invoked on all tensors returned from c10d_functional collective,
+2. c10d_functional.wait_tensor() is invoked on all output tensors of async_op=True torch.distributed collective called under `with allow_inflight_collective_as_graph_input_ctx():`,
+before the output tensors of the collective are used. (function ~WorkRegistry)
+[rank28]:[W820 00:33:05.415180325 ProcessGroup.cpp:367] Warning: At the time of process termination, there are still 1 unwaited collective calls. Please review your program to ensure that:
+1. c10d_functional.wait_tensor() is invoked on all tensors returned from c10d_functional collective,
+2. c10d_functional.wait_tensor() is invoked on all output tensors of async_op=True torch.distributed collective called under `with allow_inflight_collective_as_graph_input_ctx():`,
+before the output tensors of the collective are used. (function ~WorkRegistry)
+W0820 00:33:05.357000 991614 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 991688 closing signal SIGTERM
+W0820 00:33:05.358000 991614 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 991689 closing signal SIGTERM
+W0820 00:33:05.358000 991614 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 991690 closing signal SIGTERM
+W0820 00:33:05.359000 991614 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 991691 closing signal SIGTERM
+W0820 00:33:05.359000 991614 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 991693 closing signal SIGTERM
+W0820 00:33:05.359000 991614 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 991694 closing signal SIGTERM
+W0820 00:33:05.360000 991614 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 991695 closing signal SIGTERM
+[rank7]:[W820 00:33:05.442611408 ProcessGroup.cpp:367] Warning: At the time of process termination, there are still 1 unwaited collective calls. Please review your program to ensure that:
+1. c10d_functional.wait_tensor() is invoked on all tensors returned from c10d_functional collective,
+2. c10d_functional.wait_tensor() is invoked on all output tensors of async_op=True torch.distributed collective called under `with allow_inflight_collective_as_graph_input_ctx():`,
+before the output tensors of the collective are used. (function ~WorkRegistry)
+W0820 00:33:05.457000 1400982 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1401064 closing signal SIGTERM
+W0820 00:33:05.458000 1400982 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1401065 closing signal SIGTERM
+W0820 00:33:05.458000 1400982 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1401066 closing signal SIGTERM
+W0820 00:33:05.459000 1400982 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1401067 closing signal SIGTERM
+W0820 00:33:05.459000 1400982 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1401068 closing signal SIGTERM
+W0820 00:33:05.459000 1400982 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1401070 closing signal SIGTERM
+W0820 00:33:05.460000 1400982 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 1401071 closing signal SIGTERM
+W0820 00:33:05.658000 999226 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 999287 closing signal SIGTERM
+W0820 00:33:05.658000 999226 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 999288 closing signal SIGTERM
+W0820 00:33:05.659000 999226 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 999289 closing signal SIGTERM
+W0820 00:33:05.659000 999226 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 999290 closing signal SIGTERM
+W0820 00:33:05.660000 999226 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 999291 closing signal SIGTERM
+W0820 00:33:05.660000 999226 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 999293 closing signal SIGTERM
+W0820 00:33:05.660000 999226 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 999294 closing signal SIGTERM
+[rank27]:[W820 00:33:05.728632135 ProcessGroup.cpp:367] Warning: At the time of process termination, there are still 1 unwaited collective calls. Please review your program to ensure that:
+1. c10d_functional.wait_tensor() is invoked on all tensors returned from c10d_functional collective,
+2. c10d_functional.wait_tensor() is invoked on all output tensors of async_op=True torch.distributed collective called under `with allow_inflight_collective_as_graph_input_ctx():`,
+before the output tensors of the collective are used. (function ~WorkRegistry)
+[rank26]:[W820 00:33:05.771223221 ProcessGroup.cpp:367] Warning: At the time of process termination, there are still 1 unwaited collective calls. Please review your program to ensure that:
+1. c10d_functional.wait_tensor() is invoked on all tensors returned from c10d_functional collective,
+2. c10d_functional.wait_tensor() is invoked on all output tensors of async_op=True torch.distributed collective called under `with allow_inflight_collective_as_graph_input_ctx():`,
+before the output tensors of the collective are used. (function ~WorkRegistry)
+W0820 00:33:05.758000 969696 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 969770 closing signal SIGTERM
+W0820 00:33:05.759000 969696 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 969771 closing signal SIGTERM
+W0820 00:33:05.759000 969696 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 969772 closing signal SIGTERM
+W0820 00:33:05.760000 969696 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 969773 closing signal SIGTERM
+W0820 00:33:05.760000 969696 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 969775 closing signal SIGTERM
+W0820 00:33:05.760000 969696 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 969776 closing signal SIGTERM
+W0820 00:33:05.761000 969696 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:908] Sending process 969777 closing signal SIGTERM
+E0820 00:33:06.789000 991614 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:882] failed (exitcode: 1) local_rank: 4 (pid: 991692) of binary: /home/hice1/cman8/conda_env/chakra_fx/bin/python
+Traceback (most recent call last):
+  File "/home/hice1/cman8/conda_env/chakra_fx/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 936, in main
+    run(args)
+    ~~~^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 927, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 159, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 296, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+profile_fxgraph.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-08-20_00:33:05
+  host      : atl1-1-03-012-23-0.pace.gatech.edu
+  rank      : 12 (local_rank: 4)
+  exitcode  : 1 (pid: 991692)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+E0820 00:33:06.902000 1400982 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:882] failed (exitcode: 1) local_rank: 5 (pid: 1401069) of binary: /home/hice1/cman8/conda_env/chakra_fx/bin/python
+Traceback (most recent call last):
+  File "/home/hice1/cman8/conda_env/chakra_fx/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 936, in main
+    run(args)
+    ~~~^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 927, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 159, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 296, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+profile_fxgraph.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-08-20_00:33:05
+  host      : atl1-1-03-012-18-0.pace.gatech.edu
+  rank      : 5 (local_rank: 5)
+  exitcode  : 1 (pid: 1401069)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+E0820 00:33:07.003000 999226 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:882] failed (exitcode: 1) local_rank: 5 (pid: 999292) of binary: /home/hice1/cman8/conda_env/chakra_fx/bin/python
+[W820 00:33:07.838770471 TCPStore.cpp:138] [c10d] recvValueWithTimeout failed on SocketImpl(fd=72, addr=[atl1-1-03-012-28-0.pace.gatech.edu]:54430, remote=[atl1-1-03-012-18-0.pace.gatech.edu]:27337): Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+Exception raised from recvBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:682 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x80 (0x1554cd9a6c30 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x5fe9451 (0x15552adc8451 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: <unknown function> + 0x5feaaad (0x15552adc9aad in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: <unknown function> + 0x5feb169 (0x15552adca169 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: c10d::TCPStore::doWait(c10::ArrayRef<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::chrono::duration<long, std::ratio<1l, 1000l> >) + 0x1c6 (0x15552adc5416 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: c10d::TCPStore::doGet(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x33 (0x15552adc6f63 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: c10d::TCPStore::get(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x114 (0x15552adc8074 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: <unknown function> + 0xc70ce5 (0x15553a3c3ce5 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x384772 (0x155539ad7772 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_python.so)
+frame #9: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x59736d]
+frame #10: _PyObject_MakeTpCall + 0x2c4 (0x55ada4 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #11: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x5eb968]
+frame #12: _PyEval_EvalFrameDefault + 0x4e79 (0x5767c9 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #13: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x55d862]
+frame #14: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6d5a0b]
+frame #15: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x694655]
+frame #16: _PyEval_EvalFrameDefault + 0x4e79 (0x5767c9 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #17: PyEval_EvalCode + 0x3b8 (0x68bcb8 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #18: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x62640e]
+frame #19: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6c1e40]
+frame #20: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6c1adb]
+frame #21: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6c190b]
+frame #22: Py_RunMain + 0x377 (0x6bff47 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #23: Py_BytesMain + 0x39 (0x67fa99 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #24: <unknown function> + 0x295d0 (0x1555552295d0 in /lib64/libc.so.6)
+frame #25: __libc_start_main + 0x80 (0x155555229680 in /lib64/libc.so.6)
+frame #26: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x67ecd2]
+
+W0820 00:33:07.014000 999226 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/rendezvous/dynamic_rendezvous.py:1292] The node 'atl1-1-03-012-28-0.pace.gatech.edu_999226_0' has failed to shutdown the rendezvous '2755337' due to an error of type RendezvousConnectionError.
+Traceback (most recent call last):
+  File "/home/hice1/cman8/conda_env/chakra_fx/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 936, in main
+    run(args)
+    ~~~^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 927, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 159, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 296, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+profile_fxgraph.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-08-20_00:33:05
+  host      : atl1-1-03-012-28-0.pace.gatech.edu
+  rank      : 21 (local_rank: 5)
+  exitcode  : 1 (pid: 999292)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+E0820 00:33:07.166000 969696 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:882] failed (exitcode: 1) local_rank: 4 (pid: 969774) of binary: /home/hice1/cman8/conda_env/chakra_fx/bin/python
+[W820 00:33:07.228943426 TCPStore.cpp:138] [c10d] recvValueWithTimeout failed on SocketImpl(fd=72, addr=[atl1-1-03-013-3-0.pace.gatech.edu]:58814, remote=[atl1-1-03-012-18-0.pace.gatech.edu]:27337): Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+Exception raised from recvBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:682 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x80 (0x1554cd9a6c30 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x5fe9451 (0x15552adc8451 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: <unknown function> + 0x5feaaad (0x15552adc9aad in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: <unknown function> + 0x5feb169 (0x15552adca169 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: c10d::TCPStore::doWait(c10::ArrayRef<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::chrono::duration<long, std::ratio<1l, 1000l> >) + 0x1c6 (0x15552adc5416 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: c10d::TCPStore::doGet(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x33 (0x15552adc6f63 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: c10d::TCPStore::get(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x114 (0x15552adc8074 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: <unknown function> + 0xc70ce5 (0x15553a3c3ce5 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x384772 (0x155539ad7772 in /home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/lib/libtorch_python.so)
+frame #9: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x59736d]
+frame #10: _PyObject_MakeTpCall + 0x2c4 (0x55ada4 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #11: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x5eb968]
+frame #12: _PyEval_EvalFrameDefault + 0x4e79 (0x5767c9 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #13: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x55d862]
+frame #14: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6d5a0b]
+frame #15: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x694655]
+frame #16: _PyEval_EvalFrameDefault + 0x4e79 (0x5767c9 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #17: PyEval_EvalCode + 0x3b8 (0x68bcb8 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #18: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x62640e]
+frame #19: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6c1e40]
+frame #20: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6c1adb]
+frame #21: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x6c190b]
+frame #22: Py_RunMain + 0x377 (0x6bff47 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #23: Py_BytesMain + 0x39 (0x67fa99 in /home/hice1/cman8/conda_env/chakra_fx/bin/python)
+frame #24: <unknown function> + 0x295d0 (0x1555552295d0 in /lib64/libc.so.6)
+frame #25: __libc_start_main + 0x80 (0x155555229680 in /lib64/libc.so.6)
+frame #26: /home/hice1/cman8/conda_env/chakra_fx/bin/python() [0x67ecd2]
+
+W0820 00:33:07.176000 969696 /storage/ice1/5/1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/rendezvous/dynamic_rendezvous.py:1292] The node 'atl1-1-03-013-3-0.pace.gatech.edu_969696_0' has failed to shutdown the rendezvous '2755337' due to an error of type RendezvousConnectionError.
+Traceback (most recent call last):
+  File "/home/hice1/cman8/conda_env/chakra_fx/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 936, in main
+    run(args)
+    ~~~^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/run.py", line 927, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 159, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/hice1/cman8/conda_env/chakra_fx/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 296, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+profile_fxgraph.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-08-20_00:33:05
+  host      : atl1-1-03-013-3-0.pace.gatech.edu
+  rank      : 28 (local_rank: 4)
+  exitcode  : 1 (pid: 969774)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+srun: error: atl1-1-03-012-23-0: task 1: Exited with exit code 1
+srun: error: atl1-1-03-012-18-0: task 0: Exited with exit code 1
+srun: error: atl1-1-03-012-28-0: task 2: Exited with exit code 1
+srun: error: atl1-1-03-013-3-0: task 3: Exited with exit code 1
