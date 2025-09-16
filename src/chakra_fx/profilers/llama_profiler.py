@@ -4,7 +4,13 @@ from typing import List
 import torch
 import yaml
 from torch.distributed._tensor import DTensor
-from torchtitan.config_manager import ActivationCheckpoint, JobConfig, Training, Model, Float8
+from torchtitan.config_manager import (
+    ActivationCheckpoint,
+    JobConfig,
+    Training,
+    Model,
+    Float8,
+)
 from torchtitan.distributed.parallel_dims import ParallelDims
 from torchtitan.experiments.simple_fsdp import SimpleFSDPTransformer
 from torchtitan.experiments.simple_fsdp.parallelize import parallelize_llama
@@ -12,6 +18,7 @@ from torchtitan.models.llama3.model.args import TransformerModelArgs
 from torchtitan.protocols.model_converter import build_model_converters
 
 from src.chakra_fx.profilers.model_profiler import ModelProfiler
+from src.chakra_fx.utils.time_recorder import timer
 
 num_iters = 10
 batch_size = 8
@@ -63,7 +70,8 @@ class LlamaProfiler(ModelProfiler):
         use_pytorch_ir: bool = False,
         dse_config_filepath: str = None,
         job_config_filepath: str = None,
-        sequential_generation: bool = False
+        sequential_generation: bool = False,
+        use_cache: int = 0,
     ):
         print("start llama profiler")
         self.name = "llama"
@@ -90,11 +98,18 @@ class LlamaProfiler(ModelProfiler):
 
         print("Parallelizing model")
         job_config = JobConfig(
-            training=Training(compile=False, seq_len=sequence_length, mixed_precision_param="float32", mixed_precision_reduce="float32"),
+            training=Training(
+                compile=False,
+                seq_len=sequence_length,
+                mixed_precision_param="float32",
+                mixed_precision_reduce="float32",
+            ),
             activation_checkpoint=ActivationCheckpoint(mode="none"),
         )
         if dse_config_filepath is not None:
-            parallelized_model = self.apply_configuration(model, dse_config_filepath, job_config)
+            parallelized_model = self.apply_configuration(
+                model, dse_config_filepath, job_config
+            )
         else:
             world_size = int(os.environ["WORLD_SIZE"])
             parallel_dims = ParallelDims(
@@ -110,8 +125,18 @@ class LlamaProfiler(ModelProfiler):
 
         print("finish applying parallelization")
 
-        sample_input = torch.randint(high=tokenizer_n_words, size=(batch_size, sequence_length), dtype=torch.int64, device="cuda:0")
-        sample_label = torch.randint(high=tokenizer_n_words, size=(batch_size, sequence_length), dtype=torch.int64, device="cuda:0")
+        sample_input = torch.randint(
+            high=tokenizer_n_words,
+            size=(batch_size, sequence_length),
+            dtype=torch.int64,
+            device="cuda:0",
+        )
+        sample_label = torch.randint(
+            high=tokenizer_n_words,
+            size=(batch_size, sequence_length),
+            dtype=torch.int64,
+            device="cuda:0",
+        )
 
         super().__init__(
             parallelized_model,
@@ -121,10 +146,13 @@ class LlamaProfiler(ModelProfiler):
             fxgraph_actions,
             run_custom_backend_all_rank,
             use_pytorch_ir,
-            sequential_generation=sequential_generation
+            sequential_generation=sequential_generation,
+            use_cache=use_cache,
         )
 
-    def apply_configuration(self, model, dse_config_filepath: str, job_config: JobConfig):
+    def apply_configuration(
+        self, model, dse_config_filepath: str, job_config: JobConfig
+    ):
         with open(dse_config_filepath, "r") as file:
             data = yaml.safe_load(file)
         if data is None:
@@ -148,7 +176,7 @@ class LlamaProfiler(ModelProfiler):
                 enable_fsdp_float8_all_gather=True,
                 precompute_float8_dynamic_scale_for_fsdp=True,
                 force_recompute_fp8_weight_in_bwd=True,
-                filter_fqns=["output"]
+                filter_fqns=["output"],
             )
             job_config.model.converters = ["float8"]
 
@@ -157,8 +185,11 @@ class LlamaProfiler(ModelProfiler):
 
         parallelized_model = parallelize_llama(model, parallel_dims, job_config)
         return parallelized_model
+
     def loss_fn(self, pred, labels):
         # TODO(ruisizhang123): temporary fix to enable async TP for full model compile
         if isinstance(pred, DTensor):
             pred._local_tensor = pred._local_tensor.contiguous()
-        return torch.nn.functional.cross_entropy(pred.flatten(0, 1), labels.flatten(0, 1))
+        return torch.nn.functional.cross_entropy(
+            pred.flatten(0, 1), labels.flatten(0, 1)
+        )

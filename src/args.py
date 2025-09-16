@@ -20,7 +20,16 @@ def parse_args():
         required=False,
         help="""Choose which actions to perform on the fxgraph provided by torch.compile. Comma delimited string.
         Refer to custom_backend_compiler for a detailed description of each action.""",
-        choices=["chakra", "just", "pdf", "dot", "dumpgraph", "table", "histogram", "opcount"],
+        choices=[
+            "chakra",
+            "just",
+            "pdf",
+            "dot",
+            "dumpgraph",
+            "table",
+            "histogram",
+            "opcount",
+        ],
     )
     parser.add_argument(
         "--exp_tag",
@@ -64,6 +73,13 @@ def parse_args():
         "--sequential_generation",
         action="store_true",
         help="If set to true, the processes will generate graphs one by one. For cases where all procs cannot fit in memory.",
+    )
+    parser.add_argument(
+        "--use_cache",
+        type=int,
+        default=0,
+        required=False,
+        help="Use the existing lookup table or not",
     )
     args = parser.parse_args()
 
