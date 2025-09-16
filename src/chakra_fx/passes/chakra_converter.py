@@ -158,7 +158,7 @@ class ChakraConverter:
         self.chakra_node_id += 1
         return node
 
-    def create_comm_node(self, fx_node: fx.Node) -> ChakraNode:
+    def create_comm_node(self, fx_node: fx.Node, comm_setting: dict) -> ChakraNode:
         node_name = fx_node.name
         op_name = fx_node.target._opname
         comm_size = 0
@@ -171,14 +171,13 @@ class ChakraConverter:
 
         import torch.distributed.distributed_c10d as c10d
 
-        comm_group = {}
-
         process_group_name = fx_node.args[-1]
         process_group_ranks = c10d.get_process_group_ranks(
             c10d._resolve_process_group(process_group_name)
         )
         num_process_groups = len(c10d._world.pg_names)
-        comm_group.setdefault(str(process_group_name), process_group_ranks)
+
+        comm_setting.setdefault(str(process_group_name), process_group_ranks)
 
         # Use FakeTensor, which is included in the FX Graph as a fake input, to determine communication size
         comm_tensor: FakeTensor = fx_node.meta["val"]
@@ -201,7 +200,7 @@ class ChakraConverter:
         # The ProcessGroup related attribute name and values follow the proposal in the MLC Chakra WG meeting of 2024-09-09.
         # The actual attribute names may change in the future.
         chakra_node.attr.append(
-            ChakraAttr(name="pg_name", string_val=process_group_name)
+            ChakraAttr(name="comm_group", string_val=process_group_name)
         )
         chakra_node.attr.append(
             ChakraAttr(name="group_size", int64_val=len(process_group_ranks))
@@ -429,7 +428,7 @@ class ChakraConverter:
 
     # --- [MODIFIED] ---
     # 更新此函数以处理缓存写入逻辑
-    def process_fx_node(self, fx_node: fx.node, csv_writer=None):
+    def process_fx_node(self, fx_node: fx.node, comm_setting: dict, csv_writer=None):
         # Record node info in internal lookup tables.
         self.record_fx_node(fx_node)
 
@@ -454,7 +453,7 @@ class ChakraConverter:
 
         chakra_node = None
         if is_comm_node(fx_node):
-            chakra_node = self.create_comm_node(fx_node)
+            chakra_node = self.create_comm_node(fx_node, comm_setting)
         elif is_comp_node(fx_node):
             # 对节点进行一次性能分析, 获取所有信息
             flops, tensor_size, a_shape, b_shape, duration = self._profile_comp_node(
@@ -506,6 +505,7 @@ class ChakraConverter:
         with open(self.filename, "wb") as et:
             self.et_file = et
             encode_message(et, GlobalMetadata(version="0.0.4"))
+            comm_setting = {}
 
             # 仅在 rank 0 上打开CSV文件进行写入, 避免多进程冲突
             if os.environ.get("RANK") == "0":
@@ -518,11 +518,41 @@ class ChakraConverter:
 
                     # 处理所有节点, 传入 writer 用于写入新数据
                     for fx_node in gm.graph.nodes:
-                        self.process_fx_node(fx_node, writer)
+                        self.process_fx_node(fx_node, comm_setting, writer)
             else:
                 # 其他 rank 不需要写入CSV, 但仍需处理节点以生成各自的 .et 文件
                 for fx_node in gm.graph.nodes:
-                    self.process_fx_node(fx_node, csv_writer=None)
+                    self.process_fx_node(fx_node, comm_setting, csv_writer=None)
+            rank = dist.get_rank()
+            world_size = dist.get_world_size()
+
+            if rank == 0:
+                # The list must be correctly sized.
+                gathered_comm_settings = [None] * world_size
+                dist.gather_object(comm_setting, gathered_comm_settings, dst=0)
+                final_comm_setting = {}
+                for setting_dict in gathered_comm_settings:
+                    if setting_dict:
+                        final_comm_setting.update(setting_dict)
+
+                print("--- Final Merged comm_setting on Rank 0 ---")
+                print(final_comm_setting)
+                output_filename = "comm_setting.json"
+                try:
+                    with open(output_filename, "w", encoding="utf-8") as f:
+                        json.dump(final_comm_setting, f, indent=4, ensure_ascii=False)
+                    print(f"Successfully saved merged settings to {output_filename}")
+                except TypeError as e:
+                    print(f"Error saving to JSON: {e}")
+                    print("The dictionary might contain non-serializable types.")
+                except Exception as e:
+                    print(f"An unexpected error occurred while saving the file: {e}")
+                # ---------------------------------------------
+
+            else:
+                dist.gather_object(comm_setting, None, dst=0)
+            dist.barrier()
+
             if os.environ.get("RANK") == "0":
                 timer.mark("program_end")
                 timer.display_results()
