@@ -85,8 +85,9 @@ class LlamaProfiler(ModelProfiler):
         model_config.vocab_size = tokenizer_n_words
         model_config.max_seq_len = 2048  # job_config.training.seq_len
         model_config.norm_type = "layernorm"  # job_config.model.norm_type
-        model = SimpleFSDPTransformer(model_config)
-        model.to("cuda:0")
+
+        with torch.device("meta"):
+            model = SimpleFSDPTransformer(model_config)
 
         print("Parallelizing model")
         job_config = JobConfig(
@@ -104,14 +105,26 @@ class LlamaProfiler(ModelProfiler):
                 pp=1,
                 ep=1,
                 cp=1,
+                etp=1,
                 world_size=world_size,
             )
             parallelized_model = parallelize_llama(model, parallel_dims, job_config)
 
         print("finish applying parallelization")
+        parallelized_model.to_empty(device="meta")
 
-        sample_input = torch.randint(high=tokenizer_n_words, size=(batch_size, sequence_length), dtype=torch.int64, device="cuda:0")
-        sample_label = torch.randint(high=tokenizer_n_words, size=(batch_size, sequence_length), dtype=torch.int64, device="cuda:0")
+        sample_input = torch.randint(
+            high=tokenizer_n_words,
+            size=(batch_size, sequence_length),
+            dtype=torch.int64,
+            device="meta",
+        )
+        sample_label = torch.randint(
+            high=tokenizer_n_words,
+            size=(batch_size, sequence_length),
+            dtype=torch.int64,
+            device="meta",
+        )
 
         super().__init__(
             parallelized_model,
