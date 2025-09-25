@@ -18,7 +18,7 @@ class ModelProfiler:
         fxgraph_actions: List[str],
         run_custom_backend_all_rank: bool,
         use_pytorch_ir: bool = False,
-        sequential_generation: bool=False,
+        sequential_generation: bool = False,
     ):
         self.rank = int(os.environ.get("RANK", 0))
         self.size = int(os.environ.get("WORLD_SIZE", 1))
@@ -94,7 +94,12 @@ class ModelProfiler:
     def compile_model(self):
         if self.run_custom_backend:
             if self.use_pytorch_ir:
-                compiled_model = torch.compile(self.model, backend=self._custom_pytorch_compiler, dynamic=True, fullgraph=True)
+                compiled_model = torch.compile(
+                    self.model,
+                    backend=self._custom_pytorch_compiler,
+                    dynamic=True,
+                    fullgraph=True,
+                )
             else:
                 compiled_model = torch.compile(
                     self.model,

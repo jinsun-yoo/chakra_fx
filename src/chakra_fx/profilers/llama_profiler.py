@@ -4,11 +4,12 @@ from typing import List
 import torch
 import yaml
 from torch.distributed._tensor import DTensor
-from torchtitan.config_manager import ActivationCheckpoint, JobConfig, Training, Model, Float8
+from torchtitan.config_manager import ActivationCheckpoint, Float8, JobConfig, Training
 from torchtitan.distributed.parallel_dims import ParallelDims
 from torchtitan.experiments.simple_fsdp import SimpleFSDPTransformer
 from torchtitan.experiments.simple_fsdp.parallelize import parallelize_llama
-from torchtitan.models.llama3.model.args import TransformerModelArgs
+from torchtitan.models.llama3 import llama3_configs  # noqa: F401. Unused import. May need to use arbitrary model definition ad-hoc.
+from torchtitan.models.llama3.model.args import TransformerModelArgs  # noqa: F401. Unused import. Same as above.
 from torchtitan.protocols.model_converter import build_model_converters
 
 from src.chakra_fx.profilers.model_profiler import ModelProfiler
@@ -63,7 +64,7 @@ class LlamaProfiler(ModelProfiler):
         use_pytorch_ir: bool = False,
         dse_config_filepath: str = None,
         job_config_filepath: str = None,
-        sequential_generation: bool = False
+        sequential_generation: bool = False,
     ):
         print("start llama profiler")
         self.name = "llama"
@@ -121,7 +122,7 @@ class LlamaProfiler(ModelProfiler):
             fxgraph_actions,
             run_custom_backend_all_rank,
             use_pytorch_ir,
-            sequential_generation=sequential_generation
+            sequential_generation=sequential_generation,
         )
 
     def apply_configuration(self, model, dse_config_filepath: str, job_config: JobConfig):
@@ -148,7 +149,7 @@ class LlamaProfiler(ModelProfiler):
                 enable_fsdp_float8_all_gather=True,
                 precompute_float8_dynamic_scale_for_fsdp=True,
                 force_recompute_fp8_weight_in_bwd=True,
-                filter_fqns=["output"]
+                filter_fqns=["output"],
             )
             job_config.model.converters = ["float8"]
 
@@ -157,6 +158,7 @@ class LlamaProfiler(ModelProfiler):
 
         parallelized_model = parallelize_llama(model, parallel_dims, job_config)
         return parallelized_model
+
     def loss_fn(self, pred, labels):
         # TODO(ruisizhang123): temporary fix to enable async TP for full model compile
         if isinstance(pred, DTensor):

@@ -255,7 +255,9 @@ class ChakraConverter:
             cpu_time = (end_cpu_measured - start_cpu_measured) * 1_000_000  # Second to microsecond
             if os.environ["RANK"] == "0":
                 print(
-                    f"For fx node {fx_node.name}, duration measured by CPU is {cpu_time}, duration measured by CUDA Events is {start_cuda_event.elapsed_time(end_cuda_event)}"
+                    f"For fx node {fx_node.name}, "
+                    f"duration measured by CPU is {cpu_time}, "
+                    f"duration measured by CUDA Events is {start_cuda_event.elapsed_time(end_cuda_event)}"
                 )
             total_duration_cuda_event = start_cuda_event.elapsed_time(end_cuda_event) * 1000  # Millisecond to microsecond
             mean_duration_cuda_event = int(total_duration_cuda_event / num_iters)
@@ -361,41 +363,3 @@ class ChakraConverter:
             encode_message(et, GlobalMetadata(version="0.0.4"))
             for fx_node in gm.graph.nodes:
                 self.process_fx_node(fx_node)
-
-    # def lookup_duration(self, fx_node: fx.Node) -> int:  # noqa: C901. TODO: Make logger print only for rank=0. (Remove the branches = code complexity)
-    #     success, args, kwargs = fx_utils.get_fake_args_kwargs(fx_node)
-    #     if not success:
-    #         if os.environ["RANK"] == "0":
-    #             print(f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}")
-    #         return 1000  # Arbitrary number
-
-    #     lookup_op = "-1"
-    #     target_op = fx_node.target._overloadpacket
-    #     aten = torch.ops.aten
-    #     if target_op == aten.addmm or target_op == aten.mm:
-    #         lookup_op = "linear"
-
-    #     a = args[0].size()
-    #     b = args[1].size()
-
-    #     aten = torch.ops.aten
-    #     if fx_node.target._overloadpacket != aten.mm:
-    #         a = args[1].size()
-    #         b = args[2].size()
-    #     if a[1] != b[0]:
-    #         print(f"{node_debug_id_str(fx_node)} tensor size does not match for matrix multiplication: {a[1]}, {b[0]}")
-
-    #     numel = a[0] * a[1] * b[1]
-    #     if lookup_op not in timestamp_map:
-    #         if os.environ["RANK"] == "0":
-    #             print(f"{node_debug_id_str(fx_node)} does not have lookup op {lookup_op} for {target_op} in lookup map")
-    #         return -1
-    #     if numel in timestamp_map[lookup_op]:
-    #         lookup_duration = timestamp_map[lookup_op][numel]
-    #     else:
-    #         if os.environ["RANK"] == "0":
-    #             print(f"{node_debug_id_str(fx_node)} Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} with total numel {numel} not in map")
-    #         return -1
-    #     if os.environ["RANK"] == "0":
-    #         print(f"Estimated duration, a: {a[0]} {a[1]} b: {b[0]} {b[1]} result {lookup_duration}")
-    #     return lookup_duration

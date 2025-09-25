@@ -41,8 +41,11 @@ def _handle_action(action: str, gm: torch.fx.GraphModule, exp_tag: str, profiler
         case "opcount":
             get_operation_count(gm, profiler)
 
+
 # Assumption: No graph break apart from FW/BW
 called_before = False
+
+
 def build_custom_backend_compiler(action_list: List[str], exp_tag: str, profiler: "ModelProfiler"):
     # This is the custom backend compiler that torch.compile will call after parsing the FX graph.
     # The original intent of this interface is

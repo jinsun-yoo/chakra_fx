@@ -106,3 +106,17 @@ torchrun --nproc-per-node=16 profile_fxgraph.py --fxgraph_actions chakra --exp_t
 ### For debugging
 ```bash
 TORCH_SHOW_CPP_STACKTRACES=1 TORCH_LOGS="+dynamo,+aot_graphs,bytecode" torchrun --nproc-per-node=4 --local-ranks-filter=0 profile_fxgraph.py --fxgraph_actions chakra --exp_tag test_output --job fwbw --model llama --dse_config_filepath configs/llama_TP_4.yml
+
+TORCH_CUDA_ARCH_LIST="8.0 8.6 8.9 9.0" DEBUG=1 USE_MKLDNN=0 BUILD_TEST=0 USE_FBGEMM=0 USE_NNPACK=0 USE_QNNPACK=0 USE_XNNPACK=0 python -m pip install --no-build-isolation -v -e .
+```
+
+## Formatting
+```bash
+# Format code
+ruff format --diff
+ruff format .
+
+# Lint code
+ruff check --diff
+ruff check --fix .
+```
