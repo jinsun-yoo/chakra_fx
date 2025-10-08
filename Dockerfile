@@ -4,12 +4,12 @@ FROM jyoo332/flint:latest
 # Flint specific Pytorch, Torchtitan, Chakra have been installed
 
 # User specific setting. Feel free to edit.
-ARG USER_ID=3029572
+ARG USER_ID=3603715
 ARG GROUP_ID=2626
-ARG USER_NAME=jyoo332
+ARG USER_NAME=zdu90
 ARG GROUP_NAME=gtperson
 
-RUN groupadd -g $GROUP_ID $GROUP_NAME
+RUN getent group $GROUP_NAME || groupadd -g $GROUP_ID $GROUP_NAME
 RUN useradd -u $USER_ID -g $GROUP_ID -m -s /bin/bash $USER_NAME
 
 RUN chown -R $USER_ID:$GROUP_ID /usr/local/lib/python3.12/dist-packages/torch

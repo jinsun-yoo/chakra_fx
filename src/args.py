@@ -65,6 +65,13 @@ def parse_args():
         action="store_true",
         help="If set to true, the processes will generate graphs one by one. For cases where all procs cannot fit in memory.",
     )
+    parser.add_argument(
+        "--use_cache",
+        type=int,
+        default=0,
+        required=False,
+        help="Use the existing lookup table or not",
+    )
     args = parser.parse_args()
 
     args.action_list = args.fxgraph_actions.split(",")

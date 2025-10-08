@@ -1,4 +1,7 @@
+import csv
 import os
+import time
+from typing import Tuple
 
 import torch
 import torch._inductor.fx_utils as fx_utils
@@ -28,9 +31,12 @@ from chakra.schema.protobuf.et_def_pb2 import (
 from chakra.src.third_party.utils.protolib import encodeMessage as encode_message
 from torch._ops import OpOverload
 from torch._subclasses.fake_tensor import FakeTensor, unset_fake_temporarily
+from torch.distributed import destroy_process_group
 
 # from torch.fx.experimental.proxy_tensor import maybe_disable_fake_tensor_mode
 from torch.utils.flop_counter import FlopCounterMode
+
+from src.chakra_fx.utils.time_recorder import timer
 
 # Map from c10d operator string to Chakra collective enumeration
 c10d_chakra_map = {
@@ -90,7 +96,7 @@ def is_comp_node(fx_node: fx.Node):
 
 
 class ChakraConverter:
-    def __init__(self, name: str, subgraph_idx: int, dir_name: str):
+    def __init__(self, name: str, subgraph_idx: int, dir_name: str, use_cache: int):
         self.name = name
         self.subgraph_idx = subgraph_idx
         subgraphstr = ""
@@ -99,6 +105,13 @@ class ChakraConverter:
         if dir_name != "":
             dir_name += "/"
         self.filename = f"{dir_name}{self.name}{subgraphstr}.{dist.get_rank()}.et"
+        self.use_cache = use_cache
+
+        # --- [MODIFIED] ---
+        # Add path and in-memory dictionary for cache functionality
+        self.csv_path = "/workspace/chakra_fx/gemm_collected.csv"
+        self.duration_cache = {}
+        # --- [END MODIFIED] ---
 
         # Incremented whenever Chakra Node is crated
         self.chakra_node_id = 0
@@ -108,6 +121,31 @@ class ChakraConverter:
         self.fxnode_name_lookup_map = {}
         # Filld only when an FX Node has been converted to a Chakra Node.
         self.fxname_chakraid_map = {}
+
+    # --- [NEW] ---
+    # Add a method to load existing duration data from the CSV file into the in-memory cache
+    def _load_duration_cache(self):
+        """Load the duration cache from the CSV file."""
+        if not os.path.exists(self.csv_path):
+            return
+        with open(self.csv_path, "r", newline="") as csv_file:
+            reader = csv.reader(csv_file)
+            try:
+                next(reader)  # Skip header
+                for row in reader:
+                    if len(row) == 4:
+                        _, a_shape_str, b_shape_str, duration_str = row
+                        key = (a_shape_str, b_shape_str)
+                        # Avoid loading duplicates
+                        if key not in self.duration_cache:
+                            self.duration_cache[key] = int(duration_str)
+            except StopIteration:
+                # File is empty, do nothing
+                pass
+            except (ValueError, IndexError) as e:
+                print(f"Warning: Could not parse row in cache file: {row}. Error: {e}")
+
+    # --- [END NEW] ---
 
     def create_chakra_node(self, node_name: str, node_type: ChakraNodeType) -> ChakraNode:
         """Generate a new ChakraNode with a unique ID."""
@@ -129,9 +167,12 @@ class ChakraConverter:
 
         import torch.distributed.distributed_c10d as c10d
 
+        comm_group = {}
+
         process_group_name = fx_node.args[-1]
         process_group_ranks = c10d.get_process_group_ranks(c10d._resolve_process_group(process_group_name))
         num_process_groups = len(c10d._world.pg_names)
+        comm_group.setdefault(str(process_group_name), process_group_ranks)
 
         # Use FakeTensor, which is included in the FX Graph as a fake input, to determine communication size
         comm_tensor: FakeTensor = fx_node.meta["val"]
@@ -183,12 +224,12 @@ class ChakraConverter:
             fx_node.target(*args, **kwargs)
             return flop_counter_mode.get_total_flops(), True
 
-    def estimate_tensor_size(self, fx_node: fx.Node) -> int:
+    def estimate_tensor_size(self, fx_node: fx.Node) -> tuple:
         success, args, kwargs = fx_utils.get_fake_args_kwargs(fx_node)
         if not success:
             if os.environ["RANK"] == "0":
                 print(f"{node_debug_id_str(fx_node)} has estimated flopcount but no tensor_size: {fx_node.target._opname}")
-            return 0
+            return 0, (0, 0), (0, 0)
 
         # Assumption: The first two arguments are the input tensors.
         a = args[0].size()
@@ -197,24 +238,35 @@ class ChakraConverter:
         if fx_node.target._overloadpacket != torch.ops.aten.mm and fx_node.target._overloadpacket != torch.ops.aten._scaled_mm:
             a = args[1].size()
             b = args[2].size()
-        numbytes_per_element = 4
+        numbytes_per_element = 4  # FP32
         estimated_tensor_size = 2 * numbytes_per_element * (a[0] * a[1] + b[0] * b[1] + a[0] * b[1])
         if os.environ["RANK"] == "0":
             print(f"Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} result {estimated_tensor_size}")
-        return estimated_tensor_size
 
-    # Measure the duration of a compute operation by running it on actual GPU.
-    # This is possible because we have 1) the operation and 2) the symbolic shape of the input tensors (i.e. FakeTensor).
-    # We create a real tensor from the FakeTensor, and run the operation on it.
-    def measure_duration_microsecond(self, fx_node: fx.Node) -> int:
+        return estimated_tensor_size, a, b
+
+    # --- [MODIFIED] ---
+    # Modify function signature to accept a_shape and b_shape for cache lookup
+    def measure_duration_microsecond(self, fx_node: fx.Node, a_shape: torch.Size, b_shape: torch.Size) -> int:
+        # If cache is enabled, check cache first
+        if self.use_cache == 1:
+            key = (str(tuple(a_shape)), str(tuple(b_shape)))
+            if key in self.duration_cache:
+                if os.environ.get("RANK") == "0":
+                    print(f"Cache hit for shapes {key}. Using duration {self.duration_cache[key]} us.")
+                return self.duration_cache[key]
+            else:
+                if os.environ.get("RANK") == "0":
+                    print(f"Cache miss for shapes {key}. Measuring duration...")
+
+        if self.use_cache == 2:
+            return 0
+
         with unset_fake_temporarily():
-            # Create a real tensor with random values, from the shape info in the FakeTensor.
+
             def realify_fake_tensor(arg) -> torch.Tensor:
                 if not isinstance(arg, fx.Node):
                     return arg
-                # "Scalar" value
-                # if type(arg) is fx.Node:
-                #     return arg
                 fake_tensor: torch._subclasses.fake_tensor.FakeTensor = arg.meta["val"]
                 faketensor_size = fake_tensor.size()
                 # [NOTE]: Abandon the change below. Errs with TP, DTensor. For now, modify PT code to force lowering, at 'graph_compile.py'
@@ -231,18 +283,12 @@ class ChakraConverter:
             flat_args = [realify_fake_tensor(arg) for arg in fx_node.args]
             flat_kwargs = fx_node.kwargs
             num_warmup_iters = 3
-            num_iters = 10
-
-            import time
+            num_iters = 30
 
             compute_function = fx_node.target._overloadpacket
             for _ in range(num_warmup_iters):
                 compute_function(*flat_args, **flat_kwargs)
-            """
-            Ref: https://github.com/pytorch/pytorch/blob/45d62d6fc59e43e674985edd138e396268fe12fd/torch/distributed/_tools/runtime_estimator.py#L209
-            torch.cuda.Event.record() inserts events into the GPU stream before/after running the kernel.
-            This allows us to measure GPU time without host latency, etc.
-            """
+
             start_cuda_event = torch.cuda.Event(enable_timing=True)
             end_cuda_event = torch.cuda.Event(enable_timing=True)
             start_cpu_measured = time.time()
@@ -263,26 +309,49 @@ class ChakraConverter:
             mean_duration_cuda_event = int(total_duration_cuda_event / num_iters)
         return mean_duration_cuda_event
 
+    # --- [MODIFIED] ---
+    # Remove csv_reader parameter, since cache is now managed by self.duration_cache
+    def _profile_comp_node(self, fx_node: fx.Node) -> Tuple[int, int, torch.Size, torch.Size, int]:
+        estimated_flops, can_get_real_optarg = self.estimate_flop_count(fx_node)
+
+        estimated_tensor_size = 0
+        a_shape = torch.Size()
+        b_shape = torch.Size()
+        estimated_duration = 0
+
+        if can_get_real_optarg:
+            estimated_tensor_size, a_shape, b_shape = self.estimate_tensor_size(fx_node)
+            # Pass a_shape and b_shape to the measurement function to use the cache
+            estimated_duration = self.measure_duration_microsecond(fx_node, a_shape, b_shape)
+
+        return (
+            estimated_flops,
+            estimated_tensor_size,
+            a_shape,
+            b_shape,
+            estimated_duration,
+        )
+
     # Create a Compute Chakra Node from an FX Node.
     # We need to add three attributes:
     # num_ops: number of flops, used for roofline analysis.
     # tensor_size: size of the input tensors, used for roofline analysis.
     # duration_micros: duration of the operation, used for replay.
-    def create_comp_node(self, fx_node: fx.Node) -> ChakraNode:
-        node_name = fx_node.name
-        estimated_flops, can_get_real_optarg = self.estimate_flop_count(fx_node)
-        estimated_tensor_size = 0
-        estimated_duration = 0
-        if can_get_real_optarg:
-            estimated_tensor_size = self.estimate_tensor_size(fx_node)
-            estimated_duration = self.measure_duration_microsecond(fx_node)
 
+    # --- [MODIFIED] ---
+    # Refactor this function to accept precomputed performance data to avoid repeated calls to _profile_comp_node
+    def create_comp_node(self, fx_node: fx.Node, flops: int, tensor_size: int, duration: int) -> ChakraNode:
+        node_name = fx_node.name
         chakra_node = self.create_chakra_node(node_name, COMP_NODE)
+
         chakra_node.attr.append(ChakraAttr(name="is_cpu_op", bool_val=False))
-        chakra_node.attr.append(ChakraAttr(name="num_ops", int64_val=estimated_flops))
-        chakra_node.attr.append(ChakraAttr(name="tensor_size", uint64_val=estimated_tensor_size))
-        chakra_node.duration_micros = estimated_duration
+        chakra_node.attr.append(ChakraAttr(name="num_ops", int64_val=flops))
+        chakra_node.attr.append(ChakraAttr(name="tensor_size", uint64_val=tensor_size))
+        chakra_node.duration_micros = duration
+
         return chakra_node
+
+    # --- [END MODIFIED] ---
 
     def record_fx_node(self, fx_node: fx.Node):
         if fx_node.name in self.fxnode_name_lookup_map:
@@ -294,12 +363,6 @@ class ChakraConverter:
         encode_message(self.et_file, chakra_node)
         self.fxname_chakraid_map[fx_node.name] = chakra_node.id
 
-    # o(chakra id 10) -> [] -> [] -> [] -> o(chakra id 11)
-    #          o (chakra id 12) -> |
-
-    # Find which Chakra nodes to declare as upstream dependency for this Chakra node.
-    # Starting from corresponding FX node, iterate the FX Graph upwards
-    # until we find nodes that have already been converted to Chakra Nodes.
     def add_upstream_dependency(self, chakra_node: ChakraNode, fx_node: fx.Node):
         upstream_search_queue = fx_node.all_input_nodes
         while len(upstream_search_queue) > 0:
@@ -322,7 +385,9 @@ class ChakraConverter:
                 upstream_search_queue.append(next_upstream)
         return
 
-    def process_fx_node(self, fx_node: fx.Node):
+    # --- [MODIFIED] ---
+    # Update this function to handle cache writing logic
+    def process_fx_node(self, fx_node: fx.node, csv_writer=None):
         # Record node info in internal lookup tables.
         self.record_fx_node(fx_node)
 
@@ -330,36 +395,86 @@ class ChakraConverter:
         # Skip nodes that are 1) placeholders 2) insignificant compute
         if fx_node.name == "root" or fx_node.op in ["placeholder", "output"] or "getitem" in fx_node.name:
             return
-        # At this point, all remaining nodes should target the type OpOverload
-        # OpOverload is a PyTorch wrapper for ATen/c10d operators, defined in torch/_ops.py
-        # TODO: Complex cases may involve target with any Callable that are not OpOverload type.
+
         if not isinstance(fx_node.target, OpOverload):
             print(
                 f"""{node_debug_id_str(fx_node)},
                 After filters, we still have a node whose target is not OpOverload but {type(fx_node.target)}"""
             )
             return
-        # Remove operators that does not do anything significant.
+
         if fx_node.target._opname in skip_operator_list:
             return
 
-        # Convert to Chakra node.
-        # Check if it should be converted to a COMP or a COMM node.
+        chakra_node = None
         if is_comm_node(fx_node):
             chakra_node = self.create_comm_node(fx_node)
         elif is_comp_node(fx_node):
-            chakra_node = self.create_comp_node(fx_node)
+            # Perform a single profiling of the node to get all information
+            flops, tensor_size, a_shape, b_shape, duration = self._profile_comp_node(fx_node)
+
+            # Use the analyzed data to create the Chakra node
+            chakra_node = self.create_comp_node(fx_node, flops, tensor_size, duration)
+
+            # If rank 0, duration is valid, and csv_writer exists, handle cache writing
+            if os.environ.get("RANK") == "0" and duration != 0 and csv_writer:
+                a_shape_str = str(tuple(a_shape))
+                b_shape_str = str(tuple(b_shape))
+                key = (a_shape_str, b_shape_str)
+
+                # Only write to CSV and update in-memory cache if cache miss (i.e., key not in cache)
+                if key not in self.duration_cache:
+                    csv_writer.writerow([fx_node.name, a_shape_str, b_shape_str, duration])
+                    # Update in-memory cache for subsequent nodes in this run
+                    self.duration_cache[key] = duration
         else:
-            print(f"{node_debug_id_str(fx_node)} is neither c10d or aten")
+            print(f"Node '{fx_node.name}' is neither a communication nor a computation node. Skipping.")
             return
 
         # Add the upstream dependency to the created chakra node.
-        self.add_upstream_dependency(chakra_node, fx_node)
-        self.add_to_chakra_graph(chakra_node, fx_node)
+        if chakra_node:
+            self.add_upstream_dependency(chakra_node, fx_node)
+            self.add_to_chakra_graph(chakra_node, fx_node)
 
+    # --- [END MODIFIED] ---
+
+    # --- [MODIFIED] ---
+    # Update file I/O logic: first load cache, then open file in append mode for writing
     def convert_to_chakra(self, gm: fx.GraphModule):
+        # If cache is enabled, first load existing data from CSV file
+        if os.environ.get("RANK") == "0":
+            timer.mark("D_start")
+        if self.use_cache == 1:
+            if os.environ.get("RANK") == "0":
+                print(f"Loading duration cache from {self.csv_path}")
+            self._load_duration_cache()
+            if os.environ.get("RANK") == "0":
+                print(f"Loaded {len(self.duration_cache)} entries into cache.")
+
         with open(self.filename, "wb") as et:
             self.et_file = et
             encode_message(et, GlobalMetadata(version="0.0.4"))
-            for fx_node in gm.graph.nodes:
-                self.process_fx_node(fx_node)
+
+            # Only open the CSV file for writing on rank 0 to avoid multi-process conflicts
+            if os.environ.get("RANK") == "0":
+                file_previously_existed = os.path.exists(self.csv_path)
+                with open(self.csv_path, "a", newline="") as csv_file:
+                    writer = csv.writer(csv_file)
+                    # If the file is newly created, write the header
+                    if not file_previously_existed:
+                        writer.writerow(["node_name", "a_shape", "b_shape", "duration"])
+
+                    # Process all nodes, passing writer for writing new data
+                    for fx_node in gm.graph.nodes:
+                        self.process_fx_node(fx_node, writer)
+            else:
+                # Other ranks do not need to write CSV, but still need to process nodes to generate their own .et files
+                for fx_node in gm.graph.nodes:
+                    self.process_fx_node(fx_node, csv_writer=None)
+            if os.environ.get("RANK") == "0":
+                timer.mark("program_end")
+                timer.display_results()
+            # destroy_process_group()
+            # exit()
+
+    # --- [END MODIFIED] ---

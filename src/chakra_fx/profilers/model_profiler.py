@@ -6,6 +6,7 @@ from functorch.compile import make_boxed_func
 from torch._dynamo.backends.common import aot_autograd
 
 from src.chakra_fx.passes.custom_compiler import build_custom_backend_compiler
+from src.chakra_fx.utils.time_recorder import timer
 
 
 class ModelProfiler:
@@ -19,6 +20,7 @@ class ModelProfiler:
         run_custom_backend_all_rank: bool,
         use_pytorch_ir: bool = False,
         sequential_generation: bool = False,
+        use_cache: int = 0,
     ):
         self.rank = int(os.environ.get("RANK", 0))
         self.size = int(os.environ.get("WORLD_SIZE", 1))
@@ -26,6 +28,7 @@ class ModelProfiler:
         self.exp_tag = exp_tag
         self.filename = f"{exp_tag}/syncfile.txt"
         self.sequential_generation = sequential_generation
+        self.use_cache = use_cache
 
         # If true, work on PyTorch FX Graph, if false, work on aten FX Graph
         self.use_pytorch_ir = use_pytorch_ir
@@ -114,6 +117,8 @@ class ModelProfiler:
 
     def run_fwbw_pass(self):
         self.compile_model()
+        if os.environ.get("RANK") == "0":
+            timer.mark("B_start")
         output = self.model(self.sample_input)
         torch.cuda.synchronize()
         loss = self.loss_fn(output, self.sample_label)

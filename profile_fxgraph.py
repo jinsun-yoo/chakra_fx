@@ -1,6 +1,9 @@
+import os
+
 from torch.distributed import destroy_process_group
 
 from src.args import parse_args
+from src.chakra_fx.utils.time_recorder import timer
 
 """
     Usage: torchrun \
@@ -10,6 +13,8 @@ from src.args import parse_args
 """
 
 if __name__ == "__main__":
+    if os.environ.get("RANK") == "0":
+        timer.mark("program_start")
     args = parse_args()
 
     "Choose which profiler to use"
@@ -25,6 +30,7 @@ if __name__ == "__main__":
                 run_custom_backend_all_rank=args.custom_backend_all_rank,
                 dse_config_filepath=args.dse_config_filepath,
                 sequential_generation=args.sequential_generation,
+                use_cache=args.use_cache,
             )
         case "simple":
             from src.chakra_fx.profilers.simple_profiler import SimpleModelProfiler
@@ -35,6 +41,7 @@ if __name__ == "__main__":
                 fxgraph_actions=args.action_list,
                 run_custom_backend_all_rank=args.custom_backend_all_rank,
                 dse_config_filepath=args.dse_config_filepath,
+                use_cache=args.use_cache,
             )
         case "nanogpt":
             from src.chakra_fx.profilers.nanogpt_profiler import NanoGptProfiler
@@ -45,6 +52,7 @@ if __name__ == "__main__":
                 fxgraph_actions=args.action_list,
                 run_custom_backend_all_rank=args.custom_backend_all_rank,
                 dse_config_filepath=args.dse_config_filepath,
+                use_cache=args.use_cache,
             )
         case "resnet18":
             from src.chakra_fx.profilers.resnet18_profiler import ResNetProfiler
@@ -55,6 +63,7 @@ if __name__ == "__main__":
                 fxgraph_actions=args.action_list,
                 run_custom_backend_all_rank=args.custom_backend_all_rank,
                 dse_config_filepath=args.dse_config_filepath,
+                use_cache=args.use_cache,
             )
 
     # Run the job specified in args.
@@ -70,5 +79,8 @@ if __name__ == "__main__":
         profiler.run_nsys_workload()
     elif args.job == "eager":
         profiler.run_eager_fwbw_pass()
+    if os.environ.get("RANK") == "0":
+        timer.mark("program_end")
+        timer.display_results()
 
     destroy_process_group()
