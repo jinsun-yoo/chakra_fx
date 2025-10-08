@@ -4,14 +4,14 @@ set -x
 
 SCRIPT_DIR=$(dirname $(realpath $0))
 docker run -d --rm \
-	--name flint \
+	--name zheng-flint \
 	--privileged \
 	--gpus all \
 	--ipc=host \
 	--ulimit memlock=-1 \
 	--ulimit stack=6710886 \
 	-v $SCRIPT_DIR:/workspace/chakra_fx \
-	jyoo332/flint:latest \
+	zheng-flint:1007 \
 	tail -f /dev/null
 
-docker exec -it flint /bin/bash
+docker exec -it zheng-flint /bin/bash
