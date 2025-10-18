@@ -171,7 +171,7 @@ class ModelProfiler:
         et.stop()
         et.unregister_callback()
 
-    def run_nsys_workload(self):  # noqa: C901. Ignore complaints about code being too complex.
+    def run_nsys_workload(self):
         if "COMPILE" in os.environ and os.environ["COMPILE"] == "True":
             print("compile model")
             self.model = torch.compile(self.model)
@@ -183,26 +183,22 @@ class ModelProfiler:
             # start profiling after 10 warmup iterations
             if i == warmup_iters:
                 torch.cuda.cudart().cudaProfilerStart()
-            # push range for current iteration
             if i >= warmup_iters:
+                # push range for current iteration
                 torch.cuda.nvtx.range_push("iteration{}".format(i))
-
-            # push range for forward
-            if i >= warmup_iters:
+                # push range for forward
                 torch.cuda.nvtx.range_push("forward")
+
             output = self.model(self.sample_input)
             torch.cuda.synchronize()
             if i >= warmup_iters:
                 torch.cuda.nvtx.range_pop()
-
-            if i >= warmup_iters:
                 torch.cuda.nvtx.range_push("backward")
+
             output.sum().backward()
             if i >= warmup_iters:
                 torch.cuda.nvtx.range_pop()
-
-            # pop iteration range
-            if i >= warmup_iters:
+                # pop iteration range
                 torch.cuda.nvtx.range_pop()
 
             torch.cuda.synchronize()

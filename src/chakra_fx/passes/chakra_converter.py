@@ -169,7 +169,7 @@ class ChakraConverter:
         success, args, kwargs = fx_utils.get_fake_args_kwargs(fx_node)
         if not success:
             # TODO: Add logger, and make this print only in verbose mode.
-            # print(f"{node_debug_id_str(fx_node)} has flop not countable operator: {fx_node.target._opname}") # noqa: ERA001
+            # print(f"{node_debug_id_str(fx_node)} has flop not countable operator: {fx_node.target._opname}")
             return 0, False
 
         with FlopCounterMode(display=False) as flop_counter_mode:

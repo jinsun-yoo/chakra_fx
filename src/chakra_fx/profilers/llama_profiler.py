@@ -8,8 +8,7 @@ from torchtitan.config_manager import ActivationCheckpoint, Float8, JobConfig, T
 from torchtitan.distributed.parallel_dims import ParallelDims
 from torchtitan.experiments.simple_fsdp import SimpleFSDPTransformer
 from torchtitan.experiments.simple_fsdp.parallelize import parallelize_llama
-from torchtitan.models.llama3 import llama3_configs  # noqa: F401. Unused import. May need to use arbitrary model definition ad-hoc.
-from torchtitan.models.llama3.model.args import TransformerModelArgs  # noqa: F401. Unused import. Same as above.
+from torchtitan.models.llama3.model.args import TransformerModelArgs
 from torchtitan.protocols.model_converter import build_model_converters
 
 from src.chakra_fx.profilers.model_profiler import ModelProfiler

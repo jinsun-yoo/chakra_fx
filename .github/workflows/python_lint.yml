@@ -23,3 +23,4 @@ jobs:
       run: |
         ruff format .
         ruff check .
+        ruff check --extend-select RUF100 . # Ensure no unnecessary noqa comments.
