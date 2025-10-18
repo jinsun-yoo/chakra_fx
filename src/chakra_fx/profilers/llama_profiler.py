@@ -66,7 +66,9 @@ class LlamaProfiler(ModelProfiler):
         sequential_generation: bool = False,
         use_real_device: bool = True,
     ):
-        print("start llama profiler")
+        rank = int(os.environ.get("RANK", -1))
+        if rank == 0:
+            print("start llama profiler")
         self.name = "llama"
         tokenizer_n_words = 12_288
 
@@ -74,7 +76,8 @@ class LlamaProfiler(ModelProfiler):
             print("Start polling")
             self._poll_start(f"{exp_tag}/syncfile.txt")
 
-        print("Creating Model")
+        if rank == 0:
+            print("Creating Model")
         model_config = TransformerModelArgs(
             dim=256,
             n_layers=2,
@@ -92,7 +95,8 @@ class LlamaProfiler(ModelProfiler):
         with torch.device("meta"):
             model = SimpleFSDPTransformer(model_config)
 
-        print("Parallelizing model")
+        if rank == 0:
+            print("Parallelizing model")
         job_config = JobConfig(
             training=Training(compile=False, seq_len=sequence_length, mixed_precision_param="float32", mixed_precision_reduce="float32"),
             activation_checkpoint=ActivationCheckpoint(mode="none"),
@@ -112,8 +116,12 @@ class LlamaProfiler(ModelProfiler):
             )
             parallelized_model = parallelize_llama(model, parallel_dims, job_config)
 
+        if rank == 0:
+            print("finish applying parallelization")
         actual_device = "meta"
         if use_real_device:
+            if rank == 0:
+                print("use cuda device instead of meta device. This might lead to OOM.")
             actual_device = "cuda:0"
         parallelized_model.to_empty(device=actual_device)
 
