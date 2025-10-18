@@ -65,6 +65,13 @@ def parse_args():
         action="store_true",
         help="If set to true, the processes will generate graphs one by one. For cases where all procs cannot fit in memory.",
     )
+    parser.add_argument(
+        "--use_real_device",
+        default=False,
+        required=False,
+        action="store_true",
+        help="If set to true, the model will be created on the real device. If false, will use the meta device",
+    )
     args = parser.parse_args()
 
     args.action_list = args.fxgraph_actions.split(",")
