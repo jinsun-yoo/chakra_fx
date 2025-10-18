@@ -25,6 +25,7 @@ if __name__ == "__main__":
                 run_custom_backend_all_rank=args.custom_backend_all_rank,
                 dse_config_filepath=args.dse_config_filepath,
                 sequential_generation=args.sequential_generation,
+                use_real_device=args.use_real_device,
             )
         case "simple":
             from src.chakra_fx.profilers.simple_profiler import SimpleModelProfiler

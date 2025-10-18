@@ -64,6 +64,7 @@ class LlamaProfiler(ModelProfiler):
         dse_config_filepath: str = None,
         job_config_filepath: str = None,
         sequential_generation: bool = False,
+        use_real_device: bool = True,
     ):
         print("start llama profiler")
         self.name = "llama"
@@ -85,8 +86,11 @@ class LlamaProfiler(ModelProfiler):
         model_config.vocab_size = tokenizer_n_words
         model_config.max_seq_len = 2048  # job_config.training.seq_len
         model_config.norm_type = "layernorm"  # job_config.model.norm_type
-        model = SimpleFSDPTransformer(model_config)
-        model.to("cuda:0")
+
+        # Even if we intend to run on real GPU, the unsplit model might be too large.
+        # Therefore, we need to create it on meta device, parallelize it, and *then* materialize in real device.
+        with torch.device("meta"):
+            model = SimpleFSDPTransformer(model_config)
 
         print("Parallelizing model")
         job_config = JobConfig(
@@ -108,10 +112,23 @@ class LlamaProfiler(ModelProfiler):
             )
             parallelized_model = parallelize_llama(model, parallel_dims, job_config)
 
-        print("finish applying parallelization")
+        actual_device = "meta"
+        if use_real_device:
+            actual_device = "cuda:0"
+        parallelized_model.to_empty(device=actual_device)
 
-        sample_input = torch.randint(high=tokenizer_n_words, size=(batch_size, sequence_length), dtype=torch.int64, device="cuda:0")
-        sample_label = torch.randint(high=tokenizer_n_words, size=(batch_size, sequence_length), dtype=torch.int64, device="cuda:0")
+        sample_input = torch.randint(
+            high=tokenizer_n_words,
+            size=(batch_size, sequence_length),
+            dtype=torch.int64,
+            device=actual_device,
+        )
+        sample_label = torch.randint(
+            high=tokenizer_n_words,
+            size=(batch_size, sequence_length),
+            dtype=torch.int64,
+            device=actual_device,
+        )
 
         super().__init__(
             parallelized_model,
