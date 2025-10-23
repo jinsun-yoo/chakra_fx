@@ -72,6 +72,13 @@ def parse_args():
         action="store_true",
         help="If set to true, the model will be created on the real device. If false, will use the meta device",
     )
+    parser.add_argument(
+        "--combine_fx_subgraphs",
+        default=False,
+        required=False,
+        action="store_true",
+        help="If set to true, the forward and backward FX subgraphs will be combined.",
+    )
     args = parser.parse_args()
 
     args.action_list = args.fxgraph_actions.split(",")

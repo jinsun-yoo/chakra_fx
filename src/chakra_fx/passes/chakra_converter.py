@@ -90,15 +90,11 @@ def is_comp_node(fx_node: fx.Node):
 
 
 class ChakraConverter:
-    def __init__(self, name: str, subgraph_idx: int, dir_name: str):
+    def __init__(self, name: str, dir_name: str, combine_fx_subgraphs: bool = False):
         self.name = name
-        self.subgraph_idx = subgraph_idx
-        subgraphstr = ""
-        if self.subgraph_idx > 0:
-            subgraphstr = f"_subgraph-idx_{self.subgraph_idx}"
-        if dir_name != "":
+        if dir_name != "" and not dir_name.endswith("/"):
             dir_name += "/"
-        self.filename = f"{dir_name}{self.name}{subgraphstr}.{dist.get_rank()}.et"
+        self.dir_name = dir_name
 
         # Incremented whenever Chakra Node is crated
         self.chakra_node_id = 0
@@ -108,6 +104,12 @@ class ChakraConverter:
         self.fxnode_name_lookup_map = {}
         # Filld only when an FX Node has been converted to a Chakra Node.
         self.fxname_chakraid_map = {}
+
+        # If we have multiple subgraphs (e.g. forward / backward), we can combine them into one Chakra ET file.
+        # Append them to 'fx_subgraphs', and *later* call 'convert_to_chakra' on each of them.
+        self.combine_fx_subgraphs = combine_fx_subgraphs
+
+        self.fx_subgraphs = []
 
     def create_chakra_node(self, node_name: str, node_type: ChakraNodeType) -> ChakraNode:
         """Generate a new ChakraNode with a unique ID."""
@@ -358,8 +360,32 @@ class ChakraConverter:
         self.add_to_chakra_graph(chakra_node, fx_node)
 
     def convert_to_chakra(self, gm: fx.GraphModule):
+        # When running multiple subgraphs, empty the data structure.
+        # Ideally, split this into one class that manages all subgraphs, and one class for that specific subgraph.
+        self.fxname_chakraid_map = {}
+        self.chakra_node_id = 0
+        self.fxnode_name_lookup_map = {}
         with open(self.filename, "wb") as et:
             self.et_file = et
             encode_message(et, GlobalMetadata(version="0.0.4"))
             for fx_node in gm.graph.nodes:
                 self.process_fx_node(fx_node)
+
+    def handle_fxgraph(self, gm: fx.GraphModule):
+        self.fx_subgraphs.append(gm)
+
+    def finalize(self):
+        if not self.combine_fx_subgraphs:
+            for subgraph_idx, gm in enumerate(self.fx_subgraphs):
+                subgraph_str = "trace"
+                if subgraph_idx > 0:
+                    subgraph_str = "trace_bw"
+                self.filename = f"{self.dir_name}{self.name}_{subgraph_str}.{dist.get_rank()}.et"
+                self.convert_to_chakra(gm)
+        else:
+            self.filename = f"{self.dir_name}{self.name}_combined_trace.{dist.get_rank()}.et"
+            # Combine all FX subgraphs into one FX graph.
+            from src.chakra_fx.passes.fx_passes import combine_subgraphs
+
+            combined_gm = combine_subgraphs(self.fx_subgraphs)
+            self.convert_to_chakra(combined_gm)

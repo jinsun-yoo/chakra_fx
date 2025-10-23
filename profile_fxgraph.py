@@ -26,6 +26,7 @@ if __name__ == "__main__":
                 dse_config_filepath=args.dse_config_filepath,
                 sequential_generation=args.sequential_generation,
                 use_real_device=args.use_real_device,
+                combine_fx_subgraphs=args.combine_fx_subgraphs,
             )
         case "simple":
             from src.chakra_fx.profilers.simple_profiler import SimpleModelProfiler
