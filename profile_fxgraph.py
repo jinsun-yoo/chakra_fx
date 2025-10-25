@@ -27,6 +27,7 @@ if __name__ == "__main__":
                 sequential_generation=args.sequential_generation,
                 use_real_device=args.use_real_device,
                 combine_fx_subgraphs=args.combine_fx_subgraphs,
+                llama_config=args.llama_config,
             )
         case "simple":
             from src.chakra_fx.profilers.simple_profiler import SimpleModelProfiler

@@ -79,6 +79,14 @@ def parse_args():
         action="store_true",
         help="If set to true, the forward and backward FX subgraphs will be combined.",
     )
+    parser.add_argument(
+        "--llama_config",
+        type=str,
+        default="debugmodel",
+        required=False,
+        help="""Choose which llama model config to use.""",
+        choices=["debugmodel", "8B", "70B", "405B"],
+    )
     args = parser.parse_args()
 
     args.action_list = args.fxgraph_actions.split(",")
