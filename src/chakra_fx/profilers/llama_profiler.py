@@ -8,6 +8,7 @@ from torchtitan.config_manager import ActivationCheckpoint, Float8, JobConfig, T
 from torchtitan.distributed.parallel_dims import ParallelDims
 from torchtitan.experiments.simple_fsdp import SimpleFSDPTransformer
 from torchtitan.experiments.simple_fsdp.parallelize import parallelize_llama
+from torchtitan.models.llama3 import llama3_configs
 from torchtitan.models.llama3.model.args import TransformerModelArgs
 from torchtitan.protocols.model_converter import build_model_converters
 
@@ -66,6 +67,7 @@ class LlamaProfiler(ModelProfiler):
         sequential_generation: bool = False,
         use_real_device: bool = True,
         combine_fx_subgraphs: bool = False,
+        llama_config: str = "debugmodel",
     ):
         rank = int(os.environ.get("RANK", -1))
         if rank == 0:
@@ -79,17 +81,20 @@ class LlamaProfiler(ModelProfiler):
 
         if rank == 0:
             print("Creating Model")
-        model_config = TransformerModelArgs(
-            dim=256,
-            n_layers=2,
-            n_heads=8,
-            n_kv_heads=8,
-            rope_theta=500000,
-        )
+        if llama_config == "debugmodel":
+            model_config = TransformerModelArgs(
+                dim=128,
+                n_layers=2,
+                n_heads=4,
+                n_kv_heads=4,
+                rope_theta=500000,
+            )
+        else:
+            model_config = llama3_configs[llama_config]
         # model_config = llama3_configs["8B"]
         model_config.vocab_size = tokenizer_n_words
         model_config.max_seq_len = 2048  # job_config.training.seq_len
-        model_config.norm_type = "layernorm"  # job_config.model.norm_type
+        # model_config.norm_type = "layernorm"  # job_config.model.norm_type
 
         # Even if we intend to run on real GPU, the unsplit model might be too large.
         # Therefore, we need to create it on meta device, parallelize it, and *then* materialize in real device.
