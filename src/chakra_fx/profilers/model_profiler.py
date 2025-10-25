@@ -1,10 +1,12 @@
 import os
 from typing import List
 
+import torch
 import torch.fx
 from functorch.compile import make_boxed_func
 from torch._dynamo.backends.common import aot_autograd
 
+from src.chakra_fx.passes.chakra_converter import ChakraConverter
 from src.chakra_fx.passes.custom_compiler import build_custom_backend_compiler
 
 
@@ -19,6 +21,7 @@ class ModelProfiler:
         run_custom_backend_all_rank: bool,
         use_pytorch_ir: bool = False,
         sequential_generation: bool = False,
+        combine_fx_subgraphs: bool = False,
     ):
         self.rank = int(os.environ.get("RANK", 0))
         self.size = int(os.environ.get("WORLD_SIZE", 1))
@@ -46,6 +49,12 @@ class ModelProfiler:
         self.model = model
         self.sample_input = sample_input
         self.sample_label = sample_label
+
+        self.chakra_converter = ChakraConverter(
+            name=self.name,
+            dir_name=exp_tag,
+            combine_fx_subgraphs=combine_fx_subgraphs,
+        )
         return
 
     def _poll_start(self, filename):
@@ -115,6 +124,12 @@ class ModelProfiler:
     def run_fwbw_pass(self):
         self.compile_model()
         output = self.model(self.sample_input)
+        self.chakra_converter.finalize()
+        exit()
+        # TODO: With the call to self.model, already trace
+        # Both FW and BW. Can exit here.
+        # However, for actions other than FX->Chakra conversion, need to run BW as well.
+        # Might need the code below.
         torch.cuda.synchronize()
         loss = self.loss_fn(output, self.sample_label)
 
@@ -125,6 +140,7 @@ class ModelProfiler:
     def run_fw_pass(self):
         self.compile_model()
         self.model(self.sample_input)
+        self.chakra_converter.finalize()
 
     def run_eager_fwbw_pass(self):
         output = self.model(self.sample_input)

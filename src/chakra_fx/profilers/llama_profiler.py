@@ -65,6 +65,7 @@ class LlamaProfiler(ModelProfiler):
         job_config_filepath: str = None,
         sequential_generation: bool = False,
         use_real_device: bool = True,
+        combine_fx_subgraphs: bool = False,
     ):
         rank = int(os.environ.get("RANK", -1))
         if rank == 0:
@@ -147,6 +148,7 @@ class LlamaProfiler(ModelProfiler):
             run_custom_backend_all_rank,
             use_pytorch_ir,
             sequential_generation=sequential_generation,
+            combine_fx_subgraphs=combine_fx_subgraphs,
         )
 
     def apply_configuration(self, model, dse_config_filepath: str, job_config: JobConfig):

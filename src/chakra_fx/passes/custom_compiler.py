@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING, List
 
 import torch
-from torch.distributed import destroy_process_group
 
 from src.chakra_fx.passes.fx_action import (
     convert_save_chakra_graph,
@@ -18,14 +17,11 @@ if TYPE_CHECKING:
     from src.chakra_fx.profilers.model_profiler import ModelProfiler
 
 
-def _handle_action(action: str, gm: torch.fx.GraphModule, exp_tag: str, profiler: "ModelProfiler", called_before: bool):
+def _handle_action(action: str, gm: torch.fx.GraphModule, exp_tag: str, profiler: "ModelProfiler"):
     """Handle a single action from the action list."""
     match action:
         case "chakra":
-            filename = "trace"
-            if called_before:
-                filename = "trace_bw"
-            convert_save_chakra_graph(gm, exp_tag, filename, 0)
+            convert_save_chakra_graph(gm, profiler.chakra_converter)
         case "just":
             just_hello(gm, 0)
         case "pdf":
@@ -42,10 +38,6 @@ def _handle_action(action: str, gm: torch.fx.GraphModule, exp_tag: str, profiler
             get_operation_count(gm, profiler)
 
 
-# Assumption: No graph break apart from FW/BW
-called_before = False
-
-
 def build_custom_backend_compiler(action_list: List[str], exp_tag: str, profiler: "ModelProfiler"):
     # This is the custom backend compiler that torch.compile will call after parsing the FX graph.
     # The original intent of this interface is
@@ -54,16 +46,10 @@ def build_custom_backend_compiler(action_list: List[str], exp_tag: str, profiler
     # We do not intend for the computation to actually take place.
     # Hence, we exit, instead of returning anything.
     def custom_backend_compiler(gm: torch.fx.GraphModule, _: List[torch.Tensor]):
-        global called_before
         for action in action_list:
-            _handle_action(action, gm, exp_tag, profiler, called_before)
+            _handle_action(action, gm, exp_tag, profiler)
         # The assumption is that the custom compiler is called only once (i.e. there will be no graph break)
         # profiler._signal_end()
-        if called_before:
-            profiler._signal_end()
-            destroy_process_group()
-            exit()
-        called_before = True
         # return make_boxed_func(gm.forward)
 
     return custom_backend_compiler
