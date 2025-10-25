@@ -1,6 +1,7 @@
 from typing import List, Tuple
 
 import torch
+import torch.fx as fx
 
 """ Splits the FX Node name into the operator and trailing index
     primals -> ('primals', 0)
@@ -93,5 +94,43 @@ def combine_subgraphs(gm_list: List[torch.fx.GraphModule]) -> torch.fx.GraphModu
             new_node.insert_arg(num_args, new_output_node)
     combined_graph.lint()
     combined_gm.recompile()
-    print(combined_gm.graph)
+    # print(combined_gm.graph)
     return combined_gm
+
+
+def fsdp_bucketing(gm: fx.GraphModule):
+    # from post_grad.py
+    # if os.environ["RANK"] == "0":
+    #     print(gm.code)
+
+    gm.graph.eliminate_dead_code()
+    import functools
+
+    from torch._inductor.fx_passes.fsdp import bucket_fsdp_reduce_scatter
+
+    GraphTransformObserver = functools.partial(
+        torch.fx.passes.graph_transform_observer.GraphTransformObserver,
+        subsystem="post_grad_passes",
+    )
+    GraphTransformObserver(gm, "bucket_reduce_scatters").apply_graph_pass(
+        lambda graph: bucket_fsdp_reduce_scatter(
+            graph.owning_module,
+            None,
+        )
+    )
+    from torch._inductor.fx_passes.fsdp import bucket_fsdp_all_gather
+
+    GraphTransformObserver = functools.partial(
+        torch.fx.passes.graph_transform_observer.GraphTransformObserver,
+        subsystem="post_grad_passes",
+    )
+    GraphTransformObserver(gm, "bucket_all_gathers").apply_graph_pass(
+        lambda graph: bucket_fsdp_all_gather(
+            graph.owning_module,
+            None,
+        )
+    )
+    gm.graph.lint()
+    gm.recompile()
+    # if os.environ["RANK"] == "0":
+    #     print(gm.code)

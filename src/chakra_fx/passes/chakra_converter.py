@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 import torch
 import torch._inductor.fx_utils as fx_utils
@@ -37,6 +38,7 @@ c10d_chakra_map = {
     "all_reduce": ALL_REDUCE,
     "all_gather": ALL_GATHER,
     "all_gather_into_tensor": ALL_GATHER,
+    "all_gather_into_tensor_out": ALL_GATHER,
     "all_to_all": ALL_TO_ALL,
     "reduce_scatter": REDUCE_SCATTER,
     "reduce_scatter_tensor": REDUCE_SCATTER,
@@ -90,7 +92,13 @@ def is_comp_node(fx_node: fx.Node):
 
 
 class ChakraConverter:
-    def __init__(self, name: str, dir_name: str, combine_fx_subgraphs: bool = False):
+    def __init__(
+        self,
+        name: str,
+        dir_name: str,
+        combine_fx_subgraphs: bool = False,
+        graph_passes: List[str] = None,
+    ):
         self.name = name
         if dir_name != "" and not dir_name.endswith("/"):
             dir_name += "/"
@@ -109,7 +117,11 @@ class ChakraConverter:
         # Append them to 'fx_subgraphs', and *later* call 'convert_to_chakra' on each of them.
         self.combine_fx_subgraphs = combine_fx_subgraphs
 
-        self.fx_subgraphs = []
+        self.fx_subgraphs: List[fx.GraphModule] = []
+
+        # passes to run on fxgraph before chakra conversion
+        # Excluding 'combine_fx_subgraphs' which is handled separately
+        self.graph_passes: List[str] = graph_passes if graph_passes is not None else []  # e.g., 'bucket'
 
     def create_chakra_node(self, node_name: str, node_type: ChakraNodeType) -> ChakraNode:
         """Generate a new ChakraNode with a unique ID."""
@@ -375,6 +387,12 @@ class ChakraConverter:
         self.fx_subgraphs.append(gm)
 
     def finalize(self):
+        for _, gm in enumerate(self.fx_subgraphs):
+            if "bucket" in self.graph_passes:
+                from src.chakra_fx.passes.fx_passes import fsdp_bucketing
+
+                fsdp_bucketing(gm)
+
         if not self.combine_fx_subgraphs:
             for subgraph_idx, gm in enumerate(self.fx_subgraphs):
                 subgraph_str = "trace"
