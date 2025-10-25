@@ -156,6 +156,9 @@ class ModelProfiler:
             print("compile model")
             self.model = torch.compile(self.model)
 
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
+
         def kineto_trace_handler(prof):
             prof.export_chrome_trace(f"{dirname}/{name}_kineto_rank{rank}.json")
 
@@ -169,23 +172,19 @@ class ModelProfiler:
                 torch.profiler.ProfilerActivity.CUDA,
             ],
             record_shapes=True,
-            schedule=torch.profiler.schedule(wait=0, warmup=10, active=30),
+            schedule=torch.profiler.schedule(wait=0, warmup=10, active=1),
             on_trace_ready=kineto_trace_handler,
             with_flops=True,
+            execution_trace_observer=et,
         ) as prof:
-            for epoch in range(20):
-                if epoch == 19:
-                    et.stop()
-                if epoch == 7:
-                    et.start()
+            for epoch in range(11):
                 output = self.model(self.sample_input)
                 torch.cuda.synchronize()
-                prof.step()
                 output.sum().backward()
                 torch.cuda.synchronize()
                 prof.step()
-        et.stop()
         et.unregister_callback()
+        torch.distributed.destroy_process_group()
 
     def run_nsys_workload(self):
         if "COMPILE" in os.environ and os.environ["COMPILE"] == "True":

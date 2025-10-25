@@ -128,7 +128,8 @@ class LlamaProfiler(ModelProfiler):
         if use_real_device:
             if rank == 0:
                 print("use cuda device instead of meta device. This might lead to OOM.")
-            actual_device = "cuda:0"
+            local_rank = int(os.environ.get("LOCAL_RANK", 0))
+            actual_device = f"cuda:{local_rank}"
         parallelized_model.to_empty(device=actual_device)
 
         sample_input = torch.randint(
