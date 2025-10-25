@@ -1,0 +1,52 @@
+# Install because these are the known containers with both NVIDIA SW and some prerequisites for PyTorch.
+# Happy to accept suggestions for a lighter container.
+FROM nvcr.io/nvidia/pytorch:25.06-py3
+
+# Needed for python build
+RUN apt-get update && apt-get install -y ccache
+RUN ccache -M 25Gi
+RUN ccache -F 0
+
+# Uninstall Pytorch
+RUN pip uninstall torch torchvision torchaudio -y
+
+# Delete torch from systemwide hardcoded dependencies
+RUN sed -i '/torch==/d' /etc/pip/constraint.txt
+RUN sed -i '/torchvision==/d' /etc/pip/constraint.txt
+
+# Clone and build Pytorch
+# There is some weird stuff with cudnn and mismatching versions that
+# Prevents us from using 10.0+
+RUN git clone --recurse-submodules -b nightly_20250727 https://github.com/jinsun-yoo/pytorch.git
+WORKDIR /workspace/pytorch
+RUN pip install -r requirements.txt
+RUN DEBUG=1 USE_MKLDNN=0 BUILD_TEST=0 USE_FBGEMM=0 USE_NNPACK=0 USE_QNNPACK=0 USE_XNNPACK=0 \
+    TORCH_CUDA_ARCH_LIST="8.0 8.6 8.9 9.0" \
+    python -m pip install --no-build-isolation -v -e .
+WORKDIR /workspace
+
+# # Install other dependencies
+RUN git clone https://github.com/jinsun-yoo/torchtitan
+WORKDIR /workspace/torchtitan
+RUN git checkout flint
+RUN pip install -r requirements.txt
+RUN pip install -e .
+WORKDIR /workspace
+
+RUN git clone https://github.com/mlcommons/chakra.git
+RUN cd chakra && pip install .
+RUN pip install --upgrade protobuf
+
+# User specific setting
+ARG USER_ID=3029572
+ARG GROUP_ID=2626
+ARG USER_NAME=jyoo332
+ARG GROUP_NAME=gtperson
+
+RUN groupadd -g $GROUP_ID $GROUP_NAME
+RUN useradd -u $USER_ID -g $GROUP_ID -m -s /bin/bash $USER_NAME
+
+RUN chown -R $USER_ID:$GROUP_ID /usr/local/lib/python3.12/dist-packages/torch
+RUN chown -R $USER_ID:$GROUP_ID /workspace/chakra
+
+RUN echo 'export PATH=/home/$USER_NAME/.local/bin:$PATH' >> /home/$USER_NAME/.bashrc
