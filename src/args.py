@@ -87,9 +87,18 @@ def parse_args():
         help="""Choose which llama model config to use.""",
         choices=["debugmodel", "8B", "70B", "405B"],
     )
+    parser.add_argument(
+        "--graph_passes",
+        type=str,
+        default="",
+        required=False,
+        help="""Comma delimited string of graph passes to perform on FX graph before chakra conversion.
+        E.g., 'bucket' to perform FSDP bucketing pass.""",
+    )
     args = parser.parse_args()
 
     args.action_list = args.fxgraph_actions.split(",")
+    args.graph_passes = args.graph_passes.split(",") if args.graph_passes else []
     if args.exp_tag == "":
         now_utc = datetime.now(timezone.utc)
         args.exp_tag = now_utc.strftime("%Y-%m-%d_%H-%M-%S")

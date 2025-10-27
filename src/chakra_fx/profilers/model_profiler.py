@@ -22,6 +22,7 @@ class ModelProfiler:
         use_pytorch_ir: bool = False,
         sequential_generation: bool = False,
         combine_fx_subgraphs: bool = False,
+        graph_passes: List[str] = None,
     ):
         self.rank = int(os.environ.get("RANK", 0))
         self.size = int(os.environ.get("WORLD_SIZE", 1))
@@ -54,6 +55,7 @@ class ModelProfiler:
             name=self.name,
             dir_name=exp_tag,
             combine_fx_subgraphs=combine_fx_subgraphs,
+            graph_passes=graph_passes,
         )
         return
 
