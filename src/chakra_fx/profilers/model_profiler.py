@@ -177,7 +177,7 @@ class ModelProfiler:
             with_flops=True,
             execution_trace_observer=et,
         ) as prof:
-            for epoch in range(11):
+            for _epoch in range(11):
                 output = self.model(self.sample_input)
                 torch.cuda.synchronize()
                 output.sum().backward()
