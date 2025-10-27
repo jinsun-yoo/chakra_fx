@@ -73,6 +73,10 @@ def get_operation_count(gm: torch.fx.GraphModule):
                 print(f"Counted flops for {node.target.__name__} is {counted_flops}")
 
 
+def print_graph_code(gm: torch.fx.GraphModule):
+    print(gm.code)
+
+
 # Simple function to check if backend has been called
 def just_hello(_: torch.fx.GraphModule, subgraph_idx: int):
     rank = os.environ["RANK"]
