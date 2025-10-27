@@ -4,11 +4,11 @@ from typing import List
 import torch
 import yaml
 from torch.distributed._tensor import DTensor
-from torchtitan.config_manager import ActivationCheckpoint, Float8, JobConfig, Training
+from torchtitan.config.job_config import ActivationCheckpoint, Float8Linear, JobConfig, Training
 from torchtitan.distributed.parallel_dims import ParallelDims
-from torchtitan.experiments.simple_fsdp import SimpleFSDPTransformer
-from torchtitan.experiments.simple_fsdp.parallelize import parallelize_llama
-from torchtitan.models.llama3 import llama3_configs
+from torchtitan.experiments.simple_fsdp.llama3.model import SimpleFSDPTransformer
+from torchtitan.experiments.simple_fsdp.llama3.parallelize import parallelize_llama
+from torchtitan.models.llama3 import llama3_args
 from torchtitan.models.llama3.model.args import TransformerModelArgs
 from torchtitan.protocols.model_converter import build_model_converters
 
@@ -91,7 +91,7 @@ class LlamaProfiler(ModelProfiler):
                 rope_theta=500000,
             )
         else:
-            model_config = llama3_configs[llama_config]
+            model_config = llama3_args[llama_config]
         # model_config = llama3_configs["8B"]
         model_config.vocab_size = tokenizer_n_words
         model_config.max_seq_len = 2048  # job_config.training.seq_len
@@ -101,11 +101,19 @@ class LlamaProfiler(ModelProfiler):
         # Therefore, we need to create it on meta device, parallelize it, and *then* materialize in real device.
         with torch.device("meta"):
             model = SimpleFSDPTransformer(model_config)
+        # Force initialize 'torch.cuda' to avoid 'is_initialized' check later within initialize_device_mesh
+        # Which will try to iterate through cuda devices, causing error.
+        # This used to be done within SimpleFSDPTransformer init, but for some reason, no longer done.
+        torch.cuda.get_device_capability()
 
         if rank == 0:
             print("Parallelizing model")
         job_config = JobConfig(
-            training=Training(compile=False, seq_len=sequence_length, mixed_precision_param="float32", mixed_precision_reduce="float32"),
+            training=Training(
+                seq_len=sequence_length,
+                mixed_precision_param="float32",
+                mixed_precision_reduce="float32",
+            ),
             activation_checkpoint=ActivationCheckpoint(mode="none"),
         )
         if dse_config_filepath is not None:
@@ -118,6 +126,7 @@ class LlamaProfiler(ModelProfiler):
                 tp=1,
                 pp=1,
                 ep=1,
+                etp=1,
                 cp=1,
                 world_size=world_size,
             )
@@ -173,16 +182,16 @@ class LlamaProfiler(ModelProfiler):
             tp=dim_parallelizations.get("tp", 1),
             pp=dim_parallelizations.get("pp", 1),
             ep=dim_parallelizations.get("ep", 1),
+            etp=dim_parallelizations.get("etp", 1),
             cp=dim_parallelizations.get("cp", 1),
             world_size=world_size,
         )
         enable_fp8 = data.get("float8", {})
         if enable_fp8:
             print("Use FP8")
-            job_config.float8 = Float8(
+            job_config.quantize.linear.float8 = Float8Linear(
                 enable_fsdp_float8_all_gather=True,
                 precompute_float8_dynamic_scale_for_fsdp=True,
-                force_recompute_fp8_weight_in_bwd=True,
                 filter_fqns=["output"],
             )
             job_config.model.converters = ["float8"]
