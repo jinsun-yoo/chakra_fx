@@ -86,8 +86,8 @@ class LlamaProfiler(ModelProfiler):
             model_config = TransformerModelArgs(
                 dim=128,
                 n_layers=2,
-                n_heads=4,
-                n_kv_heads=4,
+                n_heads=8,
+                n_kv_heads=8,
                 rope_theta=500000,
             )
         else:
