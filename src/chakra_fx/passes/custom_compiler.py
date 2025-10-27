@@ -1,6 +1,8 @@
+import copy
 from typing import TYPE_CHECKING, List
 
 import torch
+from torch._inductor.compile_fx import make_boxed_func
 
 from src.chakra_fx.passes.fx_action import (
     convert_save_chakra_graph,
@@ -22,7 +24,13 @@ def _handle_action(action: str, gm: torch.fx.GraphModule, exp_tag: str, profiler
     """Handle a single action from the action list."""
     match action:
         case "chakra":
-            convert_save_chakra_graph(gm, profiler.chakra_converter)
+            # Avoid importing DeepseekProfiler (circular import). Use a runtime
+            # class-name check instead of isinstance with the actual class.
+            convert_save_chakra_graph(
+                gm,
+                profiler.chakra_converter,
+                profiler.__class__.__name__ == "DeepseekProfiler",
+            )
         case "just":
             just_hello(gm, 0)
         case "pdf":
@@ -51,6 +59,35 @@ def build_custom_backend_compiler(action_list: List[str], exp_tag: str, profiler
     def custom_backend_compiler(gm: torch.fx.GraphModule, _: List[torch.Tensor]):
         for action in action_list:
             _handle_action(action, gm, exp_tag, profiler)
+        # Avoid importing DeepseekProfiler at runtime to prevent circular
+        # imports. Use class-name comparison as a lightweight runtime check.
+        if profiler.__class__.__name__ != "DeepseekProfiler":
+            return make_boxed_func(gm.forward)
+        # operate on a deep copy to avoid mutating the original GraphModule
+        return_gm = copy.deepcopy(gm)
+        import os
+
+        # Include the to_copy to graph, but remove from what we return, so that Dynamo can trace backward
+        # without trying to actually execute to_copy
+        for node in return_gm.graph.nodes:
+            if node.op == "call_function" and node.target == torch.ops.aten._to_copy.default:
+                try:
+                    replacement = node.args[0] if node.args else None
+                    if replacement is not None:
+                        node.replace_all_uses_with(replacement)
+                    return_gm.graph.erase_node(node)
+                    # ensure the GraphModule is up-to-date after modification
+                    return_gm.graph.lint()
+                    return_gm.recompile()
+                except Exception:
+                    # if anything goes wrong, skip removal for this node
+                    pass
+        return_gm.graph.lint()
+        return_gm.recompile()
+        if os.getenv("RANK", "1") == "0":
+            print(return_gm.code)
+
+        return make_boxed_func(return_gm.forward)
         # The assumption is that the custom compiler is called only once (i.e. there will be no graph break)
         # profiler._signal_end()
         # return make_boxed_func(gm.forward)

@@ -11,8 +11,12 @@ from src.chakra_fx.passes.chakra_converter import ChakraConverter
 
 # This is the entrypoint to ChakraConverter's convert_to_chakra function.
 # Simply take the FXGraph and pass it to the ChakraConverter.
-def convert_save_chakra_graph(gm: torch.fx.GraphModule, chakra_converter: ChakraConverter):
+def convert_save_chakra_graph(gm: torch.fx.GraphModule, chakra_converter: ChakraConverter, is_deepseek_profiler: bool):
     chakra_converter.handle_fxgraph(gm)
+    if is_deepseek_profiler and len(chakra_converter.fx_subgraphs) > 1:
+        # Supposed to be called after everything.
+        # However, deepseek ep calls 'copy_to', which breaks execution.
+        chakra_converter.finalize()
 
 
 # Generates a dot file for this subgraph.

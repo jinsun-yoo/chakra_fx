@@ -30,6 +30,20 @@ if __name__ == "__main__":
                 llama_config=args.llama_config,
                 graph_passes=args.graph_passes,
             )
+        case "deepseek":
+            from src.chakra_fx.profilers.deepseek_profiler import DeepseekProfiler
+
+            profiler = DeepseekProfiler(
+                job=args.job,
+                exp_tag=args.exp_tag,
+                fxgraph_actions=args.action_list,
+                run_custom_backend_all_rank=args.custom_backend_all_rank,
+                dse_config_filepath=args.dse_config_filepath,
+                sequential_generation=args.sequential_generation,
+                use_real_device=args.use_real_device,
+                combine_fx_subgraphs=args.combine_fx_subgraphs,
+                deepseek_config=args.llama_config,
+            )
         case "simple":
             from src.chakra_fx.profilers.simple_profiler import SimpleModelProfiler
 
