@@ -20,7 +20,7 @@ def parse_args():
         required=False,
         help="""Choose which actions to perform on the fxgraph provided by torch.compile. Comma delimited string.
         Refer to custom_backend_compiler for a detailed description of each action.""",
-        choices=["chakra", "just", "pdf", "dot", "dumpgraph", "table", "histogram", "opcount"],
+        choices=["chakra", "just", "pdf", "dot", "dumpgraph", "table", "histogram", "opcount", "print"],
     )
     parser.add_argument(
         "--exp_tag",

@@ -7,6 +7,7 @@ from src.chakra_fx.passes.fx_action import (
     get_aten_histogram,
     get_operation_count,
     just_hello,
+    print_graph_code,
     print_tabular_graph,
     save_dotfile,
     save_fxgraph_module,
@@ -36,6 +37,8 @@ def _handle_action(action: str, gm: torch.fx.GraphModule, exp_tag: str, profiler
             get_aten_histogram(gm, profiler)
         case "opcount":
             get_operation_count(gm, profiler)
+        case "print":
+            print_graph_code(gm)
 
 
 def build_custom_backend_compiler(action_list: List[str], exp_tag: str, profiler: "ModelProfiler"):
