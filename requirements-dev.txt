@@ -4,3 +4,5 @@ pyright==1.1.386
 build==1.2.*
 vulture==2.13
 import-linter==2.0.*
+triton
+transformers

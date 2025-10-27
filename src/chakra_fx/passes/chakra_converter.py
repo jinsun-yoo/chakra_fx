@@ -40,6 +40,7 @@ c10d_chakra_map = {
     "all_gather_into_tensor": ALL_GATHER,
     "all_gather_into_tensor_out": ALL_GATHER,
     "all_to_all": ALL_TO_ALL,
+    "all_to_all_single": ALL_TO_ALL,
     "reduce_scatter": REDUCE_SCATTER,
     "reduce_scatter_tensor": REDUCE_SCATTER,
     "broadcast": BROADCAST,
@@ -149,11 +150,13 @@ class ChakraConverter:
 
         # Use FakeTensor, which is included in the FX Graph as a fake input, to determine communication size
         comm_tensor: FakeTensor = fx_node.meta["val"]
+        if comm_type == ALL_TO_ALL:
+            comm_tensor: FakeTensor = fx_node.args[0].meta["val"]
         tensor_dtype = comm_tensor.element_size()
         tensor_numelements = comm_tensor.numel()
         comm_size = tensor_dtype * tensor_numelements
 
-        if comm_type == ALL_GATHER or REDUCE_SCATTER:
+        if comm_type in (ALL_GATHER, REDUCE_SCATTER):
             # The fx_node, which is the 'result' of the ALL_GATHER/REDUCE_SCATTER, points to the *output* tensor.
             # Therefore, we have to divide it by # of ranks to get input tensor size.
             comm_size = int(comm_size / len(process_group_ranks))
