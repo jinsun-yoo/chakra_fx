@@ -85,7 +85,7 @@ def parse_args():
         default="debugmodel",
         required=False,
         help="""Choose which llama model config to use.""",
-        choices=["debugmodel", "8B", "70B", "405B"],
+        choices=["debugmodel", "8B", "70B", "405B", "1B", "3B"],
     )
     parser.add_argument(
         "--graph_passes",
