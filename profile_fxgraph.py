@@ -1,4 +1,4 @@
-from torch.distributed import destroy_process_group
+from torch.distributed import destroy_process_group, init_process_group
 
 from src.args import parse_args
 
@@ -11,6 +11,7 @@ from src.args import parse_args
 
 if __name__ == "__main__":
     args = parse_args()
+    init_process_group(backend="nccl")
 
     "Choose which profiler to use"
     model_name = args.model

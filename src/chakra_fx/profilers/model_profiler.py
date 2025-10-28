@@ -158,8 +158,10 @@ class ModelProfiler:
             print("compile model")
             self.model = torch.compile(self.model)
 
+        self.model.to_empty(device=f"cuda:{self.local_rank}")
+
         if not os.path.exists(dirname):
-            os.makedirs(dirname)
+            os.makedirs(dirname, exists_ok=True)
 
         def kineto_trace_handler(prof):
             prof.export_chrome_trace(f"{dirname}/{name}_kineto_rank{rank}.json")
@@ -186,7 +188,7 @@ class ModelProfiler:
                 torch.cuda.synchronize()
                 prof.step()
         et.unregister_callback()
-        torch.distributed.destroy_process_group()
+        # torch.distributed.destroy_process_group()
 
     def run_nsys_workload(self):
         if "COMPILE" in os.environ and os.environ["COMPILE"] == "True":
