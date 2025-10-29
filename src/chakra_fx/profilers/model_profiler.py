@@ -160,7 +160,15 @@ class ModelProfiler:
             print("compile model")
             self.model = torch.compile(self.model)
 
+        # for param in self.model.parameters():
+        #     print(param.dtype)
+        #     break
+        self.model.to(dtype=torch.bfloat16)
         self.model.to_empty(device=f"cuda:{self.local_rank}")
+        # for param in self.model.parameters():
+        #     print(param.dtype)
+        #     break
+        # self.sample_input = torch.empty(self.sample_input.shape, device=f"cuda:{self.local_rank}", dtype=torch.bfloat16)
 
         if not os.path.exists(dirname):
             os.makedirs(dirname, exist_ok=True)
