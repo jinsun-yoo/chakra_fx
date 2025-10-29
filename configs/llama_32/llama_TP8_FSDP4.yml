@@ -1,0 +1,4 @@
+parallelization:
+  tp: 8
+  dp_replicate: 1
+  dp_shard: 4

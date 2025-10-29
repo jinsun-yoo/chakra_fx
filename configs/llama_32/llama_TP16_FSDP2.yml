@@ -1,0 +1,5 @@
+parallelization:
+  tp: 16
+  dp_shard: 2
+  dp_replicate: 1
+  

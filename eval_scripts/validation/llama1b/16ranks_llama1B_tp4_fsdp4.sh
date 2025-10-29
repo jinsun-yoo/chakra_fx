@@ -3,7 +3,7 @@ export NCCL_IB_DISABLE=0
 export NCCL_NET_GDR_LEVEL=2
 export NCCL_SOCKET_IFNAME=^lo,docker0
 
-NPROC_PER_NODE=4
+NPROC_PER_NODE=8
 MASTER_ADDR=$(scontrol show hostnames $SLURM_NODELIST | head -n1)
 MASTER_PORT=29500
 
@@ -17,8 +17,8 @@ srun --ntasks=$SLURM_NNODES --ntasks-per-node=1 \
     --rdzv_endpoint=$MASTER_ADDR:$MASTER_PORT \
     --rdzv_id=$SLURM_JOB_ID \
     ./profile_fxgraph.py \
-    --exp_tag llamadebug_tp8_8ranks \
+    --exp_tag llama1B_tp4_fsdp4_8ranks \
     --job postexec_chakra \
     --model llama \
-    --dse_config_filepath configs/llama_TP_8.yml \
-    --llama_config debugmodel
+    --dse_config_filepath configs/llama_16/llama_TP4_FSDP4.yml \
+    --llama_config 1B
