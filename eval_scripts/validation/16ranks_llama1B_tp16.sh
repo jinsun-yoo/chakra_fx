@@ -17,8 +17,8 @@ srun --ntasks=$SLURM_NNODES --ntasks-per-node=1 \
     --rdzv_endpoint=$MASTER_ADDR:$MASTER_PORT \
     --rdzv_id=$SLURM_JOB_ID \
     ./profile_fxgraph.py \
-    --exp_tag llama1B_tp8_8ranks \
+    --exp_tag llama1B_tp16_8ranks \
     --job postexec_chakra \
     --model llama \
-    --dse_config_filepath configs/llama_TP8.yml \
+    --dse_config_filepath configs/llama_16/llama_TP16.yml \
     --llama_config 1B
