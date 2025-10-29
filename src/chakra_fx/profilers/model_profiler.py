@@ -152,6 +152,8 @@ class ModelProfiler:
 
     def collect_postexecution_graph(self, dirname: str, name: str):
         from torch.profiler import ExecutionTraceObserver, profile
+        
+        dirname = os.path.join("./runs", dirname)
 
         rank = os.environ["RANK"]
         if "COMPILE" in os.environ and os.environ["COMPILE"] == "True":
@@ -161,7 +163,7 @@ class ModelProfiler:
         self.model.to_empty(device=f"cuda:{self.local_rank}")
 
         if not os.path.exists(dirname):
-            os.makedirs(dirname, exists_ok=True)
+            os.makedirs(dirname, exist_ok=True)
 
         def kineto_trace_handler(prof):
             prof.export_chrome_trace(f"{dirname}/{name}_kineto_rank{rank}.json")
