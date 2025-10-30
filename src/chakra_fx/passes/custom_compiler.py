@@ -10,6 +10,7 @@ from src.chakra_fx.passes.fx_action import (
     get_operation_count,
     just_hello,
     print_graph_code,
+    print_graph_to_file,
     print_tabular_graph,
     save_dotfile,
     save_fxgraph_module,
@@ -47,6 +48,8 @@ def _handle_action(action: str, gm: torch.fx.GraphModule, exp_tag: str, profiler
             get_operation_count(gm, profiler)
         case "print":
             print_graph_code(gm)
+        case "file":
+            print_graph_to_file(gm, exp_tag, "trace")
 
 
 def build_custom_backend_compiler(action_list: List[str], exp_tag: str, profiler: "ModelProfiler"):
@@ -65,7 +68,6 @@ def build_custom_backend_compiler(action_list: List[str], exp_tag: str, profiler
             return make_boxed_func(gm.forward)
         # operate on a deep copy to avoid mutating the original GraphModule
         return_gm = copy.deepcopy(gm)
-        import os
 
         # Include the to_copy to graph, but remove from what we return, so that Dynamo can trace backward
         # without trying to actually execute to_copy
@@ -84,8 +86,8 @@ def build_custom_backend_compiler(action_list: List[str], exp_tag: str, profiler
                     pass
         return_gm.graph.lint()
         return_gm.recompile()
-        if os.getenv("RANK", "1") == "0":
-            print(return_gm.code)
+        # if os.getenv("RANK", "1") == "0":
+        #     print(return_gm.code)
 
         return make_boxed_func(return_gm.forward)
         # The assumption is that the custom compiler is called only once (i.e. there will be no graph break)

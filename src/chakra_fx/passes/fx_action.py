@@ -1,5 +1,6 @@
 import csv
 import os
+from contextlib import redirect_stdout
 
 import torch
 from torch.distributed.distributed_c10d import _world
@@ -13,7 +14,7 @@ from src.chakra_fx.passes.chakra_converter import ChakraConverter
 # Simply take the FXGraph and pass it to the ChakraConverter.
 def convert_save_chakra_graph(gm: torch.fx.GraphModule, chakra_converter: ChakraConverter, is_deepseek_profiler: bool):
     chakra_converter.handle_fxgraph(gm)
-    if is_deepseek_profiler and len(chakra_converter.fx_subgraphs) > 1:
+    if is_deepseek_profiler and len(chakra_converter.fx_subgraphs) == 1:
         # Supposed to be called after everything.
         # However, deepseek ep calls 'copy_to', which breaks execution.
         chakra_converter.finalize()
@@ -78,7 +79,16 @@ def get_operation_count(gm: torch.fx.GraphModule):
 
 
 def print_graph_code(gm: torch.fx.GraphModule):
-    print(gm.code)
+    gm.print_readable()
+
+
+def print_graph_to_file(gm: torch.fx.GraphModule, dirname: str, name: str):
+    rank = os.environ.get("RANK", "0")
+    os.makedirs(dirname, exist_ok=True)
+    filename = os.path.join(dirname, f"graph_readable_{name}_rank_{rank}.txt")
+    # Redirect stdout for the duration of gm.print_readable()
+    with open(filename, "a", encoding="utf-8") as f, redirect_stdout(f):
+        gm.print_readable()
 
 
 # Simple function to check if backend has been called

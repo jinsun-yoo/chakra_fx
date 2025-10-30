@@ -19,8 +19,7 @@ def parse_args():
         default="just",
         required=False,
         help="""Choose which actions to perform on the fxgraph provided by torch.compile. Comma delimited string.
-        Refer to custom_backend_compiler for a detailed description of each action.""",
-        choices=["chakra", "just", "pdf", "dot", "dumpgraph", "table", "histogram", "opcount", "print"],
+        Refer to custom_backend_compiler for a detailed description of each action.\nAny of 'chakra', 'just', 'pdf', 'dot', 'dumpgraph', 'table', 'histogram', 'opcount', 'print', 'file""",
     )
     parser.add_argument(
         "--exp_tag",
@@ -85,7 +84,7 @@ def parse_args():
         default="debugmodel",
         required=False,
         help="""Choose which llama model config to use.""",
-        choices=["debugmodel", "8B", "70B", "405B"],
+        choices=["debugmodel", "8B", "70B", "405B", "16B", "236B"],
     )
     parser.add_argument(
         "--graph_passes",

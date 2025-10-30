@@ -1,3 +1,4 @@
+import json
 import os
 from typing import List
 
@@ -5,6 +6,7 @@ import torch
 import torch._inductor.fx_utils as fx_utils
 import torch._subclasses.fake_tensor
 import torch.distributed as dist
+import torch.distributed.distributed_c10d as c10d
 import torch.fx as fx
 from chakra.schema.protobuf.et_def_pb2 import (
     ALL_GATHER,
@@ -16,7 +18,8 @@ from chakra.schema.protobuf.et_def_pb2 import (
     REDUCE_SCATTER,
     GlobalMetadata,
     Int64List,
-)
+    StringList,  # noqa: F401
+)  # noqa: F401
 from chakra.schema.protobuf.et_def_pb2 import (
     AttributeProto as ChakraAttr,
 )
@@ -51,7 +54,17 @@ c10d_chakra_map = {
 # No need to add a 'wait' element.
 # TODO: Async comms?
 # TODO: Are these operators _really_ not meaningful compute-wise? Need to check
-skip_operator_list = ["wait_tensor", "view", "t", "transpose", "split"]
+# skip_operator_list = ["wait_tensor", "view", "t", "transpose", "split"]
+# detach: currently only seeing as detaching output of sdpa.
+# the getitem_124 is used as-is (not as detach) anyways
+# detach_946 is eventually used in bw pass only, not in forward pass.
+# _scaled_dot_product_efficient_attention_31 = torch.ops.aten._scaled_dot_product_efficient_attention.default(transpose_124, transpose_125, transpose_126, None, True, 0.0, True)
+# getitem_124: "f32[8, 32, 2048, 128]" = _scaled_dot_product_efficient_attention_31[0]
+# getitem_125: "f32[8, 32, 2048]" = _scaled_dot_product_efficient_attention_31[1]
+# getitem_126: "i64[]" = _scaled_dot_product_efficient_attention_31[2]
+# getitem_127: "i64[]" = _scaled_dot_product_efficient_attention_31[3];  _scaled_dot_product_efficient_attention_31 = None
+# detach_946: "f32[8, 32, 2048, 128]" = torch.ops.aten.detach.default(getitem_124)
+skip_operator_list = ["split", "detach"]
 
 timestamp_map = {
     "linear": {
@@ -83,11 +96,15 @@ def node_debug_id_str(fx_node: fx.Node):
 
 
 def is_comm_node(fx_node: fx.Node):
+    if "wait_tensor" in fx_node.name:
+        return False
     target: OpOverload = fx_node.target
     return target.namespace == "_c10d_functional"
 
 
 def is_comp_node(fx_node: fx.Node):
+    if "wait_tensor" in fx_node.name:
+        return True
     target: OpOverload = fx_node.target
     return target.namespace == "aten"
 
@@ -104,6 +121,12 @@ class ChakraConverter:
         if dir_name != "" and not dir_name.endswith("/"):
             dir_name += "/"
         self.dir_name = dir_name
+        if self.dir_name:
+            try:
+                os.makedirs(self.dir_name, exist_ok=True)
+            except OSError as e:
+                print(f"Could not create directory '{self.dir_name}': {e}")
+                raise
 
         # Incremented whenever Chakra Node is crated
         self.chakra_node_id = 0
@@ -124,6 +147,8 @@ class ChakraConverter:
         # Excluding 'combine_fx_subgraphs' which is handled separately
         self.graph_passes: List[str] = graph_passes if graph_passes is not None else []  # e.g., 'bucket'
 
+        self.rank = dist.get_rank()
+
     def create_chakra_node(self, node_name: str, node_type: ChakraNodeType) -> ChakraNode:
         """Generate a new ChakraNode with a unique ID."""
         node = ChakraNode()
@@ -132,49 +157,6 @@ class ChakraConverter:
         node.type = node_type
         self.chakra_node_id += 1
         return node
-
-    def create_comm_node(self, fx_node: fx.Node) -> ChakraNode:
-        node_name = fx_node.name
-        op_name = fx_node.target._opname
-        comm_size = 0
-        comm_type = c10d_chakra_map[op_name]
-        if "val" not in fx_node.meta or not isinstance(fx_node.meta["val"], FakeTensor):
-            print(f"Sanity check: {node_debug_id_str(fx_node)} is c10d, but fake output is not found")
-            exit()
-
-        import torch.distributed.distributed_c10d as c10d
-
-        process_group_name = fx_node.args[-1]
-        process_group_ranks = c10d.get_process_group_ranks(c10d._resolve_process_group(process_group_name))
-        num_process_groups = len(c10d._world.pg_names)
-
-        # Use FakeTensor, which is included in the FX Graph as a fake input, to determine communication size
-        comm_tensor: FakeTensor = fx_node.meta["val"]
-        if comm_type == ALL_TO_ALL:
-            comm_tensor: FakeTensor = fx_node.args[0].meta["val"]
-        tensor_dtype = comm_tensor.element_size()
-        tensor_numelements = comm_tensor.numel()
-        comm_size = tensor_dtype * tensor_numelements
-
-        if comm_type in (ALL_GATHER, REDUCE_SCATTER):
-            # The fx_node, which is the 'result' of the ALL_GATHER/REDUCE_SCATTER, points to the *output* tensor.
-            # Therefore, we have to divide it by # of ranks to get input tensor size.
-            comm_size = int(comm_size / len(process_group_ranks))
-
-        chakra_node = self.create_chakra_node(node_name, COMM_COLL_NODE)
-        chakra_node.attr.append(ChakraAttr(name="is_cpu_op", bool_val=False))
-        chakra_node.attr.append(ChakraAttr(name="comm_type", int64_val=c10d_chakra_map[op_name]))
-        chakra_node.attr.append(ChakraAttr(name="comm_size", int64_val=comm_size))
-
-        # The ProcessGroup related attribute name and values follow the proposal in the MLC Chakra WG meeting of 2024-09-09.
-        # The actual attribute names may change in the future.
-        chakra_node.attr.append(ChakraAttr(name="pg_name", string_val=process_group_name))
-        chakra_node.attr.append(ChakraAttr(name="group_size", int64_val=len(process_group_ranks)))
-        chakra_node.attr.append(ChakraAttr(name="group_count", int64_val=num_process_groups))
-        pg_ranks_protobuf = Int64List()
-        pg_ranks_protobuf.values.extend(process_group_ranks)
-        chakra_node.attr.append(ChakraAttr(name="ranks", int64_list=pg_ranks_protobuf))
-        return chakra_node
 
     # Obtain the flop count of an FX Node based on the recorded operation and (symbolic) tensor argument.
     # We use the 'FlopCounterMode' provided by PyTorch.
@@ -192,10 +174,10 @@ class ChakraConverter:
         with FlopCounterMode(display=False) as flop_counter_mode:
             if fx_node.target._overloadpacket not in flop_counter_mode.flop_registry:
                 # TODO: Make this debugging print clean
-                if os.environ["RANK"] == "0":
-                    print(
-                        f"{node_debug_id_str(fx_node)} has operator out of the registry: {fx_node.target._opname}, {fx_node.target._overloadpacket}"
-                    )
+                # if os.environ["RANK"] == "0":
+                #     print(
+                #         f"{node_debug_id_str(fx_node)} has operator out of the registry: {fx_node.target._opname}, {fx_node.target._overloadpacket}"
+                #     )
                 return 0, False
             fx_node.target(*args, **kwargs)
             return flop_counter_mode.get_total_flops(), True
@@ -216,8 +198,8 @@ class ChakraConverter:
             b = args[2].size()
         numbytes_per_element = 4
         estimated_tensor_size = 2 * numbytes_per_element * (a[0] * a[1] + b[0] * b[1] + a[0] * b[1])
-        if os.environ["RANK"] == "0":
-            print(f"Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} result {estimated_tensor_size}")
+        # if os.environ["RANK"] == "0":
+        #     print(f"Estimated tensor size, a: {a[0]} {a[1]} b: {b[0]} {b[1]} result {estimated_tensor_size}")
         return estimated_tensor_size
 
     # Measure the duration of a compute operation by running it on actual GPU.
@@ -269,16 +251,124 @@ class ChakraConverter:
             end_cuda_event.record(torch.cuda.current_stream())
             end_cpu_measured = time.time()
             torch.cuda.synchronize()
-            cpu_time = (end_cpu_measured - start_cpu_measured) * 1_000_000  # Second to microsecond
+            elapsed_cpu_time_micro = (end_cpu_measured - start_cpu_measured) * 1_000_000  # Second to microsecond
+            elapsed_gpu_time_micro = start_cuda_event.elapsed_time(end_cuda_event) * 1000  # Millisecond to microsecond
+            mean_duration_cuda_event = int(elapsed_gpu_time_micro / num_iters)
             if os.environ["RANK"] == "0":
                 print(
                     f"For fx node {fx_node.name}, "
-                    f"duration measured by CPU is {cpu_time}, "
-                    f"duration measured by CUDA Events is {start_cuda_event.elapsed_time(end_cuda_event)}"
+                    f"duration measured by CPU is {elapsed_cpu_time_micro} microsecond, "
+                    f"duration measured by CUDA Events is {elapsed_gpu_time_micro} microsecond, "
+                    f"mean duration over {num_iters} iters is {mean_duration_cuda_event} microsecond"
                 )
-            total_duration_cuda_event = start_cuda_event.elapsed_time(end_cuda_event) * 1000  # Millisecond to microsecond
-            mean_duration_cuda_event = int(total_duration_cuda_event / num_iters)
         return mean_duration_cuda_event
+
+    def get_output_list(self, fx_node: fx.Node) -> List[str]:
+        output_list = []
+        if isinstance(fx_node.meta["val"], FakeTensor):
+            output_list.append(f"{self.rank}_{fx_node.name}")
+            output_list.append(str(self.get_tensor_size_from_fx(fx_node)))
+            return output_list
+        elif isinstance(fx_node.meta["val"], tuple):
+            # So far this is only true for sdpa.
+            """
+                _scaled_dot_product_efficient_attention_1 = torch.ops.aten._scaled_dot_product_efficient_attention.default(transpose_4, transpose_5, transpose_6, None, True, 0.0, True)
+                getitem_4: "f32[8, 1, 2048, 16]" = _scaled_dot_product_efficient_attention_1[0]
+                getitem_5: "f32[8, 1, 2048]" = _scaled_dot_product_efficient_attention_1[1]
+                getitem_6: "i64[]" = _scaled_dot_product_efficient_attention_1[2]
+                getitem_7: "i64[]" = _scaled_dot_product_efficient_attention_1[3];  _scaled_dot_product_efficient_attention_1 = None
+            """
+
+            out_fake_tensor_list = [out_fake_tensor for out_fake_tensor in fx_node.meta["val"] if isinstance(out_fake_tensor, FakeTensor)]
+            if len(out_fake_tensor_list) != len(fx_node.users):
+                node_str = node_debug_id_str(fx_node)
+                meta_length = len(fx_node.meta["val"])
+                users_cnt = len(fx_node.users)
+                print(f"Sanity check: {node_str} output length {meta_length} does not match users length {users_cnt}")
+                raise RuntimeError("FX Node output length does not match users length")
+
+            for idx, out_fake_tensor in enumerate(out_fake_tensor_list):
+                if not isinstance(out_fake_tensor, FakeTensor):
+                    print(f"Sanity check: {node_debug_id_str(fx_node)} output {idx} is not FakeTensor")
+                    continue
+                if out_fake_tensor.numel() == 0:
+                    # Skip empty output tensors
+                    continue
+                # User will be nodes such as getitem_1, getitem_2, etc.
+                # Interestingly, fx_node.users is an ordered dict from fx node to None
+                user_fx_node = list(fx_node.users.keys())[idx]
+                output_name = f"{self.rank}_{user_fx_node.name}"
+                output_size = self.get_tensor_size_from_faketensor(out_fake_tensor)
+                output_list.append(output_name)
+                output_list.append(str(output_size))
+        else:
+            print(f"Sanity check: {node_debug_id_str(fx_node)} output has type {type(fx_node)} is neither FakeTensor nor tuple")
+
+        return output_list
+
+    def get_tensor_size_from_faketensor(self, fake_tensor: FakeTensor) -> int:
+        tensor_dtype = fake_tensor.element_size()
+        tensor_numelements = fake_tensor.numel()
+        tensor_size = tensor_dtype * tensor_numelements
+        return tensor_size
+
+    def get_tensor_size_from_fx(self, fx_node: fx.Node) -> int:
+        fake_tensor: FakeTensor = fx_node.meta["val"]
+        tensor_size = self.get_tensor_size_from_faketensor(fake_tensor)
+        return tensor_size
+
+    def create_comm_node(self, fx_node: fx.Node) -> ChakraNode:
+        node_name = fx_node.name
+        op_name = fx_node.target._opname
+        comm_size = 0
+        comm_type = c10d_chakra_map[op_name]
+        if "val" not in fx_node.meta or not isinstance(fx_node.meta["val"], FakeTensor):
+            print(f"Sanity check: {node_debug_id_str(fx_node)} is c10d, but fake output is not found")
+            exit()
+
+        import torch.distributed.distributed_c10d as c10d
+
+        process_group_name = fx_node.args[-1]
+        process_group_ranks = c10d.get_process_group_ranks(c10d._resolve_process_group(process_group_name))
+        num_process_groups = len(c10d._world.pg_names)
+
+        # Use FakeTensor, which is included in the FX Graph as a fake input, to determine communication size
+        comm_tensor: FakeTensor = fx_node.meta["val"]
+        if comm_type == ALL_TO_ALL:
+            comm_tensor: FakeTensor = fx_node.args[0].meta["val"]
+        tensor_dtype = comm_tensor.element_size()
+        tensor_numelements = comm_tensor.numel()
+        comm_size = tensor_dtype * tensor_numelements
+
+        if comm_type in (ALL_GATHER, REDUCE_SCATTER):
+            # The fx_node, which is the 'result' of the ALL_GATHER/REDUCE_SCATTER, points to the *output* tensor.
+            # Therefore, we have to divide it by # of ranks to get input tensor size.
+            comm_size = int(comm_size / len(process_group_ranks))
+
+        chakra_node = self.create_chakra_node(node_name, COMM_COLL_NODE)
+        chakra_node.attr.append(ChakraAttr(name="is_cpu_op", bool_val=False))
+        chakra_node.attr.append(ChakraAttr(name="comm_type", int64_val=c10d_chakra_map[op_name]))
+        chakra_node.attr.append(ChakraAttr(name="comm_size", int64_val=comm_size))
+
+        input_list = []
+        for arg_fx in fx_node.all_input_nodes:
+            input_list.append(f"{self.rank}_{arg_fx.name}")
+            input_list.append(str(self.get_tensor_size_from_fx(arg_fx)))
+        chakra_node.attr.append(ChakraAttr(name="inputs", string_list=StringList(values=input_list)))
+        # Assumption: All comm nodes have no output.
+        output_list = self.get_output_list(fx_node)
+        chakra_node.attr.append(ChakraAttr(name="outputs", string_list=StringList(values=output_list)))
+
+        # The ProcessGroup related attribute name and values follow the proposal in the MLC Chakra WG meeting of 2024-09-09.
+        # The actual attribute names may change in the future.
+        chakra_node.attr.append(ChakraAttr(name="pg_name", string_val=process_group_name))
+        chakra_node.attr.append(ChakraAttr(name="group_size", int64_val=len(process_group_ranks)))
+        chakra_node.attr.append(ChakraAttr(name="group_count", int64_val=num_process_groups))
+        chakra_node.attr.append(ChakraAttr(name="op_name", string_val=fx_node.target._opname))
+        pg_ranks_protobuf = Int64List()
+        pg_ranks_protobuf.values.extend(process_group_ranks)
+        chakra_node.attr.append(ChakraAttr(name="ranks", int64_list=pg_ranks_protobuf))
+        return chakra_node
 
     # Create a Compute Chakra Node from an FX Node.
     # We need to add three attributes:
@@ -294,10 +384,20 @@ class ChakraConverter:
             estimated_tensor_size = self.estimate_tensor_size(fx_node)
             estimated_duration = self.measure_duration_microsecond(fx_node)
 
+        input_list = []
+        for arg_fx in fx_node.all_input_nodes:
+            input_list.append(f"{self.rank}_{arg_fx.name}")
+            input_list.append(str(self.get_tensor_size_from_fx(arg_fx)))
+        # Assumption:There is only 1 output node.
+        output_list = self.get_output_list(fx_node)
+
         chakra_node = self.create_chakra_node(node_name, COMP_NODE)
         chakra_node.attr.append(ChakraAttr(name="is_cpu_op", bool_val=False))
         chakra_node.attr.append(ChakraAttr(name="num_ops", int64_val=estimated_flops))
         chakra_node.attr.append(ChakraAttr(name="tensor_size", uint64_val=estimated_tensor_size))
+        chakra_node.attr.append(ChakraAttr(name="op_name", string_val=fx_node.target._opname))
+        chakra_node.attr.append(ChakraAttr(name="inputs", string_list=StringList(values=input_list)))
+        chakra_node.attr.append(ChakraAttr(name="outputs", string_list=StringList(values=output_list)))
         chakra_node.duration_micros = estimated_duration
         return chakra_node
 
@@ -387,9 +487,22 @@ class ChakraConverter:
                 self.process_fx_node(fx_node)
 
     def handle_fxgraph(self, gm: fx.GraphModule):
+        gm.graph.eliminate_dead_code()
         self.fx_subgraphs.append(gm)
 
+    def print_commgroup(self):
+        if os.environ["RANK"] != "0":
+            return
+        commgroup_map = {}
+        for name in c10d._world.pg_names.values():
+            ranks = c10d.get_process_group_ranks(c10d._resolve_process_group(name))
+            commgroup_map[name] = ranks
+        commgroup_filename = f"{self.dir_name}{self.name}_commgroup.json"
+        with open(commgroup_filename, "w") as f:
+            json.dump(commgroup_map, f, indent=4)
+
     def finalize(self):
+        self.print_commgroup()
         for _, gm in enumerate(self.fx_subgraphs):
             if "bucket" in self.graph_passes:
                 from src.chakra_fx.passes.fx_passes import fsdp_bucketing
